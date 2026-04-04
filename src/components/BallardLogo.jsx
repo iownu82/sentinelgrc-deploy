@@ -53,7 +53,9 @@ export function SidebarLogo() {
           <span style={{ color: '#cc1a2e' }}>RISK</span>
           <span style={{ color: isLight ? '#060E1A' : '#f0f8ff' }}>RADAR</span>
         </span>
-
+        <span style={{ fontSize: '9px', letterSpacing: '2px', fontWeight: 600, color: isLight ? '#3A5878' : '#4a7a99', marginTop: '3px', textTransform: 'uppercase', fontFamily: "'Courier New', monospace" }}>
+          by Ballard IS3
+        </span>
       </div>
     </div>
   );
