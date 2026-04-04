@@ -19,18 +19,18 @@ import { SUPABASE_CONFIGURED, signOut } from "./supabase.js";
 const mono = { fontFamily:"'Courier New',monospace" };
 
 const NAV = [
-  { id:"multi",   label:"Multi-Framework",   icon:"🌐", desc:"800-53 · CMMC · CSRMC · SPRS" },
-  { id:"assess",  label:"Self-Assessment",    icon:"📋", desc:"800-53 Rev 5 control assessment" },
-  { id:"ato",     label:"ATO Generator",      icon:"🏛", desc:"eMASS · DIBCAC · SPRS · SAV" },
-  { id:"unified", label:"Security Dashboard", icon:"🔍", desc:"All tool feeds in one screen" },
-  { id:"poam",    label:"POAM Tracker",       icon:"📊", desc:"POAM management + eMASS export" },
-  { id:"deploy",  label:"Deployment Guide",   icon:"☁",  desc:"LM / F-35 deployment architecture" },
-  { id:"roadmap", label:"Product Roadmap",    icon:"🚀", desc:"Cloud SaaS → Classified → SAP" },
-  { id:"templates", label:"Control Templates", icon:"📝", desc:"800-53 Rev 5 — all families + enhancements" },
-  { id:"evidence",   label:"Evidence Tracker",    icon:"🗂", desc:"Chain of custody · ATO evidence library" },
-  { id:"scanner",   label:"Network Scanner",     icon:"📡", desc:"Nmap · SSH config · STIG compliance · POAM" },
-  { id:"sprs",      label:"SPRS Calculator",     icon:"🎯", desc:"NIST 800-171 · Live score · DoD SPRS submission" },
-  { id:"nessus",    label:"Nessus Importer",     icon:"📥", desc:"ACAS · .nessus XML · DoD CAT I/II/III · POAM export" },
+  { id:"multi",   label:"Multi-Framework",   icon:"ð", desc:"800-53 Â· CMMC Â· CSRMC Â· SPRS" },
+  { id:"assess",  label:"Self-Assessment",    icon:"ð", desc:"800-53 Rev 5 control assessment" },
+  { id:"ato",     label:"ATO Generator",      icon:"ð", desc:"eMASS Â· DIBCAC Â· SPRS Â· SAV" },
+  { id:"unified", label:"Security Dashboard", icon:"ð", desc:"All tool feeds in one screen" },
+  { id:"poam",    label:"POAM Tracker",       icon:"ð", desc:"POAM management + eMASS export" },
+  { id:"deploy",  label:"Deployment Guide",   icon:"â",  desc:"LM / F-35 deployment architecture" },
+  { id:"roadmap", label:"Product Roadmap",    icon:"ð", desc:"Cloud SaaS â Classified â SAP" },
+  { id:"templates", label:"Control Templates", icon:"ð", desc:"800-53 Rev 5 â all families + enhancements" },
+  { id:"evidence",   label:"Evidence Tracker",    icon:"ð", desc:"Chain of custody Â· ATO evidence library" },
+  { id:"scanner",   label:"Network Scanner",     icon:"ð¡", desc:"Nmap Â· SSH config Â· STIG compliance Â· POAM" },
+  { id:"sprs",      label:"SPRS Calculator",     icon:"ð¯", desc:"NIST 800-171 Â· Live score Â· DoD SPRS submission" },
+  { id:"nessus",    label:"Nessus Importer",     icon:"ð¥", desc:"ACAS Â· .nessus XML Â· DoD CAT I/II/III Â· POAM export" },
 ];
 
 function AppInner() {
@@ -64,7 +64,7 @@ function AppInner() {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div style={{ display:"flex", minHeight:"100vh", background:"#03080E", color:"#C8D8E8", filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
+      <div style={{ display:"flex", minHeight:"100vh", background:t.bg, color:t.text }}>
         <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${t.bg}}::-webkit-scrollbar-thumb{background:${t.scroll};border-radius:2px}*{box-sizing:border-box;margin:0;padding:0;transition:background-color 0.2s,border-color 0.2s,color 0.2s}`}</style>
 
         {/* Sidebar */}
@@ -88,14 +88,14 @@ function AppInner() {
                 {["dark","light"].map(m => (
                   <button key={m} onClick={() => setTheme(m)}
                     style={{ flex:1, background:theme===m?A.teal:"transparent", border:"none", borderRadius:16, padding:"5px 0", cursor:"pointer", ...mono, fontSize:11, fontWeight:700, color:theme===m?"#020A10":t.mute }}>
-                    {m === "dark" ? "🌙 DARK" : "☀ LIGHT"}
+                    {m === "dark" ? "ð DARK" : "â LIGHT"}
                   </button>
                 ))}
               </div>
             ) : (
               <button onClick={() => setTheme(theme==="dark"?"light":"dark")}
                 style={{ width:"100%", background:"transparent", border:`1px solid ${t.border}`, borderRadius:6, padding:"5px 0", cursor:"pointer", fontSize:14 }}>
-                {theme === "dark" ? "☀" : "🌙"}
+                {theme === "dark" ? "â" : "ð"}
               </button>
             )}
           </div>
@@ -126,7 +126,7 @@ function AppInner() {
               {SUPABASE_CONFIGURED ? (
                 user ? (
                   <div>
-                    <div style={{ ...mono, fontSize:9, color:A.green, marginBottom:4, fontWeight:700 }}>✓ CLOUD SYNC ACTIVE</div>
+                    <div style={{ ...mono, fontSize:9, color:A.green, marginBottom:4, fontWeight:700 }}>â CLOUD SYNC ACTIVE</div>
                     <div style={{ fontSize:10, color:t.textDim, marginBottom:8, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                       {user.user_metadata?.org_name || user.email}
                     </div>
@@ -138,7 +138,7 @@ function AppInner() {
                 ) : (
                   <button onClick={()=>setShowAuth(true)}
                     style={{ ...mono, fontSize:10, background:`${A.teal}14`, border:`1px solid ${A.teal}40`, color:A.teal, borderRadius:5, padding:"8px 0", cursor:"pointer", width:"100%", fontWeight:700 }}>
-                    🔐 SIGN IN TO SAVE DATA
+                    ð SIGN IN TO SAVE DATA
                   </button>
                 )
               ) : (
@@ -153,7 +153,7 @@ function AppInner() {
           {/* Collapse */}
           <div onClick={() => setSidebarOpen(!sidebarOpen)}
             style={{ padding:"11px 12px", borderTop:`1px solid ${t.border}`, cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-            <span style={{ fontSize:13, color:t.mute }}>{sidebarOpen ? "◀" : "▶"}</span>
+            <span style={{ fontSize:13, color:t.mute }}>{sidebarOpen ? "â" : "â¶"}</span>
             {sidebarOpen && <span style={{ ...mono, fontSize:11, color:t.mute }}>COLLAPSE</span>}
           </div>
         </div>
@@ -162,7 +162,7 @@ function AppInner() {
       {showAuth && <AuthModal onClose={()=>setShowAuth(false)} />}
 
         {/* Main */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden", filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
 
           {/* Top bar */}
           <div style={{ background:t.headerBg, borderBottom:`1px solid ${t.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
@@ -175,10 +175,10 @@ function AppInner() {
             </div>
             <div style={{ display:"flex", gap:8, alignItems:"center" }}>
               <div style={{ ...mono, fontSize:10, color:t.mute, background:`${A.teal}0A`, border:`1px solid ${A.teal}20`, borderRadius:4, padding:"4px 10px" }}>
-                ● DEMO MODE — GOVCLOUD BACKEND PENDING
+                â DEMO MODE â GOVCLOUD BACKEND PENDING
               </div>
               <div style={{ ...mono, fontSize:10, color:A.green, background:`${A.green}0A`, border:`1px solid ${A.green}20`, borderRadius:4, padding:"4px 10px" }}>
-                ● ACME DEFENSE CORP
+                â ACME DEFENSE CORP
               </div>
             </div>
           </div>
