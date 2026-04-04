@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-// IS3 mark -- 6 arc segments r=14, center=(24,24), 12-degree gaps
 const ARCS = [
   "M 38,24 A 14,14 0 0,1 33.37,34.40",
   "M 31.00,36.12 A 14,14 0 0,1 19.67,37.31",
@@ -12,22 +11,14 @@ const ARCS = [
 
 export function IS3Mark({ size = 36 }) {
   return (
-    <svg viewBox="0 0 48 48" fill="none" width={size} height={size}
-         style={{ flexShrink: 0, overflow: 'visible' }}>
+    <svg viewBox="0 0 48 48" fill="none" width={size} height={size} style={{ flexShrink: 0, overflow: 'visible' }}>
       {[0, 1].map(i => (
-        <circle key={i} cx="24" cy="24" r="22"
-          stroke="#cc1a2e" strokeWidth="1.5" fill="none"
-          style={{
-            transformBox: 'fill-box',
-            transformOrigin: 'center',
-            animation: `rr-radar-expand 2.8s ease-out infinite ${i * 1.4}s`,
-          }}
-        />
+        <circle key={i} cx="24" cy="24" r="22" stroke="#cc1a2e" strokeWidth="1.5" fill="none"
+          style={{ transformBox: 'fill-box', transformOrigin: 'center', animation: `rr-radar-expand 2.8s ease-out infinite ${i * 1.4}s` }} />
       ))}
       <circle cx="24" cy="24" r="22" stroke="#cc1a2e" strokeWidth="3" fill="none" />
       {ARCS.map((d, i) => (
-        <path key={i} d={d} stroke="#6b7f94" strokeWidth="1.8"
-              fill="none" strokeLinecap="round" />
+        <path key={i} d={d} stroke="#6b7f94" strokeWidth="1.8" fill="none" strokeLinecap="round" />
       ))}
     </svg>
   );
@@ -37,16 +28,16 @@ function useIsLight() {
   const [isLight, setIsLight] = useState(false);
   useEffect(() => {
     const detect = () => {
-      const wrapper = document.querySelector('[style*="invert(1)"]');
-      const light = !!wrapper;
+      const sidebar = document.querySelector('[style*="220px"]');
+      if (!sidebar) return;
+      const bg = window.getComputedStyle(sidebar).backgroundColor;
+      const light = bg === 'rgb(255, 255, 255)' || bg.startsWith('rgb(24') || bg.startsWith('rgb(23') || bg.startsWith('rgb(22');
       setIsLight(light);
       document.body.classList.toggle('rr-light', light);
     };
     detect();
     const obs = new MutationObserver(detect);
-    obs.observe(document.documentElement, {
-      attributes: true, subtree: true, attributeFilter: ['style'],
-    });
+    obs.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['style'] });
     return () => obs.disconnect();
   }, []);
   return isLight;
@@ -54,40 +45,15 @@ function useIsLight() {
 
 export function SidebarLogo() {
   const isLight = useIsLight();
-  const wrapRef = useRef(null);
-
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    if (isLight) {
-      // Counter-filter cancels parent invert+hue-rotate+sat+brightness
-      // Net result: colors render exactly as specified -- no pink, true crimson
-      el.style.filter = 'invert(1) hue-rotate(180deg) saturate(1.43) brightness(0.952)';
-    } else {
-      el.style.filter = '';
-    }
-  }, [isLight]);
-
   return (
-    <div ref={wrapRef} style={{
-      display: 'flex', alignItems: 'center', gap: '12px',
-      overflow: 'hidden', transition: 'filter 0.3s',
-    }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
       <IS3Mark size={36} />
       <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-        <span style={{
-          fontFamily: "'Courier New', monospace",
-          fontSize: '20px', fontWeight: 900,
-          letterSpacing: '2px', lineHeight: 1, whiteSpace: 'nowrap',
-        }}>
+        <span style={{ fontFamily: "'Courier New', monospace", fontSize: '20px', fontWeight: 900, letterSpacing: '2px', lineHeight: 1, whiteSpace: 'nowrap' }}>
           <span style={{ color: '#cc1a2e' }}>RISK</span>
-          <span style={{ color: '#f0f8ff' }}>RADAR</span>
+          <span style={{ color: isLight ? '#060E1A' : '#f0f8ff' }}>RADAR</span>
         </span>
-        <span style={{
-          fontSize: '9px', letterSpacing: '2px', fontWeight: 600,
-          color: '#4a7a99', marginTop: '3px', textTransform: 'uppercase',
-          fontFamily: "'Courier New', monospace",
-        }}>
+        <span style={{ fontSize: '9px', letterSpacing: '2px', fontWeight: 600, color: isLight ? '#3A5878' : '#4a7a99', marginTop: '3px', textTransform: 'uppercase', fontFamily: "'Courier New', monospace" }}>
           by Ballard IS3
         </span>
       </div>
@@ -96,20 +62,12 @@ export function SidebarLogo() {
 }
 
 export function LayerBadge({ layer, label }) {
+  const isLight = useIsLight();
   return (
-    <div style={{
-      padding: '10px 12px 3px', display: 'flex',
-      alignItems: 'center', gap: '6px', marginTop: '4px',
-    }}>
-      <span style={{
-        fontFamily: 'monospace', fontSize: '9px',
-        color: '#cc1a2e', letterSpacing: '2px', fontWeight: 700,
-      }}>{layer}</span>
-      <div style={{ flex: 1, height: '1px', background: '#1a2f42' }} />
-      <span style={{
-        fontFamily: 'monospace', fontSize: '9px',
-        color: '#4a7a99', letterSpacing: '1px', textTransform: 'uppercase',
-      }}>{label}</span>
+    <div style={{ padding: '10px 12px 3px', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+      <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#cc1a2e', letterSpacing: '2px', fontWeight: 700 }}>{layer}</span>
+      <div style={{ flex: 1, height: '1px', background: isLight ? '#C0D0E0' : '#1a2f42' }} />
+      <span style={{ fontFamily: 'monospace', fontSize: '9px', color: isLight ? '#3A5878' : '#4a7a99', letterSpacing: '1px', textTransform: 'uppercase' }}>{label}</span>
     </div>
   );
 }
