@@ -1,0 +1,15 @@
+/* RiskRadar -- global styles */
+:root { font-size: 14px; }
+body  { font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+/* RADAR PULSE */
+@keyframes rr-radar-expand {
+  0%   { transform: scale(1);    opacity: 0.65; }
+  75%  { transform: scale(1.85); opacity: 0;    }
+  100% { transform: scale(1.85); opacity: 0;    }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #010a14; }
+::-webkit-scrollbar-thumb { background: #1a3a54; border-radius: 2px; }
