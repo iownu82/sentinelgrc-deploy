@@ -4,25 +4,25 @@ import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, BarC
 const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
-// ─── Framework Definitions ────────────────────────────────────────────────────
+// âââ Framework Definitions ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const FRAMEWORKS = {
-  n800_53:  { label:"NIST 800-53 Rev 5", short:"800-53", color:"#00D4AA", icon:"🏛",  audience:"DoD AO / CCRI",       env:"DoD Site",        totalControls:52  },
-  n800_171: { label:"NIST 800-171 Rev 2", short:"800-171",color:"#1A7AFF", icon:"📋",  audience:"DCSA / Self-Assess",  env:"Contractor Site", totalControls:41  },
-  cmmc_l1:  { label:"CMMC 2.0 Level 1",  short:"CMMC L1",color:"#00CC88", icon:"①",   audience:"FAR 52.204-21",       env:"All Contractors", totalControls:17  },
-  cmmc_l2:  { label:"CMMC 2.0 Level 2",  short:"CMMC L2",color:"#FFD700", icon:"②",   audience:"C3PAO / DIBCAC",     env:"DIB Contractors", totalControls:110 },
-  cmmc_l3:  { label:"CMMC 2.0 Level 3",  short:"CMMC L3",color:"#FF8C00", icon:"③",   audience:"DIBCAC (Gov't-led)", env:"Critical Programs",totalControls:134 },
-  csrmc:    { label:"CSRMC (Sep 2025)",   short:"CSRMC",  color:"#AA66FF", icon:"⚡",  audience:"DoD CIO / CSSP",     env:"DoD + Contractors",totalControls:5   },
+  n800_53:  { label:"NIST 800-53 Rev 5", short:"800-53", color:"#00D4AA", icon:"ð",  audience:"DoD AO / CCRI",       env:"DoD Site",        totalControls:52  },
+  n800_171: { label:"NIST 800-171 Rev 2", short:"800-171",color:"#1A7AFF", icon:"ð",  audience:"DCSA / Self-Assess",  env:"Contractor Site", totalControls:41  },
+  cmmc_l1:  { label:"CMMC 2.0 Level 1",  short:"CMMC L1",color:"#00CC88", icon:"â ",   audience:"FAR 52.204-21",       env:"All Contractors", totalControls:17  },
+  cmmc_l2:  { label:"CMMC 2.0 Level 2",  short:"CMMC L2",color:"#FFD700", icon:"â¡",   audience:"C3PAO / DIBCAC",     env:"DIB Contractors", totalControls:110 },
+  cmmc_l3:  { label:"CMMC 2.0 Level 3",  short:"CMMC L3",color:"#FF8C00", icon:"â¢",   audience:"DIBCAC (Gov't-led)", env:"Critical Programs",totalControls:134 },
+  csrmc:    { label:"CSRMC (Sep 2025)",   short:"CSRMC",  color:"#AA66FF", icon:"â¡",  audience:"DoD CIO / CSSP",     env:"DoD + Contractors",totalControls:5   },
 };
 
 const CSRMC_PHASES = [
-  { id:"P1", label:"Phase 1: Design",     score:72, icon:"🏗", color:"#9C27B0" },
-  { id:"P2", label:"Phase 2: Build",      score:68, icon:"🔨", color:"#673AB7" },
-  { id:"P3", label:"Phase 3: Test",       score:81, icon:"🧪", color:"#3F51B5" },
-  { id:"P4", label:"Phase 4: Onboard",    score:65, icon:"🚀", color:"#2196F3" },
-  { id:"P5", label:"Phase 5: Operations", score:58, icon:"⚙",  color:"#03A9F4" },
+  { id:"P1", label:"Phase 1: Design",     score:72, icon:"ð", color:"#9C27B0" },
+  { id:"P2", label:"Phase 2: Build",      score:68, icon:"ð¨", color:"#673AB7" },
+  { id:"P3", label:"Phase 3: Test",       score:81, icon:"ð§ª", color:"#3F51B5" },
+  { id:"P4", label:"Phase 4: Onboard",    score:65, icon:"ð", color:"#2196F3" },
+  { id:"P5", label:"Phase 5: Operations", score:58, icon:"â",  color:"#03A9F4" },
 ];
 
-// ─── Mock assessment results ──────────────────────────────────────────────────
+// âââ Mock assessment results ââââââââââââââââââââââââââââââââââââââââââââââââââ
 const MOCK_SCORES = {
   n800_53:  { score:83, compliant:44, total:52, trend:"+3%"  },
   n800_171: { score:79, compliant:32, total:41, trend:"+2%"  },
@@ -32,7 +32,7 @@ const MOCK_SCORES = {
   csrmc:    { score:69, compliant:null,total:null,trend:"+8%" },
 };
 
-// ─── Cross-framework control examples ─────────────────────────────────────────
+// âââ Cross-framework control examples âââââââââââââââââââââââââââââââââââââââââ
 const CROSS_MAP_EXAMPLES = [
   {
     n800_53: "AC-3",   title:"Access Enforcement",
@@ -172,8 +172,8 @@ export default function MultiFramework() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Multi-Framework</div>
-            <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>ASSESS ONCE · COMPLY WITH ALL</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}> Multi-Framework</div>
+            <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>ASSESS ONCE Â· COMPLY WITH ALL</div>
           </div>
           <div style={{ width:1, height:24, background:C.border, margin:"0 8px" }} />
           {NAV.map(n => (
@@ -184,7 +184,7 @@ export default function MultiFramework() {
         {/* Deploy mode toggle */}
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
           <span style={{ ...mono, fontSize:11, color:C.textMute }}>DEPLOY MODE:</span>
-          {[["dod","🏛 DoD Site"],["contractor","🏢 Contractor Site"],["dual","⚡ Dual (LM/F-35)"]].map(([m,l]) => (
+          {[["dod","ð DoD Site"],["contractor","ð¢ Contractor Site"],["dual","â¡ Dual (LM/F-35)"]].map(([m,l]) => (
             <button key={m} onClick={() => setDeployMode(m)}
               style={{ ...mono, background:deployMode===m?"rgba(0,212,170,0.08)":"transparent", border:`1px solid ${deployMode===m?"rgba(0,212,170,0.3)":C.border}`, color:deployMode===m?C.teal:C.textMute, borderRadius:4, padding:"4px 10px", cursor:"pointer", fontSize:11, fontWeight:deployMode===m?700:400 }}>{l}</button>
           ))}
@@ -195,14 +195,14 @@ export default function MultiFramework() {
       <div style={{ background:deployMode==="dual"?"rgba(170,102,255,0.07)":deployMode==="dod"?"rgba(0,212,170,0.05)":"rgba(26,122,255,0.05)", borderBottom:`1px solid ${deployMode==="dual"?"rgba(170,102,255,0.2)":deployMode==="dod"?"rgba(0,212,170,0.2)":"rgba(26,122,255,0.2)"}`, padding:"8px 20px", display:"flex", gap:20, alignItems:"center" }}>
         {deployMode === "dual" && (
           <>
-            <span style={{ fontSize:14 }}>⚡</span>
+            <span style={{ fontSize:14 }}>â¡</span>
             <span style={{ fontSize:11, color:C.textDim }}>
-              <strong style={{ color:"#AA66FF" }}>Dual Mode Active (LM / F-35 JSF)</strong> — One assessment satisfies: NIST 800-53 Rev 5 (DoD ATO) + NIST 800-171 (DFARS) + CMMC 2.0 Level 2/3 (LM contractor) + CSRMC (DoD Sep 2025) simultaneously.
+              <strong style={{ color:"#AA66FF" }}>Dual Mode Active (LM / F-35 JSF)</strong> â One assessment satisfies: NIST 800-53 Rev 5 (DoD ATO) + NIST 800-171 (DFARS) + CMMC 2.0 Level 2/3 (LM contractor) + CSRMC (DoD Sep 2025) simultaneously.
             </span>
           </>
         )}
-        {deployMode === "dod" && <span style={{ fontSize:11, color:C.textDim }}><strong style={{ color:C.teal }}>DoD Site Mode</strong> — Showing 800-53 Rev 5, CSRMC phases, and ATO package readiness. eMASS export available.</span>}
-        {deployMode === "contractor" && <span style={{ fontSize:11, color:C.textDim }}><strong style={{ color:C.blue }}>Contractor Mode</strong> — Showing CMMC 2.0, 800-171, SPRS score, and C3PAO assessment package.</span>}
+        {deployMode === "dod" && <span style={{ fontSize:11, color:C.textDim }}><strong style={{ color:C.teal }}>DoD Site Mode</strong> â Showing 800-53 Rev 5, CSRMC phases, and ATO package readiness. eMASS export available.</span>}
+        {deployMode === "contractor" && <span style={{ fontSize:11, color:C.textDim }}><strong style={{ color:C.blue }}>Contractor Mode</strong> â Showing CMMC 2.0, 800-171, SPRS score, and C3PAO assessment package.</span>}
       </div>
 
       <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -224,7 +224,7 @@ export default function MultiFramework() {
                     <div style={{ fontSize:11, color:C.textMute, marginTop:2 }}>
                       {data.compliant ? `${data.compliant}/${data.total}` : "5 Phases"}
                     </div>
-                    <div style={{ ...mono, fontSize:11, color:scoreColor, marginTop:2 }}>{data.trend} ↑</div>
+                    <div style={{ ...mono, fontSize:11, color:scoreColor, marginTop:2 }}>{data.trend} â</div>
                     <div style={{ ...mono, fontSize:10, color:C.textMute, marginTop:4, lineHeight:1.4 }}>{fw.audience}</div>
                   </div>
                 );
@@ -235,7 +235,7 @@ export default function MultiFramework() {
             <div style={{ display:"grid", gridTemplateColumns:"1fr 300px", gap:12 }}>
               {/* Radar by control family */}
               <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, padding:"16px" }}>
-                <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:4 }}>CONTROL FAMILY COMPLIANCE — 800-53 vs 800-171</div>
+                <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:4 }}>CONTROL FAMILY COMPLIANCE â 800-53 vs 800-171</div>
                 <div style={{ display:"flex", gap:12, marginBottom:8 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:10, height:3, background:C.teal, borderRadius:2 }} /><span style={{ ...mono, fontSize:11, color:C.textMute }}>NIST 800-53</span></div>
                   <div style={{ display:"flex", alignItems:"center", gap:5 }}><div style={{ width:10, height:3, background:C.blue, borderRadius:2 }} /><span style={{ ...mono, fontSize:11, color:C.textMute }}>NIST 800-171</span></div>
@@ -288,7 +288,7 @@ export default function MultiFramework() {
         {activeTab === "mapping" && (
           <div>
             <div style={{ display:"flex", gap:8, marginBottom:14, alignItems:"center" }}>
-              <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1 }}>ASSESS ONCE — RESOLVES ACROSS ALL FRAMEWORKS</div>
+              <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1 }}>ASSESS ONCE â RESOLVES ACROSS ALL FRAMEWORKS</div>
               <div style={{ flex:1 }} />
               {["ALL","Implemented","Partial","Not Implemented"].map(s => (
                 <button key={s} onClick={() => setFilterStatus(s)}
@@ -312,7 +312,7 @@ export default function MultiFramework() {
                     <div style={{ ...mono, fontWeight:700, fontSize:11, color:C.teal }}>{c.n800_53}</div>
                     <div>
                       <div style={{ fontSize:11, color:C.textDim, lineHeight:1.3 }}>{c.title}</div>
-                      {c.is_cmmc_l1 && <div style={{ ...mono, fontSize:10, color:C.green, marginTop:2 }}>★ L1 PRACTICE</div>}
+                      {c.is_cmmc_l1 && <div style={{ ...mono, fontSize:10, color:C.green, marginTop:2 }}>â L1 PRACTICE</div>}
                     </div>
                     <div><StatusBadge status={c.status} /></div>
                     <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
@@ -320,7 +320,7 @@ export default function MultiFramework() {
                     </div>
                     <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
                       {c.cmmc_l1.map(p => <span key={p} style={{ ...mono, fontSize:10, color:C.green }}>{p}</span>)}
-                      {!c.cmmc_l1.length && <span style={{ ...mono, fontSize:10, color:"#2A3A4A" }}>—</span>}
+                      {!c.cmmc_l1.length && <span style={{ ...mono, fontSize:10, color:"#2A3A4A" }}>â</span>}
                     </div>
                     <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
                       {c.cmmc_l2.slice(0,2).map(p => <span key={p} style={{ ...mono, fontSize:10, color:C.gold }}>{p}</span>)}
@@ -330,7 +330,7 @@ export default function MultiFramework() {
                       {c.csrmc_phases.map(p => <span key={p} style={{ ...mono, fontSize:10, color:"#AA66FF" }}>{p.split(":")[0]}</span>)}
                     </div>
                     <div style={{ ...mono, fontSize:10, color:c.dfars_critical?C.red:c.dfars?C.orange:"#2A3A4A", fontWeight:c.dfars?700:400 }}>
-                      {c.dfars ? (c.dfars_critical ? "⚠ CRITICAL" : "✓ DFARS") : "—"}
+                      {c.dfars ? (c.dfars_critical ? "â  CRITICAL" : "â DFARS") : "â"}
                     </div>
                   </div>
                   {isSelected && (
@@ -338,11 +338,11 @@ export default function MultiFramework() {
                       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
                         <div>
                           <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:6 }}>CSRMC PHASES COVERED</div>
-                          {c.csrmc_phases.map(p => <div key={p} style={{ ...mono, fontSize:10, color:"#AA66FF", marginBottom:3 }}>▸ {p}</div>)}
+                          {c.csrmc_phases.map(p => <div key={p} style={{ ...mono, fontSize:10, color:"#AA66FF", marginBottom:3 }}>â¸ {p}</div>)}
                         </div>
                         <div>
                           <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:6 }}>CSRMC TENETS</div>
-                          {c.csrmc_tenets.map(t => <div key={t} style={{ fontSize:10, color:C.textDim, marginBottom:3 }}>• {t}</div>)}
+                          {c.csrmc_tenets.map(t => <div key={t} style={{ fontSize:10, color:C.textDim, marginBottom:3 }}>â¢ {t}</div>)}
                         </div>
                         <div>
                           <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:6 }}>FRAMEWORKS SATISFIED BY THIS CONTROL</div>
@@ -353,7 +353,7 @@ export default function MultiFramework() {
                             {c.cmmc_l2.length > 0 && <span style={{ ...mono, fontSize:11, color:C.gold, background:"rgba(255,215,0,0.08)", border:"1px solid rgba(255,215,0,0.2)", borderRadius:3, padding:"2px 7px" }}>CMMC L2</span>}
                             {c.dfars && <span style={{ ...mono, fontSize:11, color:C.orange, background:"rgba(255,140,0,0.08)", border:"1px solid rgba(255,140,0,0.2)", borderRadius:3, padding:"2px 7px" }}>DFARS 7012</span>}
                           </div>
-                          {c.dfars_note && <div style={{ fontSize:10, color:C.red, marginTop:8 }}>⚠ {c.dfars_note}</div>}
+                          {c.dfars_note && <div style={{ fontSize:10, color:C.red, marginTop:8 }}>â  {c.dfars_note}</div>}
                         </div>
                       </div>
                     </div>
@@ -362,7 +362,7 @@ export default function MultiFramework() {
               );
             })}
             <div style={{ ...mono, fontSize:11, color:C.textMute, marginTop:12, padding:"10px 12px", background:C.panel, borderRadius:6, border:`1px solid ${C.border}` }}>
-              💡 Every row above represents one assessment that simultaneously satisfies requirements across NIST 800-53, 800-171, CMMC, and CSRMC. For LM/F-35: your DoD site assessment and your contractor CMMC assessment draw from the same control database — no duplicate work.
+              ð¡ Every row above represents one assessment that simultaneously satisfies requirements across NIST 800-53, 800-171, CMMC, and CSRMC. For LM/F-35: your DoD site assessment and your contractor CMMC assessment draw from the same control database â no duplicate work.
             </div>
           </div>
         )}
@@ -370,7 +370,7 @@ export default function MultiFramework() {
         {/* CSRMC PHASES */}
         {activeTab === "csrmc" && (
           <div>
-            <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:16 }}>CSRMC — 5 PHASE LIFECYCLE (Sep 2025 DoD CIO Framework)</div>
+            <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:16 }}>CSRMC â 5 PHASE LIFECYCLE (Sep 2025 DoD CIO Framework)</div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:12, marginBottom:20 }}>
               {CSRMC_PHASES.map(p => (
                 <div key={p.id} style={{ background:C.panel, border:`1px solid ${p.color}40`, borderRadius:8, padding:16, textAlign:"center" }}>
@@ -378,7 +378,7 @@ export default function MultiFramework() {
                   <GaugeArc score={p.score} color={p.color} size={80} />
                   <div style={{ ...mono, fontSize:10, fontWeight:700, color:p.color, marginTop:8 }}>{p.label}</div>
                   <div style={{ fontSize:11, color:C.textMute, marginTop:4 }}>
-                    {p.score >= 80 ? "✓ Strong" : p.score >= 65 ? "⚠ Gaps" : "✗ Critical Gaps"}
+                    {p.score >= 80 ? "â Strong" : p.score >= 65 ? "â  Gaps" : "â Critical Gaps"}
                   </div>
                 </div>
               ))}
@@ -397,7 +397,7 @@ export default function MultiFramework() {
                     <span style={{ ...mono, fontSize:12, fontWeight:800, color:p.score>=80?C.green:p.score>=65?C.teal:C.orange }}>{p.score}%</span>
                   </div>
                   <div style={{ marginBottom:10 }}>
-                    {p.tenets.map(t => <div key={t} style={{ fontSize:10, color:C.textDim, marginBottom:3 }}>• {t}</div>)}
+                    {p.tenets.map(t => <div key={t} style={{ fontSize:10, color:C.textDim, marginBottom:3 }}>â¢ {t}</div>)}
                   </div>
                   <div style={{ ...mono, fontSize:10, color:C.textMute, marginBottom:6 }}>KEY CONTROLS</div>
                   <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
@@ -425,9 +425,9 @@ export default function MultiFramework() {
               <div style={{ background:"#06101A", border:`1px solid ${C.border}`, borderRadius:6, padding:12 }}>
                 <div style={{ ...mono, fontSize:11, color:C.textMute, marginBottom:8 }}>DFARS OBLIGATIONS FOR F-35/LM</div>
                 {[
-                  ["252.204-7012","Safeguarding Covered Defense Information","CRITICAL — 72hr incident report"],
-                  ["252.204-7019","NIST SP 800-171 DoD Assessment Requirements","Required — SPRS score submission"],
-                  ["252.204-7020","NIST SP 800-171 DoD Assessment Requirements","Required — allow assessments"],
+                  ["252.204-7012","Safeguarding Covered Defense Information","CRITICAL â 72hr incident report"],
+                  ["252.204-7019","NIST SP 800-171 DoD Assessment Requirements","Required â SPRS score submission"],
+                  ["252.204-7020","NIST SP 800-171 DoD Assessment Requirements","Required â allow assessments"],
                   ["252.204-7021","CMMC Requirements","Required by contract type"],
                 ].map(([num,desc,note]) => (
                   <div key={num} style={{ marginBottom:8, paddingBottom:8, borderBottom:`1px solid ${C.border}` }}>
@@ -464,7 +464,7 @@ export default function MultiFramework() {
               <div style={{ background:C.panel, border:`2px solid rgba(170,102,255,0.3)`, borderRadius:8, padding:16 }}>
                 <div style={{ ...mono, fontSize:11, color:"#AA66FF", letterSpacing:1, marginBottom:8 }}>WHY DUAL MODE MATTERS FOR F-35/LM</div>
                 <div style={{ fontSize:11, color:C.textDim, lineHeight:1.8 }}>
-                  Your F-35 work requires maintaining compliance with <strong style={{ color:C.teal }}>NIST 800-53 Rev 5 + CSRMC</strong> for the DoD network side AND <strong style={{ color:C.blue }}>CMMC Level 3 + 800-171</strong> for the LM contractor side. SentinelGRC's dual mode means one control assessment automatically satisfies both. Your team doesn't run two parallel compliance programs — you run one and export two packages.
+                  Your F-35 work requires maintaining compliance with <strong style={{ color:C.teal }}>NIST 800-53 Rev 5 + CSRMC</strong> for the DoD network side AND <strong style={{ color:C.blue }}>CMMC Level 3 + 800-171</strong> for the LM contractor side. SentinelGRC's dual mode means one control assessment automatically satisfies both. Your team doesn't run two parallel compliance programs â you run one and export two packages.
                 </div>
               </div>
             </div>
