@@ -19,18 +19,18 @@ import { SUPABASE_CONFIGURED, signOut } from "./supabase.js";
 const mono = { fontFamily:"'Courier New',monospace" };
 
 const NAV = [
-  { id:"multi",   label:"Multi-Framework",   icon:"ð", desc:"800-53 Â· CMMC Â· CSRMC Â· SPRS" },
-  { id:"assess",  label:"Self-Assessment",    icon:"ð", desc:"800-53 Rev 5 control assessment" },
-  { id:"ato",     label:"ATO Generator",      icon:"ð", desc:"eMASS Â· DIBCAC Â· SPRS Â· SAV" },
-  { id:"unified", label:"Security Dashboard", icon:"ð", desc:"All tool feeds in one screen" },
-  { id:"poam",    label:"POAM Tracker",       icon:"ð", desc:"POAM management + eMASS export" },
-  { id:"deploy",  label:"Deployment Guide",   icon:"â",  desc:"LM / F-35 deployment architecture" },
-  { id:"roadmap", label:"Product Roadmap",    icon:"ð", desc:"Cloud SaaS â Classified â SAP" },
-  { id:"templates", label:"Control Templates", icon:"ð", desc:"800-53 Rev 5 â all families + enhancements" },
-  { id:"evidence",   label:"Evidence Tracker",    icon:"ð", desc:"Chain of custody Â· ATO evidence library" },
-  { id:"scanner",   label:"Network Scanner",     icon:"ð¡", desc:"Nmap Â· SSH config Â· STIG compliance Â· POAM" },
-  { id:"sprs",      label:"SPRS Calculator",     icon:"ð¯", desc:"NIST 800-171 Â· Live score Â· DoD SPRS submission" },
-  { id:"nessus",    label:"Nessus Importer",     icon:"ð¥", desc:"ACAS Â· .nessus XML Â· DoD CAT I/II/III Â· POAM export" },
+  { id:"multi",   label:"Multi-Framework",   icon:"Ã°ÂÂÂ", desc:"800-53 ÃÂ· CMMC ÃÂ· CSRMC ÃÂ· SPRS" },
+  { id:"assess",  label:"Self-Assessment",    icon:"Ã°ÂÂÂ", desc:"800-53 Rev 5 control assessment" },
+  { id:"ato",     label:"ATO Generator",      icon:"Ã°ÂÂÂ", desc:"eMASS ÃÂ· DIBCAC ÃÂ· SPRS ÃÂ· SAV" },
+  { id:"unified", label:"Security Dashboard", icon:"Ã°ÂÂÂ", desc:"All tool feeds in one screen" },
+  { id:"poam",    label:"POAM Tracker",       icon:"Ã°ÂÂÂ", desc:"POAM management + eMASS export" },
+  { id:"deploy",  label:"Deployment Guide",   icon:"Ã¢ÂÂ",  desc:"LM / F-35 deployment architecture" },
+  { id:"roadmap", label:"Product Roadmap",    icon:"Ã°ÂÂÂ", desc:"Cloud SaaS Ã¢ÂÂ Classified Ã¢ÂÂ SAP" },
+  { id:"templates", label:"Control Templates", icon:"Ã°ÂÂÂ", desc:"800-53 Rev 5 Ã¢ÂÂ all families + enhancements" },
+  { id:"evidence",   label:"Evidence Tracker",    icon:"Ã°ÂÂÂ", desc:"Chain of custody ÃÂ· ATO evidence library" },
+  { id:"scanner",   label:"Network Scanner",     icon:"Ã°ÂÂÂ¡", desc:"Nmap ÃÂ· SSH config ÃÂ· STIG compliance ÃÂ· POAM" },
+  { id:"sprs",      label:"SPRS Calculator",     icon:"Ã°ÂÂÂ¯", desc:"NIST 800-171 ÃÂ· Live score ÃÂ· DoD SPRS submission" },
+  { id:"nessus",    label:"Nessus Importer",     icon:"Ã°ÂÂÂ¥", desc:"ACAS ÃÂ· .nessus XML ÃÂ· DoD CAT I/II/III ÃÂ· POAM export" },
 ];
 
 function AppInner() {
@@ -88,14 +88,14 @@ function AppInner() {
                 {["dark","light"].map(m => (
                   <button key={m} onClick={() => setTheme(m)}
                     style={{ flex:1, background:theme===m?A.teal:"transparent", border:"none", borderRadius:16, padding:"5px 0", cursor:"pointer", ...mono, fontSize:11, fontWeight:700, color:theme===m?"#020A10":t.mute }}>
-                    {m === "dark" ? "ð DARK" : "â LIGHT"}
+                    {m === "dark" ? "Ã°ÂÂÂ DARK" : "Ã¢ÂÂ LIGHT"}
                   </button>
                 ))}
               </div>
             ) : (
               <button onClick={() => setTheme(theme==="dark"?"light":"dark")}
                 style={{ width:"100%", background:"transparent", border:`1px solid ${t.border}`, borderRadius:6, padding:"5px 0", cursor:"pointer", fontSize:14 }}>
-                {theme === "dark" ? "â" : "ð"}
+                {theme === "dark" ? "Ã¢ÂÂ" : "Ã°ÂÂÂ"}
               </button>
             )}
           </div>
@@ -126,7 +126,7 @@ function AppInner() {
               {SUPABASE_CONFIGURED ? (
                 user ? (
                   <div>
-                    <div style={{ ...mono, fontSize:9, color:A.green, marginBottom:4, fontWeight:700 }}>â CLOUD SYNC ACTIVE</div>
+                    <div style={{ ...mono, fontSize:9, color:A.green, marginBottom:4, fontWeight:700 }}>Ã¢ÂÂ CLOUD SYNC ACTIVE</div>
                     <div style={{ fontSize:10, color:t.textDim, marginBottom:8, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                       {user.user_metadata?.org_name || user.email}
                     </div>
@@ -138,7 +138,7 @@ function AppInner() {
                 ) : (
                   <button onClick={()=>setShowAuth(true)}
                     style={{ ...mono, fontSize:10, background:`${A.teal}14`, border:`1px solid ${A.teal}40`, color:A.teal, borderRadius:5, padding:"8px 0", cursor:"pointer", width:"100%", fontWeight:700 }}>
-                    ð SIGN IN TO SAVE DATA
+                    Ã°ÂÂÂ SIGN IN TO SAVE DATA
                   </button>
                 )
               ) : (
@@ -153,7 +153,7 @@ function AppInner() {
           {/* Collapse */}
           <div onClick={() => setSidebarOpen(!sidebarOpen)}
             style={{ padding:"11px 12px", borderTop:`1px solid ${t.border}`, cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
-            <span style={{ fontSize:13, color:t.mute }}>{sidebarOpen ? "â" : "â¶"}</span>
+            <span style={{ fontSize:13, color:t.mute }}>{sidebarOpen ? "Ã¢ÂÂ" : "Ã¢ÂÂ¶"}</span>
             {sidebarOpen && <span style={{ ...mono, fontSize:11, color:t.mute }}>COLLAPSE</span>}
           </div>
         </div>
@@ -175,10 +175,10 @@ function AppInner() {
             </div>
             <div style={{ display:"flex", gap:8, alignItems:"center" }}>
               <div style={{ ...mono, fontSize:10, color:t.mute, background:`${A.teal}0A`, border:`1px solid ${A.teal}20`, borderRadius:4, padding:"4px 10px" }}>
-                â DEMO MODE â GOVCLOUD BACKEND PENDING
+                Ã¢ÂÂ DEMO MODE Ã¢ÂÂ GOVCLOUD BACKEND PENDING
               </div>
               <div style={{ ...mono, fontSize:10, color:A.green, background:`${A.green}0A`, border:`1px solid ${A.green}20`, borderRadius:4, padding:"4px 10px" }}>
-                â ACME DEFENSE CORP
+                Ã¢ÂÂ ACME DEFENSE CORP
               </div>
             </div>
           </div>
