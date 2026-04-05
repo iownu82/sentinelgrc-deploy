@@ -162,7 +162,7 @@ function AppInner() {
       {showAuth && <AuthModal onClose={()=>setShowAuth(false)} />}
 
         {/* Main */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden", filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
 
           {/* Top bar */}
           <div style={{ background:t.headerBg, borderBottom:`1px solid ${t.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
