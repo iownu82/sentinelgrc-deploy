@@ -1,7 +1,6 @@
-import { useState, useMemo, useContext } from "react";
-import { ThemeContext, THEMES } from "../theme.js";
+import { useState, useMemo } from "react";
 
-const C_BASE = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
 // ─── 800-53 Rev 5 Control Families + Representative Controls ────────────────
@@ -169,32 +168,28 @@ const FamilyProgress = ({ family, assessments, isSelected, onClick }) => {
   });
   const hasPoam = controls.some(c => assessments[c.id]?.poam);
   const pct = Math.round((implemented.length / controls.length) * 100);
-  const color = pct >= 80 ? C_BASE.green : pct >= 50 ? C_BASE.teal : pct >= 30 ? C_BASE.orange : C_BASE.red;
+  const color = pct >= 80 ? C.green : pct >= 50 ? C.teal : pct >= 30 ? C.orange : C.red;
 
   return (
-    <div onClick={onClick} style={{ padding:"10px 14px", borderBottom:`1px solid #0A1828`, cursor:"pointer", background: isSelected?"rgba(26,90,140,0.2)":"transparent", borderLeft: isSelected?`3px solid ${C_BASE.teal}`:"3px solid transparent" }}>
+    <div onClick={onClick} style={{ padding:"10px 14px", borderBottom:`1px solid #0A1828`, cursor:"pointer", background: isSelected?"rgba(26,90,140,0.2)":"transparent", borderLeft: isSelected?`3px solid ${C.teal}`:"3px solid transparent" }}>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <span style={{ ...mono, fontWeight:700, fontSize:12, color:C_BASE.teal }}>{family.id}</span>
-          {hasPoam && <span style={{ ...mono, fontSize:11, color:C_BASE.red }}>◉ POAM</span>}
+          <span style={{ ...mono, fontWeight:700, fontSize:12, color:C.teal }}>{family.id}</span>
+          {hasPoam && <span style={{ ...mono, fontSize:11, color:C.red }}>◉ POAM</span>}
         </div>
         <span style={{ ...mono, fontSize:11, fontWeight:700, color }}>{pct}%</span>
       </div>
-      <div style={{ fontSize:10, color:C_BASE.textDim, marginBottom:6, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{family.name}</div>
+      <div style={{ fontSize:10, color:C.textDim, marginBottom:6, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{family.name}</div>
       <div style={{ height:4, background:"#0A1828", borderRadius:2, overflow:"hidden" }}>
         <div style={{ width:`${pct}%`, height:"100%", background:color, borderRadius:2, transition:"width 0.6s ease" }} />
       </div>
-      <div style={{ ...mono, fontSize:10, color:C_BASE.textMute, marginTop:4 }}>{assessed.length}/{controls.length} assessed · {implemented.length} compliant</div>
+      <div style={{ ...mono, fontSize:10, color:C.textMute, marginTop:4 }}>{assessed.length}/{controls.length} assessed · {implemented.length} compliant</div>
     </div>
   );
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function SelfAssessment() {
-  const theme = useContext(ThemeContext);
-  const C = { ...C_BASE, ...(THEMES[theme] || {}) };
-  const theme = useContext(ThemeContext);
-  const C = THEMES[theme] || C_STATIC;
   const [assessments, setAssessments] = useState(INITIAL_ASSESSMENTS);
   const [selectedFamily, setSelectedFamily] = useState("AC");
   const [selectedControl, setSelectedControl] = useState("AC-2");
