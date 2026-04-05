@@ -3,9 +3,7 @@ import { useColors } from "../theme.js";
 
 const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
-
 const mono = { fontFamily:"'Courier New',monospace" };
-
 // ── Tool definitions ───────────────────────────────────────────────────────────
 const TOOLS = {
   // LM-Managed (outside F-35 boundary)
@@ -20,7 +18,6 @@ const TOOLS = {
   cisco9300:    { label:"Cisco 9300 Switches",  icon:"🔄", zone:"f35",      method:"collector",   color:"#00CC88", controls:["CM-6","CM-7"],          detail:"SSH config collection or SNMP polling. Cisco IOS-XE STIG compliance check against baseline." },
   awssechub:    { label:"AWS Security Hub",     icon:"☁",  zone:"govcloud", method:"native",      color:"#FF9800", controls:["SC-7","SC-28","IA-2"],  detail:"Same AWS GovCloud region — native service integration. No credentials needed, IAM role-based." },
 };
-
 const METHODS = {
   cloud_api:    { label:"Cloud API",      color:"#00D4AA", icon:"⚡", desc:"Direct cloud-to-cloud. No agent. API key only." },
   collector:    { label:"Collector Agent",color:"#1A7AFF", icon:"📦", desc:"Lightweight agent inside boundary. Outbound-only HTTPS." },
@@ -28,7 +25,6 @@ const METHODS = {
   api_request:  { label:"API Request",   color:"#FF8C00", icon:"🔑", desc:"Requires LM to provide read-only API credentials." },
   native:       { label:"Native",        color:"#AA66FF", icon:"☁",  desc:"Same cloud — IAM role, no external call." },
 };
-
 // ── Connection line data ──────────────────────────────────────────────────────
 const STEPS = [
   {
@@ -84,15 +80,12 @@ const STEPS = [
     effort:"1 hour",
   },
 ];
-
 export default function DeploymentArch() {
   const C = useColors();
   const [activeStep, setActiveStep] = useState("s1");
   const [hoveredTool, setHoveredTool] = useState(null);
   const [activeTab, setActiveTab] = useState("diagram");
-
   const step = STEPS.find(s => s.id === activeStep);
-
   const Zone = ({ title, badge, color, children, width="30%", note }) => (
     <div style={{ width, background:`${color}07`, border:`1px solid ${color}25`, borderRadius:10, padding:16, display:"flex", flexDirection:"column", gap:10 }}>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
@@ -103,7 +96,6 @@ export default function DeploymentArch() {
       {children}
     </div>
   );
-
   const ToolBox = ({ tool }) => {
     const t = TOOLS[tool];
     const m = METHODS[t.method];
@@ -134,7 +126,6 @@ export default function DeploymentArch() {
       </div>
     );
   };
-
   const Arrow = ({ label, color, direction="right" }) => (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"0 6px" }}>
       <div style={{ ...mono, fontSize:9, color, marginBottom:3, whiteSpace:"nowrap" }}>{label}</div>
@@ -144,11 +135,9 @@ export default function DeploymentArch() {
       <div style={{ ...mono, fontSize:9, color:C.mute, marginTop:3 }}>HTTPS/443</div>
     </div>
   );
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column" }}>
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#03080F; } ::-webkit-scrollbar-thumb { background:#1A3A5C; }`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -165,15 +154,12 @@ export default function DeploymentArch() {
           ))}
         </div>
       </div>
-
       <div style={{ flex:1, overflowY:"auto", padding:20 }}>
-
         {/* DIAGRAM TAB */}
         {activeTab === "diagram" && (
           <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
             {/* Architecture diagram */}
             <div style={{ display:"flex", gap:12, alignItems:"stretch", minHeight:480 }}>
-
               {/* SentinelGRC GovCloud */}
               <Zone title="SENTINELGRC" badge="AWS GOVCLOUD IL4" color={C.teal} width="22%"
                 note="SaaS platform. ISSO accesses via browser + CAC auth. No on-site presence. All data encrypted at rest with org KMS key.">
@@ -193,14 +179,12 @@ export default function DeploymentArch() {
                   <ToolBox tool="awssechub" />
                 </div>
               </Zone>
-
               {/* Arrow 1 */}
               <div style={{ display:"flex", flexDirection:"column", justifyContent:"space-around", alignItems:"center", minWidth:60 }}>
                 <Arrow label="Cloud API" color={C.teal} />
                 <Arrow label="File Import" color={C.gold} />
                 <Arrow label="Collector Push" color={C.blue} />
               </div>
-
               {/* LM-Managed Zone */}
               <Zone title="LM MANAGED TOOLS" badge="OUTSIDE F-35 BOUNDARY" color="#E91E63" width="26%"
                 note="LM is the MSSP. ISSO submits service requests for API credentials or data exports. No direct admin access.">
@@ -210,17 +194,14 @@ export default function DeploymentArch() {
                   <div style={{ fontSize:11, color:C.dim, marginTop:3, lineHeight:1.5 }}>Submit LM service desk tickets requesting read-only API access to each tool. LM security team reviews and approves.</div>
                 </div>
               </Zone>
-
               {/* Arrow 2 */}
               <div style={{ display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", minWidth:60 }}>
                 <Arrow label="Collector" color={C.blue} />
                 <div style={{ ...mono, fontSize:10, color:C.mute, marginTop:8, textAlign:"center" }}>Outbound<br/>HTTPS only</div>
               </div>
-
               {/* F-35 Boundary */}
               <Zone title="F-35 PROGRAM BOUNDARY" badge="NIPR / IL4 BOUNDARY" color={C.blue} width="32%"
                 note="Systems inside the accredited boundary. Collector Agent deployed here by program admins via change request. Never requires on-site visit from ISSO.">
-
                 {/* Collector agent box */}
                 <div style={{ background:"rgba(26,122,255,0.08)", border:"2px solid rgba(26,122,255,0.4)", borderRadius:8, padding:12, marginBottom:4 }}>
                   <div style={{ ...mono, fontSize:11, fontWeight:700, color:C.blue, marginBottom:6 }}>📦 SENTINELGRC COLLECTOR AGENT</div>
@@ -234,9 +215,7 @@ export default function DeploymentArch() {
                     <div style={{ ...mono, fontSize:11, color:C.teal, paddingLeft:12 }}>sentinelgrc/collector</div>
                   </div>
                 </div>
-
                 {["ad","windows","juniper","cisco9300"].map(t => <ToolBox key={t} tool={t} />)}
-
                 {/* Firewall rule */}
                 <div style={{ background:"rgba(255,140,0,0.06)", border:"1px solid rgba(255,140,0,0.2)", borderRadius:6, padding:8 }}>
                   <div style={{ ...mono, fontSize:10, color:C.orange }}>🔥 FIREWALL CHANGE REQUIRED</div>
@@ -249,7 +228,6 @@ export default function DeploymentArch() {
                 </div>
               </Zone>
             </div>
-
             {/* Step selector */}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10 }}>
               {STEPS.map(s => (
@@ -270,7 +248,6 @@ export default function DeploymentArch() {
                 </div>
               ))}
             </div>
-
             {/* Active step detail */}
             {step && (
               <div style={{ background:C.panel, border:`1px solid ${step.color}30`, borderRadius:8, padding:18 }}>
@@ -293,19 +270,16 @@ export default function DeploymentArch() {
             )}
           </div>
         )}
-
         {/* STEPS TAB */}
         {activeTab === "steps" && (
           <div style={{ maxWidth:800 }}>
             <div style={{ ...mono, fontSize:11, color:C.mute, letterSpacing:1, marginBottom:16 }}>DEPLOYMENT SEQUENCE — LM / F-35 SCENARIO</div>
-            
             <div style={{ background:"rgba(0,212,170,0.06)", border:`1px solid rgba(0,212,170,0.2)`, borderRadius:8, padding:16, marginBottom:20 }}>
               <div style={{ fontSize:12, fontWeight:600, color:C.teal, marginBottom:8 }}>The Core Principle: SentinelGRC Is SaaS — You Never Go On-Site</div>
               <div style={{ fontSize:11, color:C.dim, lineHeight:1.8 }}>
                 SentinelGRC lives in AWS GovCloud. You access it from any browser with your CAC. The <strong style={{color:C.white}}>Collector Agent</strong> is the only software that touches the customer's network — and it's deployed by their own admins, not you. Your role as the ISSO is to configure the connectors and submit the right requests to the right teams.
               </div>
             </div>
-
             {[
               { week:"Week 1–2", title:"SentinelGRC SaaS Setup", color:C.teal, icon:"☁",
                 steps:["Sign into SentinelGRC (browser + CAC — done)","Create your organization profile (org name, CAGE code, contract numbers)","Create the system profile (F-35 system name, IL4, impact level, boundary description)","Add your team: ISSM, System Owner, AO (role-based access, EDIPI-linked)","Set up your 800-53 control baseline (Moderate or High based on categorization)"] },
@@ -336,7 +310,6 @@ export default function DeploymentArch() {
             ))}
           </div>
         )}
-
         {/* CHECKLIST TAB */}
         {activeTab === "checklist" && (
           <div style={{ maxWidth:700 }}>
