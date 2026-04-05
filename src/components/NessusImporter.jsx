@@ -278,6 +278,7 @@ const SAMPLE_NESSUS = `<?xml version="1.0" ?>
 // ── Sub-components ────────────────────────────────────────────────────────
 function CATBadge({ cat, C }) {
   if (!cat) return null;
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
   const colors = { I:C.red, II:C.orange, III:C.gold };
   const col = colors[cat] || C.textMute;
   return (
