@@ -278,7 +278,7 @@ export default function SelfAssessment() {
           {/* Score gauge */}
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <svg width="66" height="66" viewBox="0 0 66 66">
-              <circle cx="33" cy="33" r="30" fill="none" stroke=C.borderMd strokeWidth="6" />
+              <circle cx="33" cy="33" r="30" fill="none" stroke={C.borderMd} strokeWidth="6" />
               <circle cx="33" cy="33" r="30" fill="none" stroke={scoreColor} strokeWidth="6"
                 strokeDasharray={circ} strokeDashoffset={circ - (stats.score/100)*circ}
                 strokeLinecap="round" transform="rotate(-90 33 33)" />
