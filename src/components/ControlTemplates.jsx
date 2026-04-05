@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useColors } from "../theme.js";
 import { useColors, useTheme } from "../theme.js";
 import { ALL_FAMILIES, loadFamily, prefetchFamily, isFamilyLoaded } from "./templates/index.js";
 
