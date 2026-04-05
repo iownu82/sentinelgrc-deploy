@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useColors, useTheme } from "../theme.js";
 import { ALL_FAMILIES, loadFamily, prefetchFamily, isFamilyLoaded } from "./templates/index.js";
 
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+
 // ── Environment tools ─────────────────────────────────────────────────────────
 const ALL_TOOLS = [
   { id:"juniper",    label:"Juniper Routers",         cat:"Network",   default:true  },
@@ -33,7 +35,6 @@ const ALL_TOOLS = [
   { id:"aws",        label:"AWS GovCloud",            cat:"Cloud",     default:false },
   { id:"azure",      label:"Azure Government",        cat:"Cloud",     default:false },
 ];
-
 // ── Render template with active tools ─────────────────────────────────────────
 function renderTemplate(body, activeTools, orgFields) {
   let text = body;
@@ -54,13 +55,11 @@ function renderTemplate(body, activeTools, orgFields) {
   text = text.replace(/\s{2,}/g, ' ').replace(/,\s*\./g, '.').replace(/\(\s*\)/g, '');
   return text.trim();
 }
-
 // ── Main component ────────────────────────────────────────────────────────────
 export default function ControlTemplates() {
   const C = useColors();
   const theme = useTheme();
   const mono = { fontFamily:"'Courier New',monospace" };
-
   const [activeFamily, setActiveFamily]   = useState("AC");
   const [activeControl, setActiveControl] = useState("AC-2");
   const [familyTemplates, setFamilyTemplates] = useState({});
@@ -72,7 +71,6 @@ export default function ControlTemplates() {
   const [savedStatements, setSavedStatements] = useState({});
   const [showTools, setShowTools]         = useState(false);
   const [copied, setCopied]               = useState(false);
-
   // Load family on selection
   useEffect(() => {
     setLoading(true);
@@ -85,53 +83,42 @@ export default function ControlTemplates() {
       setLoading(false);
     });
   }, [activeFamily]);
-
   const family     = ALL_FAMILIES.find(f => f.id === activeFamily);
   const template   = familyTemplates[activeControl];
   const isSaved    = !!savedStatements[activeControl];
-
   const renderedText = template
     ? renderTemplate(template.body, activeTools, orgFields)
     : "";
-
   const displayText = editMode
     ? customText
     : (savedStatements[activeControl] || renderedText);
-
   const toggleTool = (id) => {
     setActiveTools(prev => { const n=new Set(prev); n.has(id)?n.delete(id):n.add(id); return n; });
   };
-
   const saveStatement = () => {
     setSavedStatements(prev => ({ ...prev, [activeControl]: customText || renderedText }));
     setEditMode(false);
   };
-
   const copyToClipboard = () => {
     navigator.clipboard?.writeText(displayText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
   const handleFamilyClick = (fid) => {
     setActiveFamily(fid);
     setEditMode(false);
   };
-
   const toolCategories = [...new Set(ALL_TOOLS.map(t => t.cat))];
   const familyControls = Object.keys(familyTemplates);
-
   // Count saved per family
   const savedCount = (fid) => {
     const fam = ALL_FAMILIES.find(f => f.id === fid);
     if (!fam) return 0;
     return Object.keys(savedStatements).filter(k => k.startsWith(fid + "-") || k.startsWith(fid)).length;
   };
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column", filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
       <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -151,7 +138,6 @@ export default function ControlTemplates() {
           </div>
         </div>
       </div>
-
       {/* Org field bar */}
       <div style={{ background:C.panel2||C.panel, borderBottom:`1px solid ${C.border}`, padding:"8px 20px", display:"flex", gap:12, alignItems:"center", flexWrap:"wrap" }}>
         <span style={{ ...mono, fontSize:11, color:C.textMute, whiteSpace:"nowrap" }}>YOUR ORG:</span>
@@ -163,7 +149,6 @@ export default function ControlTemplates() {
           </div>
         ))}
       </div>
-
       {/* Tool panel */}
       {showTools && (
         <div style={{ background:C.panel, borderBottom:`1px solid ${C.border}`, padding:"14px 20px" }}>
@@ -189,10 +174,8 @@ export default function ControlTemplates() {
           </div>
         </div>
       )}
-
       {/* 3-column layout */}
       <div style={{ flex:1, display:"grid", gridTemplateColumns:"160px 220px 1fr", overflow:"hidden", height:"calc(100vh - 120px)" }}>
-
         {/* Col 1: Families */}
         <div style={{ borderRight:`1px solid ${C.border}`, overflowY:"auto", background:C.panel }}>
           <div style={{ padding:"10px 12px", borderBottom:`1px solid ${C.border}` }}>
@@ -217,7 +200,6 @@ export default function ControlTemplates() {
             );
           })}
         </div>
-
         {/* Col 2: Controls */}
         <div style={{ borderRight:`1px solid ${C.border}`, overflowY:"auto", background:C.panel2||C.panel }}>
           <div style={{ padding:"10px 14px", borderBottom:`1px solid ${C.border}` }}>
@@ -245,7 +227,6 @@ export default function ControlTemplates() {
             })
           )}
         </div>
-
         {/* Col 3: Statement editor */}
         <div style={{ display:"flex", flexDirection:"column", overflow:"hidden" }}>
           {template ? (
@@ -290,7 +271,6 @@ export default function ControlTemplates() {
                   )}
                 </div>
               </div>
-
               {/* Statement */}
               <div style={{ flex:1, overflowY:"auto", padding:20 }}>
                 {editMode ? (
@@ -310,7 +290,6 @@ export default function ControlTemplates() {
                     <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, padding:20, marginBottom:14 }}>
                       <p style={{ fontSize:12, color:C.text, lineHeight:1.9, whiteSpace:"pre-wrap" }}>{displayText}</p>
                     </div>
-
                     {template.tools.length > 0 && (
                       <div style={{ background:C.panel2||C.panel, border:`1px solid ${C.border}`, borderRadius:8, padding:14 }}>
                         <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:10 }}>TOOL COVERAGE — CLICK TO TOGGLE</div>
