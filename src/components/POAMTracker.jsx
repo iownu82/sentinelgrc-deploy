@@ -1,5 +1,6 @@
 import { ThemeContext, useTheme, THEMES } from "../theme.js";
 import { useState, useMemo, createContext, useContext, useEffect, useCallback, useRef } from "react";
+import { useColors } from "../theme.js";
 import { loadPoamItems, savePoamItem, deletePoamItem } from "../supabase.js";
 import { useAuth } from "./Auth.jsx";
 
