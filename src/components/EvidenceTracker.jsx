@@ -1,6 +1,8 @@
 import { useState, useRef, useMemo } from "react";
 import { useColors, useTheme } from "../theme.js";
 
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+
 // ── Evidence types ─────────────────────────────────────────────────────────
 const EVIDENCE_TYPES = [
   { id:"scan",      label:"Vulnerability Scan",     icon:"🔍", color:"#1A7AFF", desc:"ACAS/Nessus scan results, Inspector findings" },
@@ -14,13 +16,11 @@ const EVIDENCE_TYPES = [
   { id:"cert",      label:"Certificate/Training",   icon:"🎓", color:"#AA66FF", desc:"Training completion, certifications, sign-offs" },
   { id:"other",     label:"Other",                  icon:"📄", color:"#7A9AB8", desc:"Miscellaneous supporting documentation" },
 ];
-
 // ── NIST control families for mapping ──────────────────────────────────────
 const CONTROL_FAMILIES = [
   "AC","AT","AU","CA","CM","CP","IA","IR","MA","MP",
   "PE","PL","PM","PS","PT","RA","SA","SC","SI","SR"
 ];
-
 // ── CUI markings ───────────────────────────────────────────────────────────
 const CUI_MARKINGS = [
   { id:"none",        label:"Not CUI",                color:"#7A9AB8" },
@@ -29,7 +29,6 @@ const CUI_MARKINGS = [
   { id:"cui_itar",    label:"CUI//ITAR",              color:"#FF8C00" },
   { id:"fouo",        label:"CUI//FOUO",              color:"#FF8C00" },
 ];
-
 // ── Expiration logic ───────────────────────────────────────────────────────
 const EXPIRY_RULES = {
   scan:       { days:90,  label:"90 days",  reason:"Vulnerability scans expire after 90 days per DoD continuous monitoring policy" },
@@ -43,7 +42,6 @@ const EXPIRY_RULES = {
   cert:       { days:365, label:"1 year",   reason:"Certifications should be re-confirmed annually" },
   other:      { days:365, label:"1 year",   reason:"Review annually" },
 };
-
 function getExpiryStatus(uploadDate, type) {
   const rule = EXPIRY_RULES[type] || EXPIRY_RULES.other;
   const uploaded = new Date(uploadDate);
@@ -51,12 +49,10 @@ function getExpiryStatus(uploadDate, type) {
   expiry.setDate(expiry.getDate() + rule.days);
   const now = new Date();
   const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
-
   if (daysLeft < 0)   return { status:"Expired",       color:"#E84444", days:Math.abs(daysLeft), expiry };
   if (daysLeft < 30)  return { status:"Expiring Soon",  color:"#F07820", days:daysLeft, expiry };
   return              { status:"Current",              color:"#00B87A", days:daysLeft, expiry };
 }
-
 // ── Mock evidence ──────────────────────────────────────────────────────────
 const MOCK_EVIDENCE = [
   { id:"E001", name:"ACAS_Scan_2025-03-15.nessus", type:"scan", controls:["RA-5","SI-2","CM-6"], uploadedBy:"SA", uploadDate:"2025-03-15", size:"4.2 MB", cui:"none", notes:"Weekly authenticated scan — 23 hosts. 0 CAT I, 3 CAT II, 12 CAT III. See POAM-002 and POAM-008 for open items.", hash:"sha256:a4f8e2c1b9d3..." },
@@ -70,9 +66,7 @@ const MOCK_EVIDENCE = [
   { id:"E009", name:"Security_Awareness_Training_Completion_Q1.xlsx", type:"cert", controls:["AT-2","AT-4"], uploadedBy:"ISSO", uploadDate:"2025-03-31", size:"0.1 MB", cui:"none", notes:"Q1 2025 training completion report. 98% completion rate. 3 accounts suspended pending completion.", hash:"sha256:c7f2d8b4a1e9..." },
   { id:"E010", name:"Splunk_AuditLog_Review_March2025.pdf", type:"log", controls:["AU-6","AU-6(1)","SI-4"], uploadedBy:"ISSO", uploadDate:"2025-03-31", size:"3.1 MB", cui:"none", notes:"Monthly audit log review documentation. No anomalies detected. Weekly review sign-offs included.", hash:"sha256:d3a9e1c8f4b7..." },
 ];
-
 const ROLES = ["ISSO","SA","NA","ISSM","SCA","PM"];
-
 // ── Sub-components ─────────────────────────────────────────────────────────
 function StatusBadge({ status, color }) {
   return (
@@ -81,7 +75,6 @@ function StatusBadge({ status, color }) {
     </span>
   );
 }
-
 function TypeBadge({ type }) {
   const t = EVIDENCE_TYPES.find(e => e.id === type) || EVIDENCE_TYPES[EVIDENCE_TYPES.length-1];
   return (
@@ -90,7 +83,6 @@ function TypeBadge({ type }) {
     </span>
   );
 }
-
 // ── Drop zone ──────────────────────────────────────────────────────────────
 function DropZone({ onFileAdded, C }) {
   const [dragging, setDragging] = useState(false);
@@ -99,7 +91,6 @@ function DropZone({ onFileAdded, C }) {
     name:"", type:"scan", controls:[], uploadedBy:"ISSO", cui:"none", notes:""
   });
   const fileRef = useRef(null);
-
   const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
@@ -109,7 +100,6 @@ function DropZone({ onFileAdded, C }) {
       setShowForm(true);
     }
   };
-
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -117,7 +107,6 @@ function DropZone({ onFileAdded, C }) {
       setShowForm(true);
     }
   };
-
   const toggleControl = (ctrl) => {
     setNewEvidence(p => ({
       ...p,
@@ -126,7 +115,6 @@ function DropZone({ onFileAdded, C }) {
         : [...p.controls, ctrl]
     }));
   };
-
   const submit = () => {
     if (!newEvidence.name || newEvidence.controls.length === 0) return;
     onFileAdded({
@@ -139,12 +127,9 @@ function DropZone({ onFileAdded, C }) {
     setNewEvidence({ name:"", type:"scan", controls:[], uploadedBy:"ISSO", cui:"none", notes:"" });
     setShowForm(false);
   };
-
   if (showForm) return (
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
     <div style={{ background:C.panel, border:`2px solid ${C.teal}`, borderRadius:10, padding:20, marginBottom:16 }}>
       <div style={{ fontFamily:"monospace", fontSize:11, color:C.teal, letterSpacing:1, marginBottom:14 }}>NEW EVIDENCE — CHAIN OF CUSTODY REGISTRATION</div>
-
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
         <div>
           <div style={{ fontFamily:"monospace", fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:5 }}>FILE NAME</div>
@@ -159,7 +144,6 @@ const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C",
           </select>
         </div>
       </div>
-
       {/* Evidence type */}
       <div style={{ marginBottom:12 }}>
         <div style={{ fontFamily:"monospace", fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:8 }}>EVIDENCE TYPE</div>
@@ -178,7 +162,6 @@ const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C",
           </div>
         )}
       </div>
-
       {/* Controls */}
       <div style={{ marginBottom:12 }}>
         <div style={{ fontFamily:"monospace", fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:8 }}>
@@ -209,7 +192,6 @@ const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C",
             style={{ background:C.input, border:`1px solid ${C.inputBorder}`, borderRadius:4, color:C.text, padding:"3px 8px", fontSize:10, fontFamily:"monospace", outline:"none", width:100 }} />
         </div>
       </div>
-
       {/* CUI and Notes */}
       <div style={{ display:"grid", gridTemplateColumns:"200px 1fr", gap:12, marginBottom:14 }}>
         <div>
@@ -226,7 +208,6 @@ const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C",
             style={{ width:"100%", background:C.input, border:`1px solid ${C.inputBorder}`, borderRadius:5, color:C.text, padding:"6px 10px", fontSize:11, fontFamily:"inherit", outline:"none", resize:"none", lineHeight:1.6 }} />
         </div>
       </div>
-
       <div style={{ display:"flex", gap:10 }}>
         <button onClick={submit}
           style={{ fontFamily:"monospace", background:C.teal, border:"none", color:C.bg, borderRadius:5, padding:"8px 20px", cursor:"pointer", fontSize:11, fontWeight:700 }}>
@@ -239,7 +220,6 @@ const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C",
       </div>
     </div>
   );
-
   return (
     <div onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={handleDrop}
       onClick={()=>fileRef.current?.click()}
@@ -255,14 +235,12 @@ const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C",
     </div>
   );
 }
-
 // ── Evidence detail panel ──────────────────────────────────────────────────
 function EvidenceDetail({ ev, onClose, C }) {
   const expiry = getExpiryStatus(ev.uploadDate, ev.type);
   const evType = EVIDENCE_TYPES.find(t => t.id === ev.type) || EVIDENCE_TYPES[EVIDENCE_TYPES.length-1];
   const cuiMark = CUI_MARKINGS.find(m => m.id === ev.cui) || CUI_MARKINGS[0];
   const rule = EXPIRY_RULES[ev.type] || EXPIRY_RULES.other;
-
   return (
     <div style={{ background:C.panel, border:`1px solid ${C.borderMd||C.border}`, borderRadius:10, overflow:"hidden", height:"100%", display:"flex", flexDirection:"column" }}>
       {/* Header */}
@@ -282,7 +260,6 @@ function EvidenceDetail({ ev, onClose, C }) {
           <button onClick={onClose} style={{ background:"transparent", border:`1px solid ${C.border}`, color:C.textMute, borderRadius:4, padding:"3px 9px", cursor:"pointer", fontSize:11, marginLeft:10 }}>✕</button>
         </div>
       </div>
-
       <div style={{ flex:1, overflowY:"auto", padding:16 }}>
         {/* Expiry status */}
         <div style={{ background:`${expiry.color}0A`, border:`1px solid ${expiry.color}30`, borderRadius:8, padding:14, marginBottom:14 }}>
@@ -307,7 +284,6 @@ function EvidenceDetail({ ev, onClose, C }) {
           </div>
           <div style={{ fontFamily:"monospace", fontSize:11, color:C.textMute, marginTop:8 }}>{rule.reason}</div>
         </div>
-
         {/* Controls supported */}
         <div style={{ marginBottom:14 }}>
           <div style={{ fontFamily:"monospace", fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:8 }}>NIST CONTROLS SUPPORTED</div>
@@ -319,7 +295,6 @@ function EvidenceDetail({ ev, onClose, C }) {
             ))}
           </div>
         </div>
-
         {/* Chain of custody */}
         <div style={{ marginBottom:14 }}>
           <div style={{ fontFamily:"monospace", fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:8 }}>CHAIN OF CUSTODY</div>
@@ -339,7 +314,6 @@ function EvidenceDetail({ ev, onClose, C }) {
             ))}
           </div>
         </div>
-
         {/* Integrity hash */}
         <div style={{ marginBottom:14 }}>
           <div style={{ fontFamily:"monospace", fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:5 }}>INTEGRITY HASH (SHA-256)</div>
@@ -347,7 +321,6 @@ function EvidenceDetail({ ev, onClose, C }) {
             {ev.hash}
           </div>
         </div>
-
         {/* Notes */}
         {ev.notes && (
           <div style={{ marginBottom:14 }}>
@@ -357,7 +330,6 @@ function EvidenceDetail({ ev, onClose, C }) {
             </div>
           </div>
         )}
-
         {/* Actions */}
         <div style={{ display:"flex", gap:8 }}>
           <button style={{ fontFamily:"monospace", background:`${C.blue}0F`, border:`1px solid ${C.blue}30`, color:C.blue, borderRadius:5, padding:"7px 14px", cursor:"pointer", fontSize:10 }}>⬇ DOWNLOAD</button>
@@ -370,13 +342,11 @@ function EvidenceDetail({ ev, onClose, C }) {
     </div>
   );
 }
-
 // ── Main component ─────────────────────────────────────────────────────────
 export default function EvidenceTracker() {
   const C = useColors();
   const theme = useTheme();
   const mono = { fontFamily:"'Courier New',monospace" };
-
   const [evidence, setEvidence] = useState(MOCK_EVIDENCE);
   const [selected, setSelected] = useState(null);
   const [filterType, setFilterType] = useState("ALL");
@@ -384,12 +354,10 @@ export default function EvidenceTracker() {
   const [filterRole, setFilterRole] = useState("ALL");
   const [search, setSearch] = useState("");
   const [view, setView] = useState("grid"); // grid | table | expiry
-
   const addEvidence = (newEv) => {
     setEvidence(prev => [newEv, ...prev]);
     setSelected(newEv);
   };
-
   const visible = useMemo(() => evidence
     .filter(e => filterType === "ALL" || e.type === filterType)
     .filter(e => {
@@ -402,7 +370,6 @@ export default function EvidenceTracker() {
       e.controls.some(c => c.toLowerCase().includes(search.toLowerCase())) ||
       e.notes.toLowerCase().includes(search.toLowerCase()))
   , [evidence, filterType, filterStatus, filterRole, search]);
-
   // KPIs
   const kpis = useMemo(() => {
     const statuses = evidence.map(e => getExpiryStatus(e.uploadDate, e.type).status);
@@ -414,19 +381,16 @@ export default function EvidenceTracker() {
       controlsCovered: new Set(evidence.flatMap(e => e.controls)).size,
     };
   }, [evidence]);
-
   // Expiry timeline view
   const expiryData = useMemo(() =>
     [...evidence]
       .map(e => ({ ...e, expiry: getExpiryStatus(e.uploadDate, e.type) }))
       .sort((a, b) => a.expiry.days - b.expiry.days)
   , [evidence]);
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column",
       filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
       <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -452,7 +416,6 @@ export default function EvidenceTracker() {
           </div>
         </div>
       </div>
-
       {/* KPIs */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:10, padding:"12px 20px", borderBottom:`1px solid ${C.border}`, background:C.panel2||C.panel }}>
         {[
@@ -468,13 +431,10 @@ export default function EvidenceTracker() {
           </div>
         ))}
       </div>
-
       {/* Main */}
       <div style={{ flex:1, display:"flex", overflow:"hidden", height:"calc(100vh - 158px)" }}>
-
         {/* Left panel */}
         <div style={{ flex:selected?0.55:1, display:"flex", flexDirection:"column", overflow:"hidden", borderRight:selected?`1px solid ${C.border}`:"none" }}>
-
           {/* Filters */}
           <div style={{ padding:"10px 16px", borderBottom:`1px solid ${C.border}`, background:C.panel2||C.panel, display:"flex", gap:8, flexWrap:"wrap" }}>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search files, controls, notes..."
@@ -498,11 +458,9 @@ export default function EvidenceTracker() {
             </select>
             <span style={{ ...mono, fontSize:11, color:C.textMute, alignSelf:"center" }}>{visible.length} files</span>
           </div>
-
           <div style={{ flex:1, overflowY:"auto", padding:16 }}>
             {/* Drop zone */}
             <DropZone onFileAdded={addEvidence} C={C} />
-
             {/* Grid view */}
             {view === "grid" && (
               <div style={{ display:"grid", gridTemplateColumns:`repeat(${selected?2:3},1fr)`, gap:10 }}>
@@ -530,7 +488,6 @@ export default function EvidenceTracker() {
                 })}
               </div>
             )}
-
             {/* Table view */}
             {view === "table" && (
               <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, overflow:"hidden" }}>
@@ -556,7 +513,6 @@ export default function EvidenceTracker() {
                 })}
               </div>
             )}
-
             {/* Expiry timeline view */}
             {view === "expiry" && (
               <div>
@@ -595,7 +551,6 @@ export default function EvidenceTracker() {
             )}
           </div>
         </div>
-
         {/* Detail panel */}
         {selected && (
           <div style={{ flex:0.45, overflow:"hidden", padding:12 }}>
