@@ -418,7 +418,7 @@ export default function NessusImporter() {
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column",
       filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
-      <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||"#1A3A5C"};border-radius:2px}`}</style>
+      <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
 
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
@@ -625,7 +625,7 @@ export default function NessusImporter() {
                     {selected.pluginOutput && (
                       <div style={{ marginBottom:13 }}>
                         <div style={{ ...mono, fontSize:10, color:C.textMute, fontWeight:600, marginBottom:5 }}>PLUGIN OUTPUT (EVIDENCE)</div>
-                        <div style={{ background:"#010810", border:`1px solid #0D2030`, borderRadius:6, padding:"10px 12px", ...mono, fontSize:11, color:"#7AB8D8", lineHeight:1.7, whiteSpace:"pre-wrap", wordBreak:"break-word" }}>
+                        <div style={{ background:C.bg, border:`1px solid #0D2030`, borderRadius:6, padding:"10px 12px", ...mono, fontSize:11, color:"#7AB8D8", lineHeight:1.7, whiteSpace:"pre-wrap", wordBreak:"break-word" }}>
                           {selected.pluginOutput}
                         </div>
                       </div>
