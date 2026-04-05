@@ -141,6 +141,7 @@ function DropZone({ onFileAdded, C }) {
   };
 
   if (showForm) return (
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
     <div style={{ background:C.panel, border:`2px solid ${C.teal}`, borderRadius:10, padding:20, marginBottom:16 }}>
       <div style={{ fontFamily:"monospace", fontSize:11, color:C.teal, letterSpacing:1, marginBottom:14 }}>NEW EVIDENCE — CHAIN OF CUSTODY REGISTRATION</div>
 
