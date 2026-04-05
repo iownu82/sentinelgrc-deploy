@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useColors } from "../theme.js";
 
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:C.bg, panel:C.panel, panelAlt:C.panelAlt, panel2:C.panelAlt, border:C.border, borderMd:C.borderMd, text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:C.input, inputBorder:C.inputBorder, rowA:C.rowA, rowB:C.rowB, scroll:C.inputBorder, headerBg:C.headerBg, teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
 const mono = { fontFamily:"'Courier New',monospace" };
@@ -127,7 +127,7 @@ export default function DeploymentArch() {
           ))}
         </div>
         {isHovered && (
-          <div style={{ position:"absolute", left:0, right:0, bottom:"calc(100% + 6px)", background:"#0A1828", border:`1px solid ${t.color}`, borderRadius:6, padding:10, zIndex:50, boxShadow:`0 4px 20px rgba(0,0,0,0.5)` }}>
+          <div style={{ position:"absolute", left:0, right:0, bottom:"calc(100% + 6px)", background:C.input, border:`1px solid ${t.color}`, borderRadius:6, padding:10, zIndex:50, boxShadow:`0 4px 20px rgba(0,0,0,0.5)` }}>
             <div style={{ fontSize:10, color:C.text, lineHeight:1.6 }}>{t.detail}</div>
           </div>
         )}
@@ -150,9 +150,9 @@ export default function DeploymentArch() {
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#03080F; } ::-webkit-scrollbar-thumb { background:#1A3A5C; }`}</style>
 
       {/* Header */}
-      <div style={{ background:"#02060E", borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+      <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:30, height:30, background:`linear-gradient(135deg,${C.teal},${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>S</div>
+          <div style={{ width:30, height:30, background:`linear-gradient(135deg,${C.teal},${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Deployment Architecture</div>
             <div style={{ ...mono, fontSize:10, color:C.mute, letterSpacing:0.8 }}>LM / F-35 JSF PROGRAM · UNCLASSIFIED CUI ENVIRONMENT</div>
@@ -227,7 +227,7 @@ export default function DeploymentArch() {
                   <div style={{ fontSize:10, color:C.dim, lineHeight:1.6, marginBottom:8 }}>
                     Docker container or Windows Service. Deployed by program admin on any VM inside boundary. Outbound HTTPS only — no inbound ports opened.
                   </div>
-                  <div style={{ background:"#040C14", borderRadius:5, padding:8 }}>
+                  <div style={{ background:C.rowA, borderRadius:5, padding:8 }}>
                     <div style={{ ...mono, fontSize:11, color:C.teal }}>docker run -d \</div>
                     <div style={{ ...mono, fontSize:11, color:C.teal, paddingLeft:12 }}>-e TOKEN=&lt;your-token&gt; \</div>
                     <div style={{ ...mono, fontSize:11, color:C.teal, paddingLeft:12 }}>-e ORG=&lt;org-id&gt; \</div>
