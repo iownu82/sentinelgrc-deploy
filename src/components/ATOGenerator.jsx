@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useColors } from "../theme.js";
 
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:C.bg, panel:C.panel, panelAlt:C.panelAlt, panel2:C.panelAlt, border:C.border, borderMd:C.borderMd, text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:C.input, inputBorder:C.inputBorder, rowA:C.rowA, rowB:C.rowB, scroll:C.inputBorder, headerBg:C.headerBg, teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
 // ─── Package Definitions ──────────────────────────────────────────────────────
@@ -135,7 +135,7 @@ const StatusBar = ({ label, score, color }) => (
       <span style={{ ...mono, fontSize:11, color:"#3A5570" }}>{label}</span>
       <span style={{ ...mono, fontSize:11, fontWeight:700, color }}>{score}%</span>
     </div>
-    <div style={{ height:4, background:"#0A1828", borderRadius:2, overflow:"hidden" }}>
+    <div style={{ height:4, background:C.input, borderRadius:2, overflow:"hidden" }}>
       <div style={{ width:`${score}%`, height:"100%", background:color, borderRadius:2, transition:"width 0.8s ease" }} />
     </div>
   </div>
@@ -143,7 +143,7 @@ const StatusBar = ({ label, score, color }) => (
 
 // ─── Package Selector Card ────────────────────────────────────────────────────
 const PackageCard = ({ pkg, selected, onToggle }) => (
-  <div onClick={onToggle} style={{ background:selected?`${pkg.color}0A`:"#060D16", border:`2px solid ${selected?pkg.color:"#0D1E2E"}`, borderRadius:10, padding:18, cursor:"pointer", transition:"all 0.2s", position:"relative" }}>
+  <div onClick={onToggle} style={{ background:selected?`${pkg.color}0A`:C.panel, border:`2px solid ${selected?pkg.color:C.border}`, borderRadius:10, padding:18, cursor:"pointer", transition:"all 0.2s", position:"relative" }}>
     {selected && <div style={{ position:"absolute", top:10, right:12, ...mono, fontSize:10, color:pkg.color, fontWeight:700 }}>✓ SELECTED</div>}
     <div style={{ display:"flex", gap:12, alignItems:"flex-start", marginBottom:12 }}>
       <div style={{ fontSize:28 }}>{pkg.icon}</div>
@@ -165,7 +165,7 @@ const PackageCard = ({ pkg, selected, onToggle }) => (
 // ─── Deliverable Preview ──────────────────────────────────────────────────────
 const DeliverableRow = ({ d, pkgColor, included }) => (
   <div style={{ display:"flex", gap:10, padding:"10px 0", borderBottom:`1px solid #0A1828`, alignItems:"flex-start", opacity:included?1:0.4 }}>
-    <div style={{ width:24, height:24, borderRadius:"50%", background:included?`${pkgColor}14`:"#1A2A3A", border:`1px solid ${included?pkgColor:"#0D1E2E"}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, minWidth:24 }}>
+    <div style={{ width:24, height:24, borderRadius:"50%", background:included?`${pkgColor}14`:"#1A2A3A", border:`1px solid ${included?pkgColor:C.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, minWidth:24 }}>
       {included ? "✓" : "—"}
     </div>
     <div style={{ flex:1 }}>
@@ -261,9 +261,9 @@ export default function ATOGenerator() {
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#050D15; } ::-webkit-scrollbar-thumb { background:#1A3A5C; } @keyframes spin { to { transform:rotate(360deg); } } .spin { animation:spin 1s linear infinite; display:inline-block; } .btn-h:hover { opacity:0.85; }`}</style>
 
       {/* Header */}
-      <div style={{ background:"#020810", borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
+      <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>S</div>
+          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — ATO Package Generator</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>EMASS · DIBCAC · SPRS · SAV · F-35 JSF PROGRAM</div>
@@ -347,7 +347,7 @@ export default function ATOGenerator() {
                 </div>
               </div>
               <button className="btn-h" disabled={selected.size === 0} onClick={() => setStep("review")}
-                style={{ background:selected.size>0?C.teal:"#1A2A3A", border:"none", color:selected.size>0?"#020A10":C.textMute, borderRadius:6, padding:"11px 0", cursor:selected.size>0?"pointer":"not-allowed", ...mono, fontSize:12, fontWeight:700, transition:"all 0.2s" }}>
+                style={{ background:selected.size>0?C.teal:"#1A2A3A", border:"none", color:selected.size>0?C.headerBg:C.textMute, borderRadius:6, padding:"11px 0", cursor:selected.size>0?"pointer":"not-allowed", ...mono, fontSize:12, fontWeight:700, transition:"all 0.2s" }}>
                 {selected.size > 0 ? `REVIEW ${totalDeliverables} DELIVERABLES →` : "SELECT AT LEAST ONE PACKAGE"}
               </button>
             </div>
@@ -423,7 +423,7 @@ export default function ATOGenerator() {
               ← Back
             </button>
             <button className="btn-h" onClick={startGeneration}
-              style={{ background:`linear-gradient(90deg, ${C.teal}, ${C.blue})`, border:"none", color:"#020A10", borderRadius:5, padding:"9px 24px", cursor:"pointer", ...mono, fontSize:12, fontWeight:700 }}>
+              style={{ background:`linear-gradient(90deg, ${C.teal}, ${C.blue})`, border:"none", color:C.headerBg, borderRadius:5, padding:"9px 24px", cursor:"pointer", ...mono, fontSize:12, fontWeight:700 }}>
               ⚡ GENERATE {totalDeliverables} DELIVERABLES →
             </button>
           </div>
