@@ -14,7 +14,8 @@ export function IS3Mark({ size = 36 }) {
     <svg viewBox="0 0 48 48" fill="none" width={size} height={size} style={{ flexShrink: 0, overflow: 'visible' }}>
       {[0, 1].map(i => (
         <circle key={i} cx="24" cy="24" r="22" stroke="#cc1a2e" strokeWidth="1.5" fill="none"
-          style={{ transformBox: 'fill-box', transformOrigin: 'center', animation: `rr-radar-expand 2.8s ease-out infinite ${i * 1.4}s` }} />
+          style={{ transformBox: 'fill-box', transformOrigin: 'center',
+                   animation: `rr-radar-expand 2.8s ease-out infinite ${i * 1.4}s` }} />
       ))}
       <circle cx="24" cy="24" r="22" stroke="#cc1a2e" strokeWidth="3" fill="none" />
       {ARCS.map((d, i) => (
@@ -31,9 +32,7 @@ function useIsLight() {
       const sidebar = document.querySelector('[style*="220px"]');
       if (!sidebar) return;
       const bg = window.getComputedStyle(sidebar).backgroundColor;
-      const light = bg === 'rgb(255, 255, 255)' || bg.startsWith('rgb(24') || bg.startsWith('rgb(23') || bg.startsWith('rgb(22');
-      setIsLight(light);
-      document.body.classList.toggle('rr-light', light);
+      setIsLight(bg === 'rgb(255, 255, 255)' || bg.startsWith('rgb(24') || bg.startsWith('rgb(23'));
     };
     detect();
     const obs = new MutationObserver(detect);
@@ -49,11 +48,14 @@ export function SidebarLogo() {
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
       <IS3Mark size={36} />
       <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-        <span style={{ fontFamily: "'Courier New', monospace", fontSize: '20px', fontWeight: 900, letterSpacing: '2px', lineHeight: 1, whiteSpace: 'nowrap' }}>
+        <span style={{ fontFamily: "'Courier New', monospace", fontSize: '20px',
+                       fontWeight: 900, letterSpacing: '2px', lineHeight: 1, whiteSpace: 'nowrap' }}>
           <span style={{ color: '#cc1a2e' }}>RISK</span>
           <span style={{ color: isLight ? '#060E1A' : '#f0f8ff' }}>RADAR</span>
         </span>
-        <span style={{ fontSize: '9px', letterSpacing: '2px', fontWeight: 600, color: isLight ? '#3A5878' : '#4a7a99', marginTop: '3px', textTransform: 'uppercase', fontFamily: "'Courier New', monospace" }}>
+        <span style={{ fontSize: '9px', letterSpacing: '2px', fontWeight: 600,
+                       color: isLight ? '#3A5878' : '#4a7a99', marginTop: '3px',
+                       textTransform: 'uppercase', fontFamily: "'Courier New', monospace" }}>
           by Ballard IS3
         </span>
       </div>
@@ -65,9 +67,12 @@ export function LayerBadge({ layer, label }) {
   const isLight = useIsLight();
   return (
     <div style={{ padding: '10px 12px 3px', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-      <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#cc1a2e', letterSpacing: '2px', fontWeight: 700 }}>{layer}</span>
+      <span style={{ fontFamily: 'monospace', fontSize: '9px', color: '#cc1a2e',
+                     letterSpacing: '2px', fontWeight: 700 }}>{layer}</span>
       <div style={{ flex: 1, height: '1px', background: isLight ? '#C0D0E0' : '#1a2f42' }} />
-      <span style={{ fontFamily: 'monospace', fontSize: '9px', color: isLight ? '#3A5878' : '#4a7a99', letterSpacing: '1px', textTransform: 'uppercase' }}>{label}</span>
+      <span style={{ fontFamily: 'monospace', fontSize: '9px',
+                     color: isLight ? '#3A5878' : '#4a7a99',
+                     letterSpacing: '1px', textTransform: 'uppercase' }}>{label}</span>
     </div>
   );
 }
