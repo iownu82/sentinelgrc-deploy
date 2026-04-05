@@ -4,7 +4,6 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer, RadarC
 
 const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
-
 // ─── Mock Data representing normalized findings from all sources ───────────────
 const SOURCES = {
   TENABLE_ACAS:   { label: "Tenable / ACAS",       icon: "🔍", color: "#00BCD4", controls: ["RA-5","SI-2","CM-6","CM-7","CA-7"],       status: "connected", last_sync: "4 min ago",   findings: 47, critical: 3  },
@@ -16,7 +15,6 @@ const SOURCES = {
   SPLUNK_SIEM:    { label: "Splunk SIEM",            icon: "📊", color: "#FF5722", controls: ["AU-2","AU-3","AU-6","AU-9","IR-6"],       status: "warning",  last_sync: "3 hrs ago",   findings: 6,  critical: 0  },
   NETWORK_SCAN:   { label: "Network Scanner",        icon: "🌐", color: "#607D8B", controls: ["SC-7","CM-6","CM-7","AC-17"],             status: "pending",  last_sync: "Not run",      findings: 0,  critical: 0  },
 };
-
 const ALL_FINDINGS = [
   { id:"F-001", source:"TENABLE_ACAS",    control:"RA-5",    sev:"CRITICAL", title:"CVE-2024-21413 - Microsoft Outlook RCE",            asset:"WIN-DC01.acme.mil",       cve:"CVE-2024-21413", time:"2h ago"  },
   { id:"F-002", source:"STIG_SCAP",       control:"CM-6",    sev:"CRITICAL", title:"V-253263: Windows Defender Credential Guard off",    asset:"WIN-WS001.acme.mil",      cve:"",               time:"1h ago"  },
@@ -37,7 +35,6 @@ const ALL_FINDINGS = [
   { id:"F-017", source:"TENABLE_ACAS",    control:"RA-5",    sev:"MEDIUM",   title:"CVE-2024-20399 - Cisco IOS XE auth bypass",         asset:"RTR-CORE-01.acme.mil",    cve:"CVE-2024-20399", time:"4h ago"  },
   { id:"F-018", source:"STIG_SCAP",       control:"IA-5",    sev:"MEDIUM",   title:"V-220709: Windows password complexity not enforced",  asset:"WIN-WS004.acme.mil",      cve:"",               time:"1h ago"  },
 ];
-
 // ─── NIST control families and which source covers them ───────────────────────
 const CONTROL_COVERAGE = [
   { family:"AC",  name:"Access Control",        covered: ["STIG_SCAP","AWS_SECURITYHUB","TRELLIX_HBSS"],                   score: 72 },
@@ -50,51 +47,41 @@ const CONTROL_COVERAGE = [
   { family:"SC",  name:"System & Comms Prot",   covered: ["AWS_SECURITYHUB","STIG_SCAP","TENABLE_ACAS","TRELLIX_HBSS"],    score: 71 },
   { family:"SI",  name:"System & Info Integrity",covered: ["CROWDSTRIKE","DEFENDER_MDE","TRELLIX_HBSS","TENABLE_ACAS"],    score: 80 },
 ];
-
 // ─── Colors ───────────────────────────────────────────────────────────────────
 const SEV = { CRITICAL:{fg:"#FF4444",bg:"rgba(255,68,68,0.12)"}, HIGH:{fg:"#FF8C00",bg:"rgba(255,140,0,0.12)"}, MEDIUM:{fg:"#FFD700",bg:"rgba(255,215,0,0.10)"}, LOW:{fg:"#00CC88",bg:"rgba(0,204,136,0.10)"} };
 const mono = { fontFamily:"'Courier New', monospace" };
-
 const Badge = ({ label, color, bg }) => (
   <span style={{ ...mono, background:bg||`${color}14`, color, border:`1px solid ${color}40`, borderRadius:3, padding:"2px 7px", fontSize:10, fontWeight:700, letterSpacing:0.5, whiteSpace:"nowrap" }}>{label}</span>
 );
-
 const StatusDot = ({ status }) => {
   const c = status==="connected"?"#00CC88":status==="warning"?"#FFD700":"#556677";
   return <div style={{ width:7, height:7, borderRadius:"50%", background:c, boxShadow:`0 0 6px ${c}` }} />;
 };
-
 export default function UnifiedDashboard() {
   const C = useColors();
   const [activeTab, setActiveTab] = useState("overview");
   const [filterSource, setFilterSource] = useState("ALL");
   const [filterSev, setFilterSev] = useState("ALL");
   const [selectedFinding, setSelectedFinding] = useState(null);
-
   const totalFindings = Object.values(SOURCES).reduce((s, src) => s + src.findings, 0);
   const totalCritical = Object.values(SOURCES).reduce((s, src) => s + src.critical, 0);
   const connectedSources = Object.values(SOURCES).filter(s => s.status === "connected").length;
-
   const visibleFindings = useMemo(() => ALL_FINDINGS
     .filter(f => filterSource === "ALL" || f.source === filterSource)
     .filter(f => filterSev === "ALL" || f.severity === filterSev)
   , [filterSource, filterSev]);
-
   const bySource = useMemo(() => Object.entries(SOURCES).map(([k, s]) => ({
     name: s.label.split(" ")[0], value: s.findings, color: s.color
   })), []);
-
   const NAV = [
     { id:"overview",  label:"Overview" },
     { id:"findings",  label:`All Findings (${totalFindings})` },
     { id:"sources",   label:"Data Sources" },
     { id:"coverage",  label:"Control Coverage" },
   ];
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue', Arial, sans-serif", display:"flex", flexDirection:"column" }}>
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#050D15; } ::-webkit-scrollbar-thumb { background:#1A3A5C; } .row-hover:hover { background:rgba(26,90,140,0.14) !important; cursor:pointer; } .btn-hover:hover { opacity:0.8; }`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -117,9 +104,7 @@ export default function UnifiedDashboard() {
           <div style={{ ...mono, background:"rgba(0,212,170,0.06)", border:"1px solid rgba(0,212,170,0.2)", borderRadius:4, padding:"4px 10px", fontSize:11, color:C.teal }}>● GOVCLOUD IL4 · FIPS · CAC</div>
         </div>
       </div>
-
       <div style={{ flex:1, overflowY:"auto", padding:20 }}>
-
         {/* OVERVIEW */}
         {activeTab === "overview" && (
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
@@ -139,7 +124,6 @@ export default function UnifiedDashboard() {
                 </div>
               ))}
             </div>
-
             {/* Charts + Critical findings */}
             <div style={{ display:"grid", gridTemplateColumns:"280px 1fr", gap:12 }}>
               {/* Findings by source bar */}
@@ -156,7 +140,6 @@ export default function UnifiedDashboard() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-
               {/* Recent critical findings */}
               <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, padding:16 }}>
                 <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:12 }}>CRITICAL FINDINGS — REQUIRES IMMEDIATE ACTION</div>
@@ -175,7 +158,6 @@ export default function UnifiedDashboard() {
                 ))}
               </div>
             </div>
-
             {/* Source status strip */}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10 }}>
               {Object.entries(SOURCES).map(([key, src]) => (
@@ -204,7 +186,6 @@ export default function UnifiedDashboard() {
             </div>
           </div>
         )}
-
         {/* ALL FINDINGS */}
         {activeTab === "findings" && (
           <div style={{ display:"flex", gap:16, height:"calc(100vh - 130px)", overflow:"hidden" }}>
@@ -223,7 +204,6 @@ export default function UnifiedDashboard() {
                 ))}
                 <span style={{ ...mono, fontSize:11, color:C.textMute, marginLeft:"auto", alignSelf:"center" }}>{visibleFindings.length} findings</span>
               </div>
-
               {/* Table */}
               <div style={{ overflowY:"auto", flex:1 }}>
                 <div style={{ display:"grid", gridTemplateColumns:"26px 80px 1fr 120px 80px 80px 70px", padding:"6px 10px", borderBottom:`1px solid ${C.border}` }}>
@@ -254,7 +234,6 @@ export default function UnifiedDashboard() {
                 })}
               </div>
             </div>
-
             {/* Detail panel */}
             {selectedFinding && (
               <div style={{ width:340, background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, overflowY:"auto", padding:16 }}>
@@ -290,7 +269,6 @@ export default function UnifiedDashboard() {
             )}
           </div>
         )}
-
         {/* DATA SOURCES */}
         {activeTab === "sources" && (
           <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
@@ -322,7 +300,6 @@ export default function UnifiedDashboard() {
             ))}
           </div>
         )}
-
         {/* CONTROL COVERAGE */}
         {activeTab === "coverage" && (
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
