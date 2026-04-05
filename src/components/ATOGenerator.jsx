@@ -3,7 +3,6 @@ import { useColors } from "../theme.js";
 
 const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
-
 // ─── Package Definitions ──────────────────────────────────────────────────────
 const PACKAGES = {
   emass: {
@@ -84,7 +83,6 @@ const PACKAGES = {
     system_info_fields: ["system_name","assessment_date","lead_assessor","isso_name","issm_name","ao_name","location"],
   },
 };
-
 // ─── Mock system data ─────────────────────────────────────────────────────────
 const SYSTEM_DATA = {
   system_name: "F-35 Mission Data Repository System",
@@ -107,7 +105,6 @@ const SYSTEM_DATA = {
   confidence_level: "High",
   assessor_name: "Current User / Authorized ISSM",
 };
-
 // ─── Mock posture data ────────────────────────────────────────────────────────
 const POSTURE = {
   total_controls: 52, implemented: 44, partial: 5, not_impl: 3,
@@ -119,16 +116,13 @@ const POSTURE = {
   ato_status: "ATO",
   csrmc_score: 69,
 };
-
 // ─── Colors ───────────────────────────────────────────────────────────────────
 const mono = { fontFamily:"'Courier New', monospace" };
-
 const FormatBadge = ({ format }) => {
   const colors = { DOCX:"#2196F3", XLSX:"#4CAF50", PDF:"#F44336", XML:"#FF9800", VSDX:"#9C27B0" };
   const c = colors[format] || "#888";
   return <span style={{ ...mono, fontSize:11, color:c, background:`${c}14`, border:`1px solid ${c}30`, borderRadius:3, padding:"1px 5px" }}>{format}</span>;
 };
-
 const StatusBar = ({ label, score, color }) => (
   <div style={{ marginBottom:8 }}>
     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
@@ -140,7 +134,6 @@ const StatusBar = ({ label, score, color }) => (
     </div>
   </div>
 );
-
 // ─── Package Selector Card ────────────────────────────────────────────────────
 const PackageCard = ({ pkg, selected, onToggle }) => (
   <div onClick={onToggle} style={{ background:selected?`${pkg.color}0A`:C.panel, border:`2px solid ${selected?pkg.color:C.border}`, borderRadius:10, padding:18, cursor:"pointer", transition:"all 0.2s", position:"relative" }}>
@@ -161,7 +154,6 @@ const PackageCard = ({ pkg, selected, onToggle }) => (
     <div style={{ ...mono, fontSize:10, color:"#3A5570" }}>{pkg.deliverables.length} deliverables · {pkg.deliverables.filter(d=>d.required).length} required</div>
   </div>
 );
-
 // ─── Deliverable Preview ──────────────────────────────────────────────────────
 const DeliverableRow = ({ d, pkgColor, included }) => (
   <div style={{ display:"flex", gap:10, padding:"10px 0", borderBottom:`1px solid #0A1828`, alignItems:"flex-start", opacity:included?1:0.4 }}>
@@ -179,7 +171,6 @@ const DeliverableRow = ({ d, pkgColor, included }) => (
     </div>
   </div>
 );
-
 // ─── Generation Progress ──────────────────────────────────────────────────────
 const GenerationStep = ({ label, status, detail }) => {
   const cfg = { done:{color:"#00CC88",icon:"✓"}, running:{color:"#00D4AA",icon:"⟳"}, pending:{color:"#3A5570",icon:"○"} };
@@ -194,7 +185,6 @@ const GenerationStep = ({ label, status, detail }) => {
     </div>
   );
 };
-
 // ─── Download Button ──────────────────────────────────────────────────────────
 const DownloadBtn = ({ label, format, size, color, pkg }) => (
   <button style={{ background:`${color}10`, border:`1px solid ${color}30`, borderRadius:6, padding:"10px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:10, width:"100%", marginBottom:8 }}
@@ -210,7 +200,6 @@ const DownloadBtn = ({ label, format, size, color, pkg }) => (
     <span style={{ color, fontSize:14, fontWeight:700 }}>↓</span>
   </button>
 );
-
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function ATOGenerator() {
   const C = useColors();
@@ -219,7 +208,6 @@ export default function ATOGenerator() {
   const [genProgress, setGenProgress] = useState({});
   const [activePackage, setActivePackage] = useState("emass");
   const [includeAll, setIncludeAll] = useState(false);
-
   const togglePkg = (id) => {
     setSelected(prev => {
       const next = new Set(prev);
@@ -227,11 +215,9 @@ export default function ATOGenerator() {
       return next;
     });
   };
-
   const totalDeliverables = useMemo(() =>
     [...selected].reduce((sum, id) => sum + PACKAGES[id].deliverables.length, 0)
   , [selected]);
-
   const startGeneration = async () => {
     setStep("generating");
     const steps = [
@@ -245,7 +231,6 @@ export default function ATOGenerator() {
       { id:"audit",   label:"Writing to immutable audit log",              detail:"Recording package generation event with EDIPI and timestamp..." },
       { id:"done",    label:"Packages ready for download",                 detail:"All packages generated successfully." },
     ];
-
     for (const s of steps) {
       setGenProgress(prev => ({ ...prev, [s.id]: { status:"running", detail:s.detail, label:s.label } }));
       await new Promise(r => setTimeout(r, 600 + Math.random() * 400));
@@ -253,13 +238,10 @@ export default function ATOGenerator() {
     }
     setTimeout(() => setStep("complete"), 300);
   };
-
   const scoreColor = (s) => s>=85?C.green:s>=70?C.teal:s>=50?C.orange:C.red;
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue', Arial, sans-serif", display:"flex", flexDirection:"column" }}>
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#050D15; } ::-webkit-scrollbar-thumb { background:#1A3A5C; } @keyframes spin { to { transform:rotate(360deg); } } .spin { animation:spin 1s linear infinite; display:inline-block; } .btn-h:hover { opacity:0.85; }`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -282,9 +264,7 @@ export default function ATOGenerator() {
           ))}
         </div>
       </div>
-
       <div style={{ flex:1, overflowY:"auto", padding:24 }}>
-
         {/* STEP 1: CONFIGURE */}
         {step === "configure" && (
           <div style={{ display:"grid", gridTemplateColumns:"1fr 320px", gap:20, maxWidth:1100 }}>
@@ -306,7 +286,6 @@ export default function ATOGenerator() {
                 </button>
               </div>
             </div>
-
             {/* Right sidebar — system summary */}
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, padding:16 }}>
@@ -353,7 +332,6 @@ export default function ATOGenerator() {
             </div>
           </div>
         )}
-
         {/* STEP 2: REVIEW */}
         {step === "review" && (
           <div style={{ display:"grid", gridTemplateColumns:"220px 1fr", gap:20, maxWidth:1100 }}>
@@ -383,7 +361,6 @@ export default function ATOGenerator() {
                 </div>
               </div>
             </div>
-
             {/* Deliverable list */}
             <div>
               {activePackage && selected.has(activePackage) && (() => {
@@ -415,7 +392,6 @@ export default function ATOGenerator() {
             </div>
           </div>
         )}
-
         {step === "review" && (
           <div style={{ display:"flex", gap:10, marginTop:20, maxWidth:1100 }}>
             <button className="btn-h" onClick={() => setStep("configure")}
@@ -428,7 +404,6 @@ export default function ATOGenerator() {
             </button>
           </div>
         )}
-
         {/* STEP 3: GENERATING */}
         {step === "generating" && (
           <div style={{ maxWidth:600, margin:"0 auto" }}>
@@ -440,7 +415,6 @@ export default function ATOGenerator() {
             </div>
           </div>
         )}
-
         {/* STEP 4: COMPLETE — DOWNLOADS */}
         {step === "complete" && (
           <div style={{ maxWidth:1100 }}>
@@ -451,7 +425,6 @@ export default function ATOGenerator() {
                 <div style={{ ...mono, fontSize:10, color:C.textMute }}>All packages encrypted with org KMS key · Access logged to immutable audit trail · Packages expire in 30 days</div>
               </div>
             </div>
-
             <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:14 }}>
               {[...selected].map(id => {
                 const pkg = PACKAGES[id];
@@ -477,7 +450,6 @@ export default function ATOGenerator() {
                 );
               })}
             </div>
-
             {/* SPRS submission callout */}
             {selected.has("sprs") && (
               <div style={{ marginTop:16, background:"rgba(26,122,255,0.06)", border:`1px solid rgba(26,122,255,0.2)`, borderRadius:8, padding:16, display:"flex", gap:12, alignItems:"flex-start" }}>
