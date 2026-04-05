@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useColors } from "../theme.js";
 
-const C = { bg:C.bg, panel:C.panel, panelAlt:C.panelAlt, panel2:C.panelAlt, border:C.border, borderMd:C.borderMd, text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:C.input, inputBorder:C.inputBorder, rowA:C.rowA, rowB:C.rowB, scroll:C.inputBorder, headerBg:C.headerBg, teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
 // ─── Package Definitions ──────────────────────────────────────────────────────
