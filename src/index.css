@@ -2,12 +2,36 @@
 :root { font-size: 14px; }
 body  { font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
+/* RADAR PULSE */
 @keyframes rr-radar-expand {
   0%   { transform: scale(1);    opacity: 0.65; }
   75%  { transform: scale(1.85); opacity: 0; }
   100% { transform: scale(1.85); opacity: 0; }
 }
 
+/* LIGHT MODE — main content text contrast
+   The main content div has filter:invert(1) applied.
+   Setting text near-black (#080808) pre-filter → renders as near-white post-filter.
+   This overrides any component-level grey/muted colors globally. */
+[style*="filter: invert(1)"] {
+  color: #080808 !important;
+}
+[style*="filter: invert(1)"] * {
+  color: inherit;
+}
+/* But let explicitly colored elements (teal, red, green accents) keep their colors */
+[style*="filter: invert(1)"] [style*="color:#00D4AA"],
+[style*="filter: invert(1)"] [style*="color: #00D4AA"],
+[style*="filter: invert(1)"] [style*="color:#1A7AFF"],
+[style*="filter: invert(1)"] [style*="color:#FF4444"],
+[style*="filter: invert(1)"] [style*="color:#00CC88"],
+[style*="filter: invert(1)"] [style*="color:#FFD700"],
+[style*="filter: invert(1)"] [style*="color:#FF8C00"],
+[style*="filter: invert(1)"] [style*="color:#AA66FF"] {
+  color: revert !important;
+}
+
+/* SCROLLBAR */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #010a14; }
 ::-webkit-scrollbar-thumb { background: #1a3a54; border-radius: 2px; }
