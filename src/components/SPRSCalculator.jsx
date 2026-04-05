@@ -326,7 +326,7 @@ export default function SPRSCalculator() {
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column",
       filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
-      <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||"#1A3A5C"};border-radius:2px}`}</style>
+      <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
 
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
@@ -590,7 +590,7 @@ export default function SPRSCalculator() {
 
             {/* Formatted submission text */}
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:8 }}>SPRS ENTRY FIELDS (copy-paste to SPRS portal)</div>
-            <div style={{ background:"#010810", border:`1px solid #0D2030`, borderRadius:8, padding:16, fontFamily:"'Courier New',monospace", fontSize:11, color:"#7AB8D8", lineHeight:2 }}>
+            <div style={{ background:C.bg, border:`1px solid #0D2030`, borderRadius:8, padding:16, fontFamily:"'Courier New',monospace", fontSize:11, color:"#7AB8D8", lineHeight:2 }}>
               <div><span style={{ color:"#3A5570" }}>Assessment Type:</span>         <span style={{ color:"#C8D8E8" }}>NIST SP 800-171 DoD Assessment</span></div>
               <div><span style={{ color:"#3A5570" }}>Organization:</span>            <span style={{ color:"#C8D8E8" }}>{orgName}</span></div>
               <div><span style={{ color:"#3A5570" }}>System / Enclave:</span>        <span style={{ color:"#C8D8E8" }}>{systemName}</span></div>
