@@ -3,9 +3,7 @@ import { useColors } from "../theme.js";
 
 const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
-
 const mono = { fontFamily:"'Courier New',monospace" };
-
 // ─── Version comparison data ───────────────────────────────────────────────────
 const COMPONENTS = [
   {
@@ -69,7 +67,6 @@ const COMPONENTS = [
     sap:      { impl:"Same + SSO-accessible audit reports on demand",              status:"future", note:"SAP OPSEC requires complete access accounting" },
   },
 ];
-
 const ROADMAP = [
   {
     phase:"Q2–Q3 2025", label:"Phase 1", title:"Cloud SaaS Foundation",
@@ -151,31 +148,25 @@ const ROADMAP = [
     revenue:"High-value sole-source program contracts",
   },
 ];
-
 const StatusDot = ({ s }) => {
   const cfg = { done:{c:"#00CC88",l:"BUILT"}, delta:{c:"#FFD700",l:"DELTA"}, future:{c:"#3A5570",l:"FUTURE"} };
   const d = cfg[s]||cfg.future;
   return <span style={{ ...mono, fontSize:9, color:d.c, background:`${d.c}14`, border:`1px solid ${d.c}30`, borderRadius:3, padding:"1px 5px" }}>{d.l}</span>;
 };
-
 const VersionPill = ({ v }) => {
   const cfg = { cloud:{c:"#00D4AA",l:"☁ CLOUD"}, onprem:{c:"#AA66FF",l:"🔒 ON-PREM"}, sap:{c:"#FFD700",l:"⬛ SAP"} };
   const d = cfg[v]||cfg.cloud;
   return <span style={{ ...mono, fontSize:10, color:d.c, background:`${d.c}10`, border:`1px solid ${d.c}25`, borderRadius:4, padding:"2px 7px" }}>{d.l}</span>;
 };
-
 export default function ProductRoadmap() {
   const C = useColors();
   const [tab, setTab] = useState("roadmap");
   const [activePhase, setActivePhase] = useState(0);
   const [expandedRow, setExpandedRow] = useState(null);
-
   const phase = ROADMAP[activePhase];
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column" }}>
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#03080E; } ::-webkit-scrollbar-thumb { background:#1A3A5C; }`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"11px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -194,9 +185,7 @@ export default function ProductRoadmap() {
           ))}
         </div>
       </div>
-
       <div style={{ flex:1, overflowY:"auto", padding:22 }}>
-
         {/* ── ROADMAP TAB ─────────────────────────────────────────────────── */}
         {tab === "roadmap" && (
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
@@ -208,7 +197,6 @@ export default function ProductRoadmap() {
               <VersionPill v="sap" />
               <div style={{ marginLeft:"auto", ...mono, fontSize:11, color:C.mute }}>80% shared codebase across all versions</div>
             </div>
-
             {/* Timeline strip */}
             <div style={{ display:"flex", gap:0, overflowX:"auto" }}>
               {ROADMAP.map((p, i) => {
@@ -236,7 +224,6 @@ export default function ProductRoadmap() {
                 );
               })}
             </div>
-
             {/* Active phase detail */}
             {phase && (
               <div style={{ background:C.panel, border:`1px solid ${phase.version==="cloud"?C.teal:phase.version==="onprem"?C.purple:C.gold}30`, borderRadius:10, padding:20 }}>
@@ -254,7 +241,6 @@ export default function ProductRoadmap() {
                     <div style={{ fontSize:10, color:C.mute, marginTop:3 }}>{phase.target}</div>
                   </div>
                 </div>
-
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
                   {phase.milestones.map((m, i) => (
                     <div key={i} style={{ display:"flex", gap:8, padding:"8px 12px", background:C.panel2, borderRadius:6, border:`1px solid ${C.border}` }}>
@@ -263,7 +249,6 @@ export default function ProductRoadmap() {
                     </div>
                   ))}
                 </div>
-
                 {/* Code reuse note */}
                 {phase.version !== "cloud" && (
                   <div style={{ marginTop:14, padding:"10px 14px", background:"rgba(170,102,255,0.06)", border:"1px solid rgba(170,102,255,0.2)", borderRadius:6 }}>
@@ -279,7 +264,6 @@ export default function ProductRoadmap() {
             )}
           </div>
         )}
-
         {/* ── COMPARISON TAB ──────────────────────────────────────────────── */}
         {tab === "comparison" && (
           <div>
@@ -289,7 +273,6 @@ export default function ProductRoadmap() {
               <div style={{ display:"flex", gap:8, alignItems:"center" }}><span>🔒</span><span style={{ ...mono, fontSize:11, color:C.purple, fontWeight:700 }}>CLASSIFIED ON-PREM</span></div>
               <div style={{ display:"flex", gap:8, alignItems:"center" }}><span>⬛</span><span style={{ ...mono, fontSize:11, color:C.gold, fontWeight:700 }}>SAP PROGRAMS</span></div>
             </div>
-
             {COMPONENTS.map((row, i) => (
               <div key={i}>
                 <div onClick={() => setExpandedRow(expandedRow===i?null:i)}
@@ -316,7 +299,6 @@ export default function ProductRoadmap() {
                 )}
               </div>
             ))}
-
             {/* Legend */}
             <div style={{ display:"flex", gap:16, padding:"12px 14px", background:C.panel, borderRadius:"0 0 8px 8px", borderTop:`1px solid ${C.border}` }}>
               {[["BUILT","Built in cloud version, identical in all versions",C.green],["DELTA","Exists in cloud, different implementation needed",C.gold],["FUTURE","Not yet built, planned for that version",C.mute]].map(([l,d,c])=>(
@@ -328,7 +310,6 @@ export default function ProductRoadmap() {
             </div>
           </div>
         )}
-
         {/* ── SAP DEEP DIVE TAB ───────────────────────────────────────────── */}
         {tab === "sap" && (
           <div style={{ maxWidth:820 }}>
@@ -340,7 +321,6 @@ export default function ProductRoadmap() {
                 Your LM / F-35 background is direct experience with this world.
               </div>
             </div>
-
             {[
               {
                 title:"Personnel Access Model",
@@ -408,7 +388,6 @@ export default function ProductRoadmap() {
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
