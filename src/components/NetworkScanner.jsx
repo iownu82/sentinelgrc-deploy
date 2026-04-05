@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useColors, useTheme } from "../theme.js";
 
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+
 // ── Device types and their STIG mappings ──────────────────────────────────
 const DEVICE_TYPES = {
   juniper:  { label:"Juniper Router",      icon:"🌐", stig:"Network Infrastructure Router STIG",   color:"#FF8C00", vendor:"Juniper Networks" },
@@ -9,7 +11,6 @@ const DEVICE_TYPES = {
   windows:  { label:"Windows Server",      icon:"⊞",  stig:"Windows Server 2022 STIG",            color:"#1A7AFF", vendor:"Microsoft"         },
   rhel:     { label:"RHEL / Linux",        icon:"🐧", stig:"Red Hat Enterprise Linux 8 STIG",     color:"#FF6688", vendor:"Red Hat"            },
 };
-
 // ── STIG findings database (realistic DoD findings per device type) ────────
 const STIG_CHECKS = {
   juniper: [
@@ -49,20 +50,17 @@ const STIG_CHECKS = {
     { id:"V-228835", cat:"II", control:"AC-4",  title:"Palo Alto must implement application-based policy enforcement",          check:"Is App-ID enabled for all security rules? Are port-based rules prohibited?",           pass:true,  finding:null },
   ],
 };
-
 // ── Open ports by device type ──────────────────────────────────────────────
 const APPROVED_PORTS = {
   juniper:   [22, 161, 179, 514],
   cisco9300: [22, 161, 514, 49],
   paloalto:  [22, 443, 161, 514, 3978],
 };
-
 const SCAN_RESULTS_MOCK = {
   juniper:   [22, 23, 161, 179, 514],           // 23 = Telnet — NOT APPROVED
   cisco9300: [22, 80, 161, 514, 49],             // 80 = HTTP — NOT APPROVED
   paloalto:  [22, 443, 161, 514, 3978, 8080],    // 8080 — NOT APPROVED
 };
-
 // ── Scan log messages ──────────────────────────────────────────────────────
 const SCAN_STEPS = [
   { pct:5,  msg:(ip, type) => `[NMAP] Starting scan against ${ip} (${DEVICE_TYPES[type]?.label})...` },
@@ -80,7 +78,6 @@ const SCAN_STEPS = [
   { pct:94, msg:(ip, type) => `[STIG] Analyzing port compliance...` },
   { pct:100,msg:(ip, type) => `[DONE] Scan complete — generating findings report` },
 ];
-
 // ── Port risk assessment ───────────────────────────────────────────────────
 function assessPorts(type, openPorts) {
   const approved = APPROVED_PORTS[type] || [];
@@ -98,14 +95,12 @@ function assessPorts(type, openPorts) {
   });
   return findings;
 }
-
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function NetworkScanner() {
   const C = useColors();
   const theme = useTheme();
   const mono = { fontFamily:"'Courier New',monospace" };
   const logRef = useRef(null);
-
   const [targets, setTargets] = useState([
     { id:1, ip:"10.1.10.1",   type:"juniper",   label:"RTR-CORE-01",   enabled:true  },
     { id:2, ip:"10.1.20.1",   type:"cisco9300", label:"SW-DIST-01",    enabled:true  },
@@ -122,44 +117,34 @@ export default function NetworkScanner() {
   const [results, setResults]     = useState(null);
   const [selected, setSelected]   = useState(null);
   const [activeTab, setActiveTab] = useState("targets");
-
   // Auto-scroll log
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [scanLog]);
-
   const addTarget = () => {
     if (!newTarget.ip || !newTarget.label) return;
     setTargets(prev => [...prev, { id:Date.now(), ...newTarget, enabled:true }]);
     setNewTarget({ ip:"", type:"cisco9300", label:"" });
   };
-
   const toggleTarget = (id) => setTargets(prev => prev.map(t => t.id===id?{...t,enabled:!t.enabled}:t));
-
   const runScan = async () => {
     const active = targets.filter(t => t.enabled);
     if (!active.length) return;
-
     setScanning(true);
     setResults(null);
     setScanLog([]);
     setProgress(0);
     setActiveTab("scan");
-
     const allFindings = [];
-
     for (let di = 0; di < active.length; di++) {
       const dev = active[di];
       setCurrentDevice(dev);
-
       for (let si = 0; si < SCAN_STEPS.length; si++) {
         const step = SCAN_STEPS[si];
         const overallPct = Math.round(((di / active.length) + (step.pct / 100 / active.length)) * 100);
         setProgress(overallPct);
-
         const msg = step.msg(dev.ip, dev.type);
         setScanLog(prev => [...prev, { time:new Date().toLocaleTimeString(), msg, dev:dev.label }]);
-
         // Show port results after discovery step
         if (si === 3) {
           const openPorts = SCAN_RESULTS_MOCK[dev.type] || [];
@@ -174,16 +159,13 @@ export default function NetworkScanner() {
             }))
           ]);
         }
-
         await new Promise(r => setTimeout(r, 180 + Math.random()*120));
       }
-
       // Collect findings
       const openPorts = SCAN_RESULTS_MOCK[dev.type] || [];
       const portFindings = assessPorts(dev.type, openPorts);
       const stigFindings = (STIG_CHECKS[dev.type] || []).filter(f => !f.pass);
       const stigPassed   = (STIG_CHECKS[dev.type] || []).filter(f => f.pass);
-
       allFindings.push({
         device: dev,
         openPorts,
@@ -194,12 +176,10 @@ export default function NetworkScanner() {
         failedChecks: stigFindings.length + portFindings.length,
       });
     }
-
     // Summary
     const catI  = allFindings.flatMap(d => [...d.portFindings,...d.stigFindings]).filter(f=>f.cat==="I").length;
     const catII = allFindings.flatMap(d => [...d.stigFindings]).filter(f=>f.cat==="II").length;
     const catIII= allFindings.flatMap(d => [...d.stigFindings]).filter(f=>f.cat==="III").length;
-
     setScanLog(prev => [...prev,
       { time:new Date().toLocaleTimeString(), msg:"━━━━━━━━━━ SCAN COMPLETE ━━━━━━━━━━", dev:"", highlight:true },
       { time:new Date().toLocaleTimeString(), msg:`Devices scanned: ${active.length}`, dev:"" },
@@ -207,28 +187,23 @@ export default function NetworkScanner() {
       { time:new Date().toLocaleTimeString(), msg:`CAT II findings: ${catII}`, dev:"" },
       { time:new Date().toLocaleTimeString(), msg:`CAT III findings: ${catIII}`, dev:"" },
     ]);
-
     setResults({ devices:allFindings, catI, catII, catIII });
     setScanning(false);
     setCurrentDevice(null);
     setProgress(100);
     setActiveTab("results");
   };
-
   const allFindings = results
     ? results.devices.flatMap(d => [
         ...d.portFindings.map(f => ({ ...f, device:d.device })),
         ...d.stigFindings.map(f => ({ ...f, device:d.device })),
       ])
     : [];
-
   const catColor = { "I":C.red, "II":C.orange, "III":C.gold };
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column",
       filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
       <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -251,7 +226,6 @@ export default function NetworkScanner() {
           </button>
         </div>
       </div>
-
       {/* Tabs */}
       <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, background:C.panel2||C.panel, padding:"0 20px" }}>
         {[["targets","🎯 Targets"],["scan","📡 Scan Console"],["results","📊 Results"],["findings","🔍 Findings"]].map(([id,label]) => (
@@ -262,9 +236,7 @@ export default function NetworkScanner() {
           </button>
         ))}
       </div>
-
       <div style={{ flex:1, overflow:"hidden", display:"flex" }}>
-
         {/* ── TARGETS TAB ──────────────────────────────────────────── */}
         {activeTab === "targets" && (
           <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -297,7 +269,6 @@ export default function NetworkScanner() {
                 </button>
               </div>
             </div>
-
             {/* Target list */}
             <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:10 }}>
               SCAN TARGETS — {targets.filter(t=>t.enabled).length} ENABLED / {targets.length} TOTAL
@@ -328,7 +299,6 @@ export default function NetworkScanner() {
                 );
               })}
             </div>
-
             <div style={{ marginTop:16, padding:"12px 16px", background:`${C.blue}0A`, border:`1px solid ${C.blue}25`, borderRadius:8 }}>
               <div style={{ ...mono, fontSize:11, color:C.blue, fontWeight:700, marginBottom:6 }}>ℹ IMPORTANT — SCAN AUTHORIZATION</div>
               <div style={{ fontSize:11, color:C.textDim, lineHeight:1.7 }}>
@@ -337,7 +307,6 @@ export default function NetworkScanner() {
             </div>
           </div>
         )}
-
         {/* ── SCAN CONSOLE TAB ──────────────────────────────────────── */}
         {activeTab === "scan" && (
           <div style={{ flex:1, display:"flex", flexDirection:"column", padding:20, gap:12 }}>
@@ -355,7 +324,6 @@ export default function NetworkScanner() {
                 </div>
               </div>
             )}
-
             {/* Terminal log */}
             <div ref={logRef} style={{ flex:1, background:C.bg, border:`1px solid #0D2030`, borderRadius:8, padding:14, overflowY:"auto", fontFamily:"'Courier New',monospace", fontSize:11, lineHeight:1.8 }}>
               {scanLog.length === 0 ? (
@@ -376,7 +344,6 @@ export default function NetworkScanner() {
             </div>
           </div>
         )}
-
         {/* ── RESULTS TAB ───────────────────────────────────────────── */}
         {activeTab === "results" && !results && (
           <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", color:C.textMute, fontSize:13 }}>
@@ -413,7 +380,6 @@ export default function NetworkScanner() {
                 );
               })}
             </div>
-
             {/* Device detail */}
             {selected ? (
               <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -424,7 +390,6 @@ export default function NetworkScanner() {
                     <div style={{ ...mono, fontSize:11, color:C.textMute }}>{selected.device.ip} · {DEVICE_TYPES[selected.device.type]?.stig}</div>
                   </div>
                 </div>
-
                 {/* Port scan results */}
                 <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, padding:14, marginBottom:14 }}>
                   <div style={{ ...mono, fontSize:11, color:C.teal, fontWeight:700, marginBottom:10 }}>NMAP PORT SCAN RESULTS</div>
@@ -440,7 +405,6 @@ export default function NetworkScanner() {
                     })}
                   </div>
                 </div>
-
                 {/* STIG findings */}
                 {[...selected.portFindings,...selected.stigFindings].map((f,i) => (
                   <div key={i} style={{ background:C.panel, border:`1px solid ${catColor[f.cat]||C.border}30`, borderRadius:8, padding:14, marginBottom:8 }}>
@@ -455,7 +419,6 @@ export default function NetworkScanner() {
                     </div>
                   </div>
                 ))}
-
                 {/* Passed checks */}
                 <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, margin:"14px 0 8px" }}>PASSED CHECKS ({selected.stigPassed.length})</div>
                 {selected.stigPassed.map((f,i) => (
@@ -473,7 +436,6 @@ export default function NetworkScanner() {
             )}
           </div>
         )}
-
         {/* ── FINDINGS TAB ──────────────────────────────────────────── */}
         {activeTab === "findings" && (
           <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -496,7 +458,6 @@ export default function NetworkScanner() {
                     </div>
                   ))}
                 </div>
-
                 {/* Findings list */}
                 {allFindings.map((f,i) => {
                   const dt = DEVICE_TYPES[f.device.type];
@@ -518,7 +479,6 @@ export default function NetworkScanner() {
                     </div>
                   );
                 })}
-
                 {/* Export button */}
                 <div style={{ display:"flex", gap:10, marginTop:16 }}>
                   <button style={{ ...mono, background:C.teal, border:"none", color:C.bg, borderRadius:5, padding:"8px 20px", cursor:"pointer", fontSize:11, fontWeight:700 }}>
