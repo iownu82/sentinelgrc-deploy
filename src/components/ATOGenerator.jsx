@@ -1,7 +1,7 @@
 import { useState, useMemo, useContext } from "react";
 import { ThemeContext, THEMES } from "../theme.js";
 
-const C_STATIC = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C_BASE = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
 // ─── Package Definitions ──────────────────────────────────────────────────────
@@ -132,7 +132,7 @@ const FormatBadge = ({ format }) => {
 const StatusBar = ({ label, score, color }) => (
   <div style={{ marginBottom:8 }}>
     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-      <span style={{ ...mono, fontSize:11, color:C.textMute }}>{label}</span>
+      <span style={{ ...mono, fontSize:11, color:C_BASE.textMute }}>{label}</span>
       <span style={{ ...mono, fontSize:11, fontWeight:700, color }}>{score}%</span>
     </div>
     <div style={{ height:4, background:"#0A1828", borderRadius:2, overflow:"hidden" }}>
@@ -143,14 +143,14 @@ const StatusBar = ({ label, score, color }) => (
 
 // ─── Package Selector Card ────────────────────────────────────────────────────
 const PackageCard = ({ pkg, selected, onToggle }) => (
-  <div onClick={onToggle} style={{ background:selected?`${pkg.color}0A`:C.panel, border:`2px solid ${selected?pkg.color:C.border}`, borderRadius:10, padding:18, cursor:"pointer", transition:"all 0.2s", position:"relative" }}>
+  <div onClick={onToggle} style={{ background:selected?`${pkg.color}0A`:C_BASE.panel, border:`2px solid ${selected?pkg.color:C_BASE.border}`, borderRadius:10, padding:18, cursor:"pointer", transition:"all 0.2s", position:"relative" }}>
     {selected && <div style={{ position:"absolute", top:10, right:12, ...mono, fontSize:10, color:pkg.color, fontWeight:700 }}>✓ SELECTED</div>}
     <div style={{ display:"flex", gap:12, alignItems:"flex-start", marginBottom:12 }}>
       <div style={{ fontSize:28 }}>{pkg.icon}</div>
       <div>
-        <div style={{ fontSize:14, fontWeight:700, color:C.white }}>{pkg.label}</div>
+        <div style={{ fontSize:14, fontWeight:700, color:C_BASE.white }}>{pkg.label}</div>
         <div style={{ ...mono, fontSize:10, color:pkg.color, marginTop:2 }}>{pkg.subtitle}</div>
-        <div style={{ fontSize:10, color:C.textMute, marginTop:2 }}>For: {pkg.audience}</div>
+        <div style={{ fontSize:10, color:C_BASE.textMute, marginTop:2 }}>For: {pkg.audience}</div>
       </div>
     </div>
     <div style={{ display:"flex", gap:5, flexWrap:"wrap", marginBottom:10 }}>
@@ -158,38 +158,38 @@ const PackageCard = ({ pkg, selected, onToggle }) => (
         <span key={f} style={{ ...mono, fontSize:10, color:pkg.color, background:`${pkg.color}10`, border:`1px solid ${pkg.color}25`, borderRadius:3, padding:"2px 6px" }}>{f}</span>
       ))}
     </div>
-    <div style={{ ...mono, fontSize:10, color:C.textMute }}>{pkg.deliverables.length} deliverables · {pkg.deliverables.filter(d=>d.required).length} required</div>
+    <div style={{ ...mono, fontSize:10, color:C_BASE.textMute }}>{pkg.deliverables.length} deliverables · {pkg.deliverables.filter(d=>d.required).length} required</div>
   </div>
 );
 
 // ─── Deliverable Preview ──────────────────────────────────────────────────────
 const DeliverableRow = ({ d, pkgColor, included }) => (
   <div style={{ display:"flex", gap:10, padding:"10px 0", borderBottom:`1px solid #0A1828`, alignItems:"flex-start", opacity:included?1:0.4 }}>
-    <div style={{ width:24, height:24, borderRadius:"50%", background:included?`${pkgColor}14`:"#1A2A3A", border:`1px solid ${included?pkgColor:C.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, minWidth:24 }}>
+    <div style={{ width:24, height:24, borderRadius:"50%", background:included?`${pkgColor}14`:"#1A2A3A", border:`1px solid ${included?pkgColor:C_BASE.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, minWidth:24 }}>
       {included ? "✓" : "—"}
     </div>
     <div style={{ flex:1 }}>
       <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:3 }}>
-        <span style={{ fontSize:12, color:C.white, fontWeight:500 }}>{d.name}</span>
+        <span style={{ fontSize:12, color:C_BASE.white, fontWeight:500 }}>{d.name}</span>
         <FormatBadge format={d.format} />
-        {d.required && <span style={{ ...mono, fontSize:10, color:C.red }}>REQUIRED</span>}
-        {d.pages && <span style={{ ...mono, fontSize:10, color:C.textMute }}>{d.pages} pages</span>}
+        {d.required && <span style={{ ...mono, fontSize:10, color:C_BASE.red }}>REQUIRED</span>}
+        {d.pages && <span style={{ ...mono, fontSize:10, color:C_BASE.textMute }}>{d.pages} pages</span>}
       </div>
-      <div style={{ fontSize:11, color:C.textDim }}>{d.desc}</div>
+      <div style={{ fontSize:11, color:C_BASE.textDim }}>{d.desc}</div>
     </div>
   </div>
 );
 
 // ─── Generation Progress ──────────────────────────────────────────────────────
 const GenerationStep = ({ label, status, detail }) => {
-  const cfg = { done:{color:C.green,icon:"✓"}, running:{color:C.teal,icon:"⟳"}, pending:{color:C.textMute,icon:"○"} };
+  const cfg = { done:{color:C_BASE.green,icon:"✓"}, running:{color:C_BASE.teal,icon:"⟳"}, pending:{color:C_BASE.textMute,icon:"○"} };
   const s = cfg[status] || cfg.pending;
   return (
     <div style={{ display:"flex", gap:12, alignItems:"flex-start", padding:"8px 0" }}>
       <div style={{ ...mono, fontSize:14, color:s.color, minWidth:20, animation:status==="running"?"spin 1s linear infinite":"none" }}>{s.icon}</div>
       <div>
-        <div style={{ fontSize:12, color:status==="pending"?C.textMute:C.white }}>{label}</div>
-        {detail && status !== "pending" && <div style={{ ...mono, fontSize:11, color:C.textMute, marginTop:2 }}>{detail}</div>}
+        <div style={{ fontSize:12, color:status==="pending"?C_BASE.textMute:C_BASE.white }}>{label}</div>
+        {detail && status !== "pending" && <div style={{ ...mono, fontSize:11, color:C_BASE.textMute, marginTop:2 }}>{detail}</div>}
       </div>
     </div>
   );
@@ -204,8 +204,8 @@ const DownloadBtn = ({ label, format, size, color, pkg }) => (
     }}>
     <span style={{ fontSize:18 }}>{format==="DOCX"?"📄":format==="XLSX"?"📊":format==="PDF"?"📋":format==="XML"?"📝":"📁"}</span>
     <div style={{ flex:1, textAlign:"left" }}>
-      <div style={{ fontSize:12, color:C.white, fontWeight:500 }}>{label}</div>
-      <div style={{ ...mono, fontSize:11, color:C.textMute }}>{format} · {size}</div>
+      <div style={{ fontSize:12, color:C_BASE.white, fontWeight:500 }}>{label}</div>
+      <div style={{ ...mono, fontSize:11, color:C_BASE.textMute }}>{format} · {size}</div>
     </div>
     <span style={{ color, fontSize:14, fontWeight:700 }}>↓</span>
   </button>
@@ -213,6 +213,8 @@ const DownloadBtn = ({ label, format, size, color, pkg }) => (
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function ATOGenerator() {
+  const theme = useContext(ThemeContext);
+  const C = { ...C_BASE, ...(THEMES[theme] || {}) };
   const theme = useContext(ThemeContext);
   const C = THEMES[theme] || C_STATIC;
   const [selected, setSelected] = useState(new Set(["emass"]));
