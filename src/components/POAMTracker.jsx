@@ -8,10 +8,10 @@ import { useAuth } from "./Auth.jsx";
 
 const T = {
   dark: {
-    bg:"#03080E", panel:"#060D16", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840",
+    bg:C.bg, panel:C.panel, panel2:C.panelAlt, border:C.border, borderMd:C.borderMd,
     text:"#C8D8E8", dim:"#7A9AB8", mute:"#3A5570", white:"#F0F8FF",
-    input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12",
-    scroll:"#1A3A5C",
+    input:C.input, inputBorder:C.inputBorder, rowA:C.rowA, rowB:C.rowB,
+    scroll:C.inputBorder,
   },
   light: {
     bg:"#F2F6FA", panel:"#FFFFFF", panel2:"#F7FAFC", border:"#D8E4F0", borderMd:"#C0D4E8",
@@ -156,7 +156,7 @@ function ComboSelect({ value, onChange, options, placeholder = "Type to search o
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <div onClick={() => setOpen(!open)}
-        style={{ background: t.input, border: `1px solid ${t.inputBorder || "#1A3A5C"}`, borderRadius: 5, padding: "5px 10px", color: value ? t.white : t.mute, cursor: "pointer", fontSize: 12, display: "flex", justifyContent: "space-between", alignItems: "center", minHeight: 32 }}>
+        style={{ background: t.input, border: `1px solid ${t.inputBorder || C.inputBorder}`, borderRadius: 5, padding: "5px 10px", color: value ? t.white : t.mute, cursor: "pointer", fontSize: 12, display: "flex", justifyContent: "space-between", alignItems: "center", minHeight: 32 }}>
         <span>{value || placeholder}</span>
         <span style={{ color: t.mute, fontSize: 10 }}>{open ? "▲" : "▼"}</span>
       </div>
@@ -262,7 +262,7 @@ function Detail({ poam, onUpdate, onClose }) {
                 </button>
               )}
               <button onClick={handleSave}
-                style={{ fontFamily:"monospace", background:dirty?A.teal:"transparent", border:`1px solid ${dirty?A.teal:t.border}`, color:dirty?"#020A10":t.mute, borderRadius:4, padding:"5px 12px", cursor:"pointer", fontSize:10, fontWeight:dirty?700:400 }}>
+                style={{ fontFamily:"monospace", background:dirty?A.teal:"transparent", border:`1px solid ${dirty?A.teal:t.border}`, color:dirty?C.headerBg:t.mute, borderRadius:4, padding:"5px 12px", cursor:"pointer", fontSize:10, fontWeight:dirty?700:400 }}>
                 {dirty ? "✓ SAVE" : "SAVED"}
               </button>
               <button onClick={onClose}
@@ -485,8 +485,8 @@ export default function POAMTracker() {
         <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${t.bg}}::-webkit-scrollbar-thumb{background:${t.scroll};border-radius:2px}`}</style>
 
         {/* Header */}
-        <div style={{ background:theme==="dark"?"#02060C":t.white, borderBottom:`1px solid ${t.border}`, padding:"10px 20px", display:"flex", alignItems:"center", gap:12, position:"sticky", top:0, zIndex:100 }}>
-          <div style={{ width:30, height:30, background:`linear-gradient(135deg,${A.teal},${A.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"monospace", fontSize:14, fontWeight:900, color:"#060E18" }}>S</div>
+        <div style={{ background:theme==="dark"?C.headerBg:t.white, borderBottom:`1px solid ${t.border}`, padding:"10px 20px", display:"flex", alignItems:"center", gap:12, position:"sticky", top:0, zIndex:100 }}>
+          <div style={{ width:30, height:30, background:`linear-gradient(135deg,${A.teal},${A.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"monospace", fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:t.white }}>SentinelGRC — POAM Tracker</div>
             <div style={{ fontFamily:"monospace", fontSize:10, color:t.mute, letterSpacing:0.8 }}>eMASS-ALIGNED · CONTINUOUS MONITORING · cATO</div>
@@ -496,12 +496,12 @@ export default function POAMTracker() {
             <div style={{ background:t.panel, border:`1px solid ${t.border}`, borderRadius:20, padding:"3px 5px", display:"flex", gap:2 }}>
               {["dark","light"].map(m=>(
                 <button key={m} onClick={()=>setTheme(m)}
-                  style={{ background:theme===m?A.teal:"transparent", border:"none", borderRadius:16, padding:"4px 11px", cursor:"pointer", fontFamily:"monospace", fontSize:11, fontWeight:700, color:theme===m?"#020A10":t.mute, transition:"all 0.2s" }}>
+                  style={{ background:theme===m?A.teal:"transparent", border:"none", borderRadius:16, padding:"4px 11px", cursor:"pointer", fontFamily:"monospace", fontSize:11, fontWeight:700, color:theme===m?C.headerBg:t.mute, transition:"all 0.2s" }}>
                   {m==="dark"?"🌙 DARK":"☀ LIGHT"}
                 </button>
               ))}
             </div>
-            <button onClick={addNew} style={{ fontFamily:"monospace", background:A.teal, border:"none", color:"#020A10", borderRadius:5, padding:"7px 14px", cursor:"pointer", fontSize:10, fontWeight:700 }}>+ NEW POAM</button>
+            <button onClick={addNew} style={{ fontFamily:"monospace", background:A.teal, border:"none", color:C.headerBg, borderRadius:5, padding:"7px 14px", cursor:"pointer", fontSize:10, fontWeight:700 }}>+ NEW POAM</button>
             <button style={{ fontFamily:"monospace", background:"transparent", border:`1px solid ${t.border}`, color:t.dim, borderRadius:5, padding:"7px 12px", cursor:"pointer", fontSize:10 }}>↓ eMASS EXPORT</button>
           </div>
         </div>
@@ -510,7 +510,7 @@ export default function POAMTracker() {
         <div style={{ display:"grid", gridTemplateColumns:"76px repeat(6,1fr)", gap:8, padding:"12px 20px", borderBottom:`1px solid ${t.border}`, background:t.panel2 }}>
           <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
             <svg width={68} height={68} viewBox="0 0 68 68">
-              <circle cx={34} cy={34} r={32} fill="none" stroke={theme==="dark"?"#0D1E2E":"#D8E4F0"} strokeWidth={6}/>
+              <circle cx={34} cy={34} r={32} fill="none" stroke={theme==="dark"?C.border:"#D8E4F0"} strokeWidth={6}/>
               <circle cx={34} cy={34} r={32} fill="none" stroke={sc} strokeWidth={6} strokeDasharray={circ} strokeDashoffset={circ-(score/100)*circ} strokeLinecap="round" transform="rotate(-90 34 34)"/>
               <text x={34} y={38} textAnchor="middle" fill={sc} fontSize={13} fontWeight={800} fontFamily="monospace">{score}%</text>
             </svg>
