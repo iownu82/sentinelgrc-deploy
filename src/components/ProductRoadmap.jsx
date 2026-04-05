@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useColors } from "../theme.js";
 
 const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
@@ -72,7 +73,7 @@ const COMPONENTS = [
 const ROADMAP = [
   {
     phase:"Q2–Q3 2025", label:"Phase 1", title:"Cloud SaaS Foundation",
-    version:"cloud", color:C.teal,
+    version:"cloud", color:"#00D4AA",
     milestones:[
       "AWS GovCloud account + VPC architecture",
       "Core platform: auth, RBAC, multi-tenant DB",
@@ -88,7 +89,7 @@ const ROADMAP = [
   },
   {
     phase:"Q4 2025–Q1 2026", label:"Phase 2", title:"Cloud SaaS — Full Feature",
-    version:"cloud", color:C.teal,
+    version:"cloud", color:"#00D4AA",
     milestones:[
       "Multi-framework dashboard (800-53, 800-171, CMMC, CSRMC)",
       "ATO package generator (eMASS, DIBCAC, SPRS)",
@@ -104,7 +105,7 @@ const ROADMAP = [
   },
   {
     phase:"Q2–Q3 2026", label:"Phase 3", title:"FedRAMP + DoD IL4 Authorization",
-    version:"cloud", color:C.blue,
+    version:"cloud", color:"#1A7AFF",
     milestones:[
       "Engage 3PAO for FedRAMP Moderate assessment",
       "Complete SentinelGRC's own SSP (dogfooding)",
@@ -119,7 +120,7 @@ const ROADMAP = [
   },
   {
     phase:"Q4 2026–Q2 2027", label:"Phase 4", title:"On-Prem Classified Build",
-    version:"onprem", color:C.purple,
+    version:"onprem", color:"#AA66FF",
     milestones:[
       "Infrastructure abstraction layer (swap AWS → local equivalents)",
       "Ollama local LLM integration (replace Bedrock)",
@@ -135,7 +136,7 @@ const ROADMAP = [
   },
   {
     phase:"Q3 2027+", label:"Phase 5", title:"SAP / Classified Special Programs",
-    version:"sap", color:C.gold,
+    version:"sap", color:"#FFD700",
     milestones:[
       "PSO / SSO role integration",
       "Program-specific compartment marking configuration",
@@ -152,18 +153,19 @@ const ROADMAP = [
 ];
 
 const StatusDot = ({ s }) => {
-  const cfg = { done:{c:C.green,l:"BUILT"}, delta:{c:C.gold,l:"DELTA"}, future:{c:C.mute,l:"FUTURE"} };
+  const cfg = { done:{c:"#00CC88",l:"BUILT"}, delta:{c:"#FFD700",l:"DELTA"}, future:{c:"#3A5570",l:"FUTURE"} };
   const d = cfg[s]||cfg.future;
   return <span style={{ ...mono, fontSize:9, color:d.c, background:`${d.c}14`, border:`1px solid ${d.c}30`, borderRadius:3, padding:"1px 5px" }}>{d.l}</span>;
 };
 
 const VersionPill = ({ v }) => {
-  const cfg = { cloud:{c:C.teal,l:"☁ CLOUD"}, onprem:{c:C.purple,l:"🔒 ON-PREM"}, sap:{c:C.gold,l:"⬛ SAP"} };
+  const cfg = { cloud:{c:"#00D4AA",l:"☁ CLOUD"}, onprem:{c:"#AA66FF",l:"🔒 ON-PREM"}, sap:{c:"#FFD700",l:"⬛ SAP"} };
   const d = cfg[v]||cfg.cloud;
   return <span style={{ ...mono, fontSize:10, color:d.c, background:`${d.c}10`, border:`1px solid ${d.c}25`, borderRadius:4, padding:"2px 7px" }}>{d.l}</span>;
 };
 
 export default function ProductRoadmap() {
+  const C = useColors();
   const [tab, setTab] = useState("roadmap");
   const [activePhase, setActivePhase] = useState(0);
   const [expandedRow, setExpandedRow] = useState(null);
