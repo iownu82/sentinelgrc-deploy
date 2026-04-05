@@ -3,11 +3,12 @@ import { loadSprsAssessment, saveSprsAssessment } from "../supabase.js";
 import { useAuth } from "./Auth.jsx";
 import { useColors, useTheme } from "../theme.js";
 
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+
 // ── NIST SP 800-171 Rev 2 — 110 practices with SPRS point values ──────────
 // DoD Assessment Methodology v1.2.1 — total = 110 practices, max deduction = 203 points
 // Starting score: 110, deductions per practice not met
 // Final SPRS score = 110 - sum(deductions for not-met practices)
-
 const NIST_171_PRACTICES = [
   // 3.1 ACCESS CONTROL (22 practices)
   { id:"3.1.1",  family:"AC", title:"Limit system access to authorized users",                         pts:1, cmmc:"L1", baseline:true  },
@@ -32,12 +33,10 @@ const NIST_171_PRACTICES = [
   { id:"3.1.20", family:"AC", title:"Verify and control connections to external systems",              pts:1, cmmc:"L2", baseline:false },
   { id:"3.1.21", family:"AC", title:"Limit use of portable storage devices on external systems",       pts:1, cmmc:"L2", baseline:false },
   { id:"3.1.22", family:"AC", title:"Control CUI posted or processed on publicly accessible systems",  pts:1, cmmc:"L2", baseline:false },
-
   // 3.2 AWARENESS AND TRAINING (3 practices)
   { id:"3.2.1",  family:"AT", title:"Ensure personnel are aware of security risks",                    pts:1, cmmc:"L2", baseline:false },
   { id:"3.2.2",  family:"AT", title:"Ensure personnel are trained to carry out assigned responsibilities",pts:1,cmmc:"L2",baseline:false},
   { id:"3.2.3",  family:"AT", title:"Provide security awareness training on recognizing threats",       pts:1, cmmc:"L2", baseline:false },
-
   // 3.3 AUDIT AND ACCOUNTABILITY (9 practices)
   { id:"3.3.1",  family:"AU", title:"Create and retain system audit logs",                             pts:1, cmmc:"L2", baseline:false },
   { id:"3.3.2",  family:"AU", title:"Ensure actions of users can be traced",                           pts:1, cmmc:"L2", baseline:false },
@@ -48,7 +47,6 @@ const NIST_171_PRACTICES = [
   { id:"3.3.7",  family:"AU", title:"Provide system capability that compares and synchronizes clocks", pts:1, cmmc:"L2", baseline:false },
   { id:"3.3.8",  family:"AU", title:"Protect audit information and tools from unauthorized access",    pts:1, cmmc:"L2", baseline:false },
   { id:"3.3.9",  family:"AU", title:"Limit management of audit logging to subset of privileged users", pts:1, cmmc:"L2", baseline:false },
-
   // 3.4 CONFIGURATION MANAGEMENT (9 practices)
   { id:"3.4.1",  family:"CM", title:"Establish and maintain baseline configurations",                  pts:1, cmmc:"L2", baseline:false },
   { id:"3.4.2",  family:"CM", title:"Establish and enforce security configuration settings",           pts:1, cmmc:"L2", baseline:false },
@@ -59,7 +57,6 @@ const NIST_171_PRACTICES = [
   { id:"3.4.7",  family:"CM", title:"Restrict, disable, or prevent use of nonessential programs",     pts:1, cmmc:"L2", baseline:false },
   { id:"3.4.8",  family:"CM", title:"Apply deny-by-exception policy to prevent use of unauthorized software",pts:1,cmmc:"L2",baseline:false},
   { id:"3.4.9",  family:"CM", title:"Control and monitor user-installed software",                     pts:1, cmmc:"L2", baseline:false },
-
   // 3.5 IDENTIFICATION AND AUTHENTICATION (11 practices)
   { id:"3.5.1",  family:"IA", title:"Identify system users, processes, and devices",                   pts:1, cmmc:"L1", baseline:true  },
   { id:"3.5.2",  family:"IA", title:"Authenticate identities before allowing access",                  pts:1, cmmc:"L1", baseline:true  },
@@ -72,12 +69,10 @@ const NIST_171_PRACTICES = [
   { id:"3.5.9",  family:"IA", title:"Allow temporary password use with immediate change requirement",  pts:1, cmmc:"L2", baseline:false },
   { id:"3.5.10", family:"IA", title:"Store and transmit only cryptographically protected passwords",   pts:1, cmmc:"L2", baseline:false },
   { id:"3.5.11", family:"IA", title:"Obscure feedback of authentication information",                  pts:1, cmmc:"L2", baseline:false },
-
   // 3.6 INCIDENT RESPONSE (3 practices)
   { id:"3.6.1",  family:"IR", title:"Establish operational incident response capability",              pts:1, cmmc:"L2", baseline:false },
   { id:"3.6.2",  family:"IR", title:"Track, document, and report incidents to appropriate officials",  pts:1, cmmc:"L2", baseline:false },
   { id:"3.6.3",  family:"IR", title:"Test incident response capability",                               pts:1, cmmc:"L2", baseline:false },
-
   // 3.7 MAINTENANCE (6 practices)
   { id:"3.7.1",  family:"MA", title:"Perform maintenance on organizational systems",                   pts:1, cmmc:"L2", baseline:false },
   { id:"3.7.2",  family:"MA", title:"Provide controls on tools, techniques, and personnel for maintenance",pts:1,cmmc:"L2",baseline:false},
@@ -85,7 +80,6 @@ const NIST_171_PRACTICES = [
   { id:"3.7.4",  family:"MA", title:"Check media containing diagnostic programs for malicious code",   pts:1, cmmc:"L2", baseline:false },
   { id:"3.7.5",  family:"MA", title:"Require MFA for remote maintenance sessions",                     pts:3, cmmc:"L2", baseline:false },
   { id:"3.7.6",  family:"MA", title:"Supervise maintenance activities of personnel without required access",pts:1,cmmc:"L2",baseline:false},
-
   // 3.8 MEDIA PROTECTION (9 practices)
   { id:"3.8.1",  family:"MP", title:"Protect system media containing CUI",                             pts:1, cmmc:"L1", baseline:true  },
   { id:"3.8.2",  family:"MP", title:"Limit access to CUI on system media to authorized users",         pts:1, cmmc:"L1", baseline:true  },
@@ -96,11 +90,9 @@ const NIST_171_PRACTICES = [
   { id:"3.8.7",  family:"MP", title:"Control use of removable media on system components",             pts:1, cmmc:"L2", baseline:false },
   { id:"3.8.8",  family:"MP", title:"Prohibit use of portable storage without identifiable owner",     pts:1, cmmc:"L2", baseline:false },
   { id:"3.8.9",  family:"MP", title:"Protect backups of CUI",                                          pts:1, cmmc:"L2", baseline:false },
-
   // 3.9 PERSONNEL SECURITY (2 practices)
   { id:"3.9.1",  family:"PS", title:"Screen individuals prior to authorizing access to systems",       pts:1, cmmc:"L2", baseline:false },
   { id:"3.9.2",  family:"PS", title:"Ensure CUI is protected during and after personnel actions",      pts:1, cmmc:"L2", baseline:false },
-
   // 3.10 PHYSICAL PROTECTION (6 practices)
   { id:"3.10.1", family:"PE", title:"Limit physical access to authorized individuals",                 pts:1, cmmc:"L1", baseline:true  },
   { id:"3.10.2", family:"PE", title:"Protect and monitor the physical facility and support infrastructure",pts:1,cmmc:"L2",baseline:false},
@@ -108,18 +100,15 @@ const NIST_171_PRACTICES = [
   { id:"3.10.4", family:"PE", title:"Maintain audit logs of physical access",                          pts:1, cmmc:"L2", baseline:false },
   { id:"3.10.5", family:"PE", title:"Control and manage physical access devices",                      pts:1, cmmc:"L2", baseline:false },
   { id:"3.10.6", family:"PE", title:"Enforce safeguarding measures for CUI at alternate work sites",   pts:1, cmmc:"L2", baseline:false },
-
   // 3.11 RISK ASSESSMENT (3 practices)
   { id:"3.11.1", family:"RA", title:"Periodically assess risk to operations, assets, and individuals", pts:1, cmmc:"L2", baseline:false },
   { id:"3.11.2", family:"RA", title:"Scan for vulnerabilities in systems periodically",                pts:3, cmmc:"L2", baseline:false },
   { id:"3.11.3", family:"RA", title:"Remediate vulnerabilities in accordance with risk assessments",   pts:3, cmmc:"L2", baseline:false },
-
   // 3.12 SECURITY ASSESSMENT (4 practices)
   { id:"3.12.1", family:"CA", title:"Periodically assess security controls",                           pts:1, cmmc:"L2", baseline:false },
   { id:"3.12.2", family:"CA", title:"Develop and implement plans of action to correct deficiencies",   pts:1, cmmc:"L2", baseline:false },
   { id:"3.12.3", family:"CA", title:"Monitor security controls on an ongoing basis",                   pts:1, cmmc:"L2", baseline:false },
   { id:"3.12.4", family:"CA", title:"Develop, document, and periodically update system security plans",pts:1, cmmc:"L2", baseline:false },
-
   // 3.13 SYSTEM AND COMMUNICATIONS PROTECTION (16 practices)
   { id:"3.13.1", family:"SC", title:"Monitor, control, and protect communications at external boundaries",pts:1,cmmc:"L1",baseline:true },
   { id:"3.13.2", family:"SC", title:"Employ architectural designs, software development techniques",    pts:1, cmmc:"L2", baseline:false },
@@ -137,7 +126,6 @@ const NIST_171_PRACTICES = [
   { id:"3.13.14",family:"SC", title:"Control and monitor the use of VoIP technologies",               pts:1, cmmc:"L2", baseline:false },
   { id:"3.13.15",family:"SC", title:"Protect the authenticity of communications sessions",             pts:1, cmmc:"L2", baseline:false },
   { id:"3.13.16",family:"SC", title:"Protect CUI at rest",                                             pts:1, cmmc:"L2", baseline:false },
-
   // 3.14 SYSTEM AND INFORMATION INTEGRITY (7 practices)
   { id:"3.14.1", family:"SI", title:"Identify, report, and correct system flaws in a timely manner",   pts:1, cmmc:"L1", baseline:true  },
   { id:"3.14.2", family:"SI", title:"Provide protection from malicious code at appropriate locations", pts:1, cmmc:"L1", baseline:true  },
@@ -147,21 +135,17 @@ const NIST_171_PRACTICES = [
   { id:"3.14.6", family:"SI", title:"Monitor systems to detect attacks and indicators of potential attacks",pts:1,cmmc:"L2",baseline:false},
   { id:"3.14.7", family:"SI", title:"Identify unauthorized use of systems",                            pts:1, cmmc:"L2", baseline:false },
 ];
-
 const MAX_SCORE = 110;
 const FAMILIES = [...new Set(NIST_171_PRACTICES.map(p => p.family))];
 const FAMILY_NAMES = { AC:"Access Control", AT:"Awareness & Training", AU:"Audit & Accountability", CM:"Configuration Mgmt", IA:"Identification & Auth", IR:"Incident Response", MA:"Maintenance", MP:"Media Protection", PS:"Personnel Security", PE:"Physical Protection", RA:"Risk Assessment", CA:"Security Assessment", SC:"System & Comms Protection", SI:"System & Info Integrity" };
-
 // Score color based on SPRS value
 function scoreColor(score, C) {
   if (score >= 88)  return "#00CC88";
   if (score >= 70)  return "#88CC00";
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
   if (score >= 50)  return C.gold;
   if (score >= 0)   return C.orange;
   return C.red;
 }
-
 // Status labels
 const STATUS_OPTS = [
   { id:"met",        label:"Met",         color:"#00CC88", icon:"✓" },
@@ -170,9 +154,6 @@ const STATUS_OPTS = [
   { id:"na",         label:"N/A",         color:"#7A9AB8", icon:"—" },
   { id:"not_assessed",label:"Not Assessed",color:"#4A6080",icon:"?" },
 ];
-
-
-
 // ── CMMC Level 3 — 24 enhanced practices from NIST SP 800-172 ─────────────
 // Source: CMMC 2.0 Level 3 Assessment Guide | DIBCAC assessment required
 const CMMC_L3_PRACTICES = [
@@ -201,7 +182,6 @@ const CMMC_L3_PRACTICES = [
   { id:"SI.L3-3.14.6e", family:"SI", title:"Use threat intelligence to proactively identify, block, or remediate indicators of compromise from external systems and networks", nist172:"3.14.6e" },
   { id:"SI.L3-3.14.7e", family:"SI", title:"Employ deception technologies and techniques to identify and understand attacker techniques, tactics, and procedures", nist172:"3.14.7e" },
 ];
-
 // ── 800-171 Rev 3 Preview — 97 requirements (not yet mandated) ─────────────
 // Source: NIST SP 800-171 Rev 3 (May 2024) | DoD Class Deviation 2024-O0013 requires Rev 2
 // Key changes: 110→97 (consolidation), adds Planning (PL) and Supply Chain (SR) families,
@@ -216,7 +196,6 @@ const REV3_CHANGES = [
   { type:"enhanced",    id:"STMTS",title:"422 determination statements in Rev 3 vs 320 in Rev 2 — more granular assessment criteria" },
   { type:"increased",   id:"SCOPES",title:"Rev 3 derives from 156 of 287 SP 800-53 Rev 5 moderate baseline controls — tighter alignment with 800-53" },
 ];
-
 // ── CSRMC Tenets — SentinelGRC readiness ─────────────────────────────────────
 // Source: DoD CIO CSRMC announcement September 24, 2025
 // Note: CSRMC has no control catalog — it's a framework construct
@@ -232,19 +211,16 @@ const CSRMC_TENETS = [
   { id:9,  name:"Reciprocity",                    desc:"Accept mutual assessments to reuse security packages across programs",          aligned:false, impl:"Roadmap: ATO package import/export and assessment sharing module",         phase:"Phase 4: Onboard" },
   { id:10, name:"Threat-Informed Assessments",    desc:"Validate security through active testing against realistic adversary techniques",aligned:true, impl:"Network Scanner STIG checks + pentest finding integration in POAM",        phase:"Phase 3: Test" },
 ];
-
 export default function SPRSCalculator() {
   const C = useColors();
   const theme = useTheme();
   const mono = { fontFamily:"'Courier New',monospace" };
-
   // Each practice status
   const [statuses, setStatuses] = useState(() => {
     const init = {};
     NIST_171_PRACTICES.forEach(p => { init[p.id] = "not_assessed"; });
     return init;
   });
-
   const [activeFamily, setActiveFamily] = useState("AC");
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [showInfo, setShowInfo] = useState(false);
@@ -253,7 +229,6 @@ export default function SPRSCalculator() {
   const [assessDate, setAssessDate] = useState(new Date().toISOString().split("T")[0]);
   const [activeTab, setActiveTab] = useState("assess"); // assess | summary | submit
   const { systemId } = useAuth();
-
   // ── Persistence ──────────────────────────────────────────────────────
   useEffect(() => {
     loadSprsAssessment(systemId).then(saved => {
@@ -262,7 +237,6 @@ export default function SPRSCalculator() {
       }
     });
   }, [systemId]);
-
   // Debounced save on status changes
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -270,17 +244,14 @@ export default function SPRSCalculator() {
     }, 1500);
     return () => clearTimeout(timer);
   }, [statuses, orgName, systemName, assessDate, systemId]);
-
   const setStatus = useCallback((id, status) => {
     setStatuses(prev => ({ ...prev, [id]: status }));
   }, []);
-
   // ── Score computation ────────────────────────────────────────────────────
   const score = useMemo(() => {
     let total = MAX_SCORE;
     let metCount = 0, partialCount = 0, notMetCount = 0, naCount = 0, notAssessedCount = 0;
     let metPts = 0, deductPts = 0;
-
     NIST_171_PRACTICES.forEach(p => {
       const s = statuses[p.id];
       if (s === "met") { metCount++; metPts += p.pts; }
@@ -289,13 +260,10 @@ export default function SPRSCalculator() {
       else if (s === "na") naCount++;
       else notAssessedCount++;
     });
-
     const assessed = NIST_171_PRACTICES.length - notAssessedCount;
     const pct = assessed > 0 ? Math.round((metCount / (assessed - naCount || 1)) * 100) : 0;
-
     return { total, metCount, partialCount, notMetCount, naCount, notAssessedCount, metPts, deductPts, pct, assessed };
   }, [statuses]);
-
   // Family scores
   const familyScores = useMemo(() => {
     const result = {};
@@ -312,23 +280,19 @@ export default function SPRSCalculator() {
     });
     return result;
   }, [statuses]);
-
   const sc = scoreColor(score.total, C);
   const visiblePractices = NIST_171_PRACTICES
     .filter(p => p.family === activeFamily)
     .filter(p => filterStatus === "ALL" || statuses[p.id] === filterStatus);
-
   // Quick-set all in current family
   const setAllInFamily = (status) => {
     const ids = NIST_171_PRACTICES.filter(p => p.family === activeFamily).map(p => p.id);
     setStatuses(prev => { const n={...prev}; ids.forEach(id=>n[id]=status); return n; });
   };
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column",
       filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
       <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -338,7 +302,6 @@ export default function SPRSCalculator() {
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>NIST SP 800-171 Rev 2 · 110 PRACTICES · DoD ASSESSMENT METHODOLOGY v1.2.1</div>
           </div>
         </div>
-
         {/* Live score display */}
         <div style={{ display:"flex", alignItems:"center", gap:16 }}>
           <div style={{ textAlign:"right" }}>
@@ -352,7 +315,6 @@ export default function SPRSCalculator() {
           </div>
         </div>
       </div>
-
       {/* Tabs */}
       <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, background:C.panel2||C.panel, padding:"0 20px" }}>
         {[["assess","📋 Assess Practices"],["summary","📊 Score Summary"],["submit","📤 SPRS Submission"],["l3","🎖 CMMC Level 3"],["rev3","🔮 Rev 3 Preview"],["csrmc","🛡 CSRMC"]].map(([id,label]) => (
@@ -369,11 +331,9 @@ export default function SPRSCalculator() {
           </select>
         </div>
       </div>
-
       {/* ── ASSESS TAB ──────────────────────────────────────────────────── */}
       {activeTab === "assess" && (
         <div style={{ flex:1, display:"grid", gridTemplateColumns:"180px 1fr", overflow:"hidden", height:"calc(100vh - 130px)" }}>
-
           {/* Family sidebar */}
           <div style={{ borderRight:`1px solid ${C.border}`, overflowY:"auto", background:C.panel }}>
             <div style={{ padding:"10px 12px", borderBottom:`1px solid ${C.border}` }}>
@@ -399,7 +359,6 @@ export default function SPRSCalculator() {
               );
             })}
           </div>
-
           {/* Practices panel */}
           <div style={{ overflowY:"auto", padding:"16px 20px" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
@@ -427,7 +386,6 @@ export default function SPRSCalculator() {
                 </button>
               </div>
             </div>
-
             {visiblePractices.map(p => {
               const status = statuses[p.id];
               const sOpt = STATUS_OPTS.find(s => s.id === status) || STATUS_OPTS[4];
@@ -451,7 +409,6 @@ export default function SPRSCalculator() {
                       </div>
                       <div style={{ fontSize:12, color:C.text, lineHeight:1.6 }}>{p.title}</div>
                     </div>
-
                     {/* Status selector */}
                     <div style={{ display:"flex", flexDirection:"column", gap:4, flexShrink:0 }}>
                       {STATUS_OPTS.map(s => (
@@ -468,13 +425,11 @@ export default function SPRSCalculator() {
           </div>
         </div>
       )}
-
       {/* ── SUMMARY TAB ─────────────────────────────────────────────────── */}
       {activeTab === "summary" && (
         <div style={{ flex:1, overflowY:"auto", padding:20 }}>
           {/* Score breakdown */}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:20 }}>
-
             {/* Score gauge */}
             <div style={{ background:C.panel, border:`2px solid ${sc}40`, borderRadius:12, padding:24, display:"flex", flexDirection:"column", alignItems:"center" }}>
               <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:0.8, marginBottom:12 }}>YOUR SPRS SCORE</div>
@@ -490,7 +445,6 @@ export default function SPRSCalculator() {
                  "🚨 Negative score — critical unimplemented controls"}
               </div>
             </div>
-
             {/* Practice breakdown */}
             <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
               <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:0.8, marginBottom:14 }}>PRACTICE BREAKDOWN</div>
@@ -518,7 +472,6 @@ export default function SPRSCalculator() {
               </div>
             </div>
           </div>
-
           {/* Family-by-family breakdown */}
           <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:0.8, marginBottom:12 }}>SCORE BY DOMAIN</div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:8 }}>
@@ -550,7 +503,6 @@ export default function SPRSCalculator() {
           </div>
         </div>
       )}
-
       {/* ── SPRS SUBMISSION TAB ─────────────────────────────────────────── */}
       {activeTab === "submit" && (
         <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -571,7 +523,6 @@ export default function SPRSCalculator() {
               ))}
             </div>
           </div>
-
           {/* SPRS submission block */}
           <div style={{ background:C.panel, border:`2px solid ${sc}40`, borderRadius:10, padding:20, marginBottom:16 }}>
             <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:0.8, marginBottom:16 }}>SPRS PORTAL SUBMISSION DATA</div>
@@ -588,7 +539,6 @@ export default function SPRSCalculator() {
                 </div>
               ))}
             </div>
-
             {/* Formatted submission text */}
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:8 }}>SPRS ENTRY FIELDS (copy-paste to SPRS portal)</div>
             <div style={{ background:C.bg, border:`1px solid #0D2030`, borderRadius:8, padding:16, fontFamily:"'Courier New',monospace", fontSize:11, color:"#7AB8D8", lineHeight:2 }}>
@@ -603,7 +553,6 @@ export default function SPRSCalculator() {
               <div><span style={{ color:"#3A5570" }}>Plan of Action Exists:</span>   <span style={{ color:"#C8D8E8" }}>{score.notMetCount + score.partialCount > 0 ? "Yes" : "No"}</span></div>
             </div>
           </div>
-
           {/* Guidance */}
           <div style={{ background:`${C.blue}0A`, border:`1px solid ${C.blue}25`, borderRadius:8, padding:14, marginBottom:14 }}>
             <div style={{ ...mono, fontSize:11, color:C.blue, fontWeight:700, marginBottom:8 }}>ℹ SPRS SUBMISSION GUIDANCE</div>
@@ -615,7 +564,6 @@ export default function SPRSCalculator() {
               <div>5. DFARS 252.204-7019 requires self-assessment results be posted within 30 days of contract award</div>
             </div>
           </div>
-
           {/* POAM summary if needed */}
           {(score.notMetCount + score.partialCount) > 0 && (
             <div style={{ background:`${C.orange}08`, border:`1px solid ${C.orange}30`, borderRadius:8, padding:14 }}>
@@ -637,7 +585,6 @@ export default function SPRSCalculator() {
           )}
         </div>
       )}
-
       {/* ── CMMC L3 TAB ────────────────────────────────────────────────── */}
       {activeTab === "l3" && (
         <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -670,7 +617,6 @@ export default function SPRSCalculator() {
           </div>
         </div>
       )}
-
       {/* ── REV 3 PREVIEW TAB ───────────────────────────────────────────── */}
       {activeTab === "rev3" && (
         <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -680,7 +626,6 @@ export default function SPRSCalculator() {
               Rev 3 was published <strong>May 14, 2024</strong> and reduces from 110 → 97 requirements. However, <strong>DoD Class Deviation 2024-O0013</strong> requires contractors to continue using Rev 2 until further notice. Rev 3 adoption requires new DoD rulemaking — no firm timeline. SentinelGRC will update automatically when mandated.
             </div>
           </div>
-
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:16 }}>
             {[
               { l:"Rev 2 Requirements", v:"110", c:C.blue,  sub:"Current mandatory standard" },
@@ -694,7 +639,6 @@ export default function SPRSCalculator() {
               </div>
             ))}
           </div>
-
           <div style={{ fontFamily:"monospace", fontSize:11, color:C.textMute, fontWeight:600, letterSpacing:0.8, marginBottom:12 }}>KEY CHANGES IN REV 3</div>
           {REV3_CHANGES.map((c,i) => {
             const colors = { new_family:C.green, consolidated:C.orange, enhanced:C.blue, increased:C.teal };
@@ -712,7 +656,6 @@ export default function SPRSCalculator() {
               </div>
             );
           })}
-
           <div style={{ marginTop:16, padding:"12px 16px", background:`${C.green}08`, border:`1px solid ${C.green}25`, borderRadius:8 }}>
             <div style={{ fontFamily:"monospace", fontSize:11, color:C.green, fontWeight:700, marginBottom:4 }}>✅ YOUR PREPARATION STRATEGY</div>
             <div style={{ fontSize:11, color:C.textDim, lineHeight:1.8 }}>
@@ -724,7 +667,6 @@ export default function SPRSCalculator() {
           </div>
         </div>
       )}
-
       {/* ── CSRMC TAB ───────────────────────────────────────────────────── */}
       {activeTab === "csrmc" && (
         <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -736,7 +678,6 @@ export default function SPRSCalculator() {
               <strong> CSRMC has no control catalog</strong> — it's a construct with 5 phases and 10 tenets. CMMC remains the operative compliance regime for DIB contractors.
             </div>
           </div>
-
           {/* 5 Phases */}
           <div style={{ fontFamily:"monospace", fontSize:11, color:C.textMute, fontWeight:600, letterSpacing:0.8, marginBottom:10 }}>5 PHASES</div>
           <div style={{ display:"flex", gap:6, marginBottom:20, overflowX:"auto" }}>
@@ -755,7 +696,6 @@ export default function SPRSCalculator() {
               </div>
             ))}
           </div>
-
           {/* 10 Tenets */}
           <div style={{ fontFamily:"monospace", fontSize:11, color:C.textMute, fontWeight:600, letterSpacing:0.8, marginBottom:10 }}>
             10 TENETS — SENTINELGRC ALIGNMENT ({CSRMC_TENETS.filter(t=>t.aligned).length}/{CSRMC_TENETS.length})
@@ -781,7 +721,6 @@ export default function SPRSCalculator() {
               </div>
             </div>
           ))}
-
           <div style={{ marginTop:16, padding:"12px 16px", background:`${C.blue}08`, border:`1px solid ${C.blue}25`, borderRadius:8 }}>
             <div style={{ fontFamily:"monospace", fontSize:11, color:C.blue, fontWeight:700, marginBottom:4 }}>ℹ CSRMC & DIB CONTRACTORS</div>
             <div style={{ fontSize:11, color:C.textDim, lineHeight:1.8 }}>
