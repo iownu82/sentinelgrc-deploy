@@ -3,7 +3,6 @@ import { useColors } from "../theme.js";
 
 const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
-
 // ─── 800-53 Rev 5 Control Families + Representative Controls ────────────────
 const CONTROL_FAMILIES = [
   {
@@ -99,7 +98,6 @@ const CONTROL_FAMILIES = [
     ]
   },
 ];
-
 // ─── Mock assessment state ────────────────────────────────────────────────────
 const IMPL_STATUS = {
   Implemented:         { label:"Implemented",          color:"#00CC88", bg:"rgba(0,204,136,0.10)", score:1.0  },
@@ -110,9 +108,7 @@ const IMPL_STATUS = {
   Planned:             { label:"Planned",               color:"#FF8C00", bg:"rgba(255,140,0,0.10)",  score:0.0  },
   "Not Assessed":      { label:"Not Assessed",          color:"#3A5570", bg:"rgba(58,85,112,0.10)",  score:0.0  },
 };
-
 const CAT_COLOR = { "I":"#FF4444", "II":"#FF8C00", "III":"#FFD700" };
-
 // Statement templates
 const TEMPLATES = {
   "AC-2": "Account management for [SYSTEM NAME] is implemented through Active Directory group policies managed by [ORG NAME] system administrators. All accounts are reviewed quarterly, and inactive accounts are disabled after 30 days of inactivity. Account creation requires supervisor approval via the [TICKETING SYSTEM] workflow.",
@@ -124,7 +120,6 @@ const TEMPLATES = {
   "SC-7": "Network boundary protection for [SYSTEM NAME] is implemented through [FIREWALL TYPE] firewalls enforcing deny-all/permit-by-exception policies. Perimeter security includes intrusion detection/prevention systems (IDPS), and all inbound/outbound traffic is logged and monitored. External connections are limited to approved ports/protocols documented in the approved ports and protocols list.",
   "SI-3": "Malicious code protection for [SYSTEM NAME] is implemented through Trellix (McAfee) Endpoint Security (ENS) deployed on all Windows endpoints via HBSS (McAfee ePO). Signature updates are applied automatically within 24 hours of availability. CrowdStrike Falcon is deployed as a secondary EDR solution providing behavioral analytics and threat prevention.",
 };
-
 const INITIAL_ASSESSMENTS = {
   "AC-1":  { status:"Inherited",       statement:"Inherited from organizational-level policy maintained by the ISSM. See [ORG] Access Control Policy v2.3, dated [DATE].", evidence:["AC-Policy-v2.3.pdf"], poam:null, stigLinks:[], lastUpdated:"2025-03-15", updatedBy:"J. Doe (ISSO)" },
   "AC-2":  { status:"Implemented",     statement:TEMPLATES["AC-2"], evidence:["AD-Account-Audit-Q1-2025.xlsx","Account-Mgmt-SOP.pdf"], poam:null, stigLinks:["V-253263"], lastUpdated:"2025-03-20", updatedBy:"J. Doe (ISSO)" },
@@ -151,14 +146,11 @@ const INITIAL_ASSESSMENTS = {
   "SI-2":  { status:"Implemented",     statement:"Flaw remediation is managed through ACAS vulnerability scanning and WSUS/SCCM for patch management. Critical patches are applied within 30 days; High within 90 days. Patch compliance is reviewed by the ISSO weekly.", evidence:["Patch-Compliance-Report.xlsx"], poam:null, stigLinks:[], lastUpdated:"2025-03-20", updatedBy:"J. Doe (ISSO)" },
   "SI-3":  { status:"Implemented",     statement:TEMPLATES["SI-3"], evidence:["HBSS-Config.pdf","ENS-Policy.pdf"], poam:null, stigLinks:[], lastUpdated:"2025-03-18", updatedBy:"J. Doe (ISSO)" },
 };
-
 // ─── Colors ───────────────────────────────────────────────────────────────────
 const mono = { fontFamily:"'Courier New', monospace" };
-
 const Badge = ({ label, color, bg }) => (
   <span style={{ ...mono, background:bg||`${color}14`, color, border:`1px solid ${color}40`, borderRadius:3, padding:"2px 7px", fontSize:10, fontWeight:700, whiteSpace:"nowrap" }}>{label}</span>
 );
-
 // ─── Family Progress Bar ──────────────────────────────────────────────────────
 const FamilyProgress = ({ family, assessments, isSelected, onClick }) => {
   const controls = family.controls;
@@ -170,7 +162,6 @@ const FamilyProgress = ({ family, assessments, isSelected, onClick }) => {
   const hasPoam = controls.some(c => assessments[c.id]?.poam);
   const pct = Math.round((implemented.length / controls.length) * 100);
   const color = pct >= 80 ? "#00CC88" : pct >= 50 ? "#00D4AA" : pct >= 30 ? "#FF8C00" : "#FF4444";
-
   return (
     <div onClick={onClick} style={{ padding:"10px 14px", borderBottom:`1px solid #0A1828`, cursor:"pointer", background: isSelected?"rgba(26,90,140,0.2)":"transparent", borderLeft: isSelected?`3px solid ${"#00D4AA"}`:"3px solid transparent" }}>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:5 }}>
@@ -188,7 +179,6 @@ const FamilyProgress = ({ family, assessments, isSelected, onClick }) => {
     </div>
   );
 };
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function SelfAssessment() {
   const C = useColors();
@@ -199,11 +189,9 @@ export default function SelfAssessment() {
   const [editStatement, setEditStatement] = useState(false);
   const [draftStatement, setDraftStatement] = useState("");
   const [view, setView] = useState("assessment"); // assessment | poam | summary
-
   const family = CONTROL_FAMILIES.find(f => f.id === selectedFamily);
   const control = family?.controls.find(c => c.id === selectedControl);
   const assessment = assessments[selectedControl] || { status:"Not Assessed", statement:"", evidence:[], poam:null, stigLinks:[] };
-
   // Overall stats
   const allControls = CONTROL_FAMILIES.flatMap(f => f.controls);
   const stats = useMemo(() => {
@@ -218,7 +206,6 @@ export default function SelfAssessment() {
     const poams = allControls.filter(c => assessments[c.id]?.poam).length;
     return { ...counts, score, total, compliant, poams };
   }, [assessments, allControls]);
-
   const updateStatus = (controlId, status) => {
     setAssessments(prev => {
       const current = prev[controlId] || {};
@@ -235,7 +222,6 @@ export default function SelfAssessment() {
       };
     });
   };
-
   const saveStatement = () => {
     setAssessments(prev => ({
       ...prev,
@@ -243,7 +229,6 @@ export default function SelfAssessment() {
     }));
     setEditStatement(false);
   };
-
   const autoPoams = allControls.filter(c => assessments[c.id]?.poam).map(c => ({
     control_id: c.id,
     title: c.title,
@@ -252,14 +237,11 @@ export default function SelfAssessment() {
     poam_id: assessments[c.id].poam,
     family: CONTROL_FAMILIES.find(f=>f.controls.some(ct=>ct.id===c.id))?.id,
   }));
-
   const scoreColor = stats.score >= 80 ? C.green : stats.score >= 60 ? C.teal : stats.score >= 40 ? C.orange : C.red;
   const circ = 2*Math.PI*30;
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue', Arial, sans-serif", display:"flex", flexDirection:"column" }}>
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#050D15; } ::-webkit-scrollbar-thumb { background:#1A3A5C; } .ctrl-row:hover { background:rgba(26,90,140,0.14) !important; cursor:pointer; } .btn-ghost:hover { opacity:0.8; }`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -293,7 +275,6 @@ export default function SelfAssessment() {
           <button style={{ ...mono, background:C.teal, border:"none", color:C.headerBg, borderRadius:5, padding:"7px 14px", cursor:"pointer", fontSize:10, fontWeight:700 }}>↓ EXPORT SSP + POAM</button>
         </div>
       </div>
-
       {/* Status strip */}
       <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, padding:"6px 20px", gap:16, background:C.rowA }}>
         {Object.entries(IMPL_STATUS).map(([key, s]) => {
@@ -307,7 +288,6 @@ export default function SelfAssessment() {
           );
         })}
       </div>
-
       {view === "poam" ? (
         /* POAM Queue */
         <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -336,7 +316,6 @@ export default function SelfAssessment() {
             <button style={{ ...mono, background:"transparent", border:`1px solid ${C.border}`, color:C.textDim, borderRadius:5, padding:"8px 14px", cursor:"pointer", fontSize:11 }}>+ ADD MANUAL ENTRY</button>
           </div>
         </div>
-
       ) : view === "summary" ? (
         /* Summary View */
         <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -369,11 +348,9 @@ export default function SelfAssessment() {
             })}
           </div>
         </div>
-
       ) : (
         /* Main Assessment View: 3-column layout */
         <div style={{ flex:1, display:"flex", overflow:"hidden", height:"calc(100vh - 107px)" }}>
-
           {/* Col 1: Family list */}
           <div style={{ width:200, borderRight:`1px solid ${C.border}`, overflowY:"auto", background:C.panelAlt }}>
             <div style={{ padding:"10px 14px", borderBottom:`1px solid ${C.border}` }}>
@@ -385,7 +362,6 @@ export default function SelfAssessment() {
                 onClick={() => { setSelectedFamily(f.id); setSelectedControl(f.controls[0].id); setEditStatement(false); }} />
             ))}
           </div>
-
           {/* Col 2: Control list */}
           <div style={{ width:260, borderRight:`1px solid ${C.border}`, overflowY:"auto", background:C.panelAlt }}>
             <div style={{ padding:"10px 14px", borderBottom:`1px solid ${C.border}` }}>
@@ -413,7 +389,6 @@ export default function SelfAssessment() {
               );
             })}
           </div>
-
           {/* Col 3: Control detail */}
           <div style={{ flex:1, overflowY:"auto", display:"flex", flexDirection:"column" }}>
             {control ? (
@@ -446,7 +421,6 @@ export default function SelfAssessment() {
                     </div>
                   </div>
                 </div>
-
                 {/* Tabs */}
                 <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, padding:"0 20px", background:C.rowA }}>
                   {["statement","evidence","stigs","ai_analysis"].map(t => (
@@ -456,9 +430,7 @@ export default function SelfAssessment() {
                     </button>
                   ))}
                 </div>
-
                 <div style={{ padding:20, flex:1 }}>
-
                   {activeTab === "statement" && (
                     <div>
                       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
@@ -491,7 +463,6 @@ export default function SelfAssessment() {
                           )}
                         </div>
                       </div>
-
                       {editStatement ? (
                         <textarea value={draftStatement} onChange={e => setDraftStatement(e.target.value)}
                           style={{ width:"100%", minHeight:160, background:C.input, border:`1px solid ${C.teal}`, borderRadius:6, color:C.text, padding:14, fontSize:12, lineHeight:1.7, resize:"vertical", outline:"none", fontFamily:"inherit" }}
@@ -507,7 +478,6 @@ export default function SelfAssessment() {
                           <div style={{ fontSize:11, color:C.textMute }}>An implementation statement is required for ATO. Click "Add Statement" or use a template.</div>
                         </div>
                       )}
-
                       {/* Status warning */}
                       {(assessment.status === "Not Implemented" || assessment.status === "Planned") && (
                         <div style={{ marginTop:12, background:"rgba(255,68,68,0.07)", border:`1px solid rgba(255,68,68,0.25)`, borderRadius:6, padding:"10px 14px", display:"flex", gap:10, alignItems:"flex-start" }}>
@@ -520,7 +490,6 @@ export default function SelfAssessment() {
                       )}
                     </div>
                   )}
-
                   {activeTab === "evidence" && (
                     <div>
                       <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:12 }}>EVIDENCE ATTACHED TO THIS CONTROL</div>
@@ -542,7 +511,6 @@ export default function SelfAssessment() {
                       <button style={{ ...mono, background:"rgba(26,122,255,0.08)", border:`1px solid rgba(26,122,255,0.25)`, color:C.blue, borderRadius:5, padding:"8px 16px", cursor:"pointer", fontSize:11, marginTop:8 }}>+ Upload Evidence</button>
                     </div>
                   )}
-
                   {activeTab === "stigs" && (
                     <div>
                       <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:12 }}>LINKED STIG / SCAP FINDINGS</div>
@@ -560,7 +528,6 @@ export default function SelfAssessment() {
                       <button style={{ ...mono, background:"rgba(0,212,170,0.08)", border:`1px solid rgba(0,212,170,0.2)`, color:C.teal, borderRadius:5, padding:"8px 16px", cursor:"pointer", fontSize:11, marginTop:8 }}>↓ Import STIG/SCAP Results</button>
                     </div>
                   )}
-
                   {activeTab === "ai_analysis" && (
                     <div>
                       <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:12 }}>AI-ASSISTED STATEMENT GENERATION</div>
