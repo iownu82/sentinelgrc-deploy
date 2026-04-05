@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useColors } from "../theme.js";
 
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:C.bg, panel:C.panel, panelAlt:C.panelAlt, panel2:C.panelAlt, border:C.border, borderMd:C.borderMd, text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:C.input, inputBorder:C.inputBorder, rowA:C.rowA, rowB:C.rowB, scroll:C.inputBorder, headerBg:C.headerBg, teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
 // ─── 800-53 Rev 5 Control Families + Representative Controls ────────────────
@@ -181,7 +181,7 @@ const FamilyProgress = ({ family, assessments, isSelected, onClick }) => {
         <span style={{ ...mono, fontSize:11, fontWeight:700, color }}>{pct}%</span>
       </div>
       <div style={{ fontSize:10, color:"#7A9AB8", marginBottom:6, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{family.name}</div>
-      <div style={{ height:4, background:"#0A1828", borderRadius:2, overflow:"hidden" }}>
+      <div style={{ height:4, background:C.input, borderRadius:2, overflow:"hidden" }}>
         <div style={{ width:`${pct}%`, height:"100%", background:color, borderRadius:2, transition:"width 0.6s ease" }} />
       </div>
       <div style={{ ...mono, fontSize:10, color:"#3A5570", marginTop:4 }}>{assessed.length}/{controls.length} assessed · {implemented.length} compliant</div>
@@ -261,9 +261,9 @@ export default function SelfAssessment() {
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#050D15; } ::-webkit-scrollbar-thumb { background:#1A3A5C; } .ctrl-row:hover { background:rgba(26,90,140,0.14) !important; cursor:pointer; } .btn-ghost:hover { opacity:0.8; }`}</style>
 
       {/* Header */}
-      <div style={{ background:"#020810", borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
+      <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>S</div>
+          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Self-Assessment</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>NIST SP 800-53 REV 5 · SAV PREPARATION · CSRMC PHASE 3</div>
@@ -278,7 +278,7 @@ export default function SelfAssessment() {
           {/* Score gauge */}
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <svg width="66" height="66" viewBox="0 0 66 66">
-              <circle cx="33" cy="33" r="30" fill="none" stroke="#0E2030" strokeWidth="6" />
+              <circle cx="33" cy="33" r="30" fill="none" stroke=C.borderMd strokeWidth="6" />
               <circle cx="33" cy="33" r="30" fill="none" stroke={scoreColor} strokeWidth="6"
                 strokeDasharray={circ} strokeDashoffset={circ - (stats.score/100)*circ}
                 strokeLinecap="round" transform="rotate(-90 33 33)" />
@@ -290,12 +290,12 @@ export default function SelfAssessment() {
               <div style={{ ...mono, fontSize:10, color:C.red }}>{stats.poams} open POAMs</div>
             </div>
           </div>
-          <button style={{ ...mono, background:C.teal, border:"none", color:"#020A10", borderRadius:5, padding:"7px 14px", cursor:"pointer", fontSize:10, fontWeight:700 }}>↓ EXPORT SSP + POAM</button>
+          <button style={{ ...mono, background:C.teal, border:"none", color:C.headerBg, borderRadius:5, padding:"7px 14px", cursor:"pointer", fontSize:10, fontWeight:700 }}>↓ EXPORT SSP + POAM</button>
         </div>
       </div>
 
       {/* Status strip */}
-      <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, padding:"6px 20px", gap:16, background:"#040C14" }}>
+      <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, padding:"6px 20px", gap:16, background:C.rowA }}>
         {Object.entries(IMPL_STATUS).map(([key, s]) => {
           const count = allControls.filter(c => (assessments[c.id]?.status || "Not Assessed") === key).length;
           return (
@@ -332,7 +332,7 @@ export default function SelfAssessment() {
             </div>
           ))}
           <div style={{ marginTop:16, display:"flex", gap:10 }}>
-            <button style={{ ...mono, background:C.teal, border:"none", color:"#020A10", borderRadius:5, padding:"8px 18px", cursor:"pointer", fontSize:11, fontWeight:700 }}>↓ EXPORT eMASS-COMPATIBLE POAM</button>
+            <button style={{ ...mono, background:C.teal, border:"none", color:C.headerBg, borderRadius:5, padding:"8px 18px", cursor:"pointer", fontSize:11, fontWeight:700 }}>↓ EXPORT eMASS-COMPATIBLE POAM</button>
             <button style={{ ...mono, background:"transparent", border:`1px solid ${C.border}`, color:C.textDim, borderRadius:5, padding:"8px 14px", cursor:"pointer", fontSize:11 }}>+ ADD MANUAL ENTRY</button>
           </div>
         </div>
@@ -356,7 +356,7 @@ export default function SelfAssessment() {
                     </div>
                     <span style={{ ...mono, fontSize:14, fontWeight:800, color }}>{pct}%</span>
                   </div>
-                  <div style={{ height:5, background:"#0A1828", borderRadius:3, marginBottom:6, overflow:"hidden" }}>
+                  <div style={{ height:5, background:C.input, borderRadius:3, marginBottom:6, overflow:"hidden" }}>
                     <div style={{ width:`${pct}%`, height:"100%", background:color, borderRadius:3 }} />
                   </div>
                   <div style={{ display:"flex", gap:10 }}>
@@ -375,7 +375,7 @@ export default function SelfAssessment() {
         <div style={{ flex:1, display:"flex", overflow:"hidden", height:"calc(100vh - 107px)" }}>
 
           {/* Col 1: Family list */}
-          <div style={{ width:200, borderRight:`1px solid ${C.border}`, overflowY:"auto", background:"#060E18" }}>
+          <div style={{ width:200, borderRight:`1px solid ${C.border}`, overflowY:"auto", background:C.panelAlt }}>
             <div style={{ padding:"10px 14px", borderBottom:`1px solid ${C.border}` }}>
               <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:1 }}>CONTROL FAMILIES</div>
             </div>
@@ -419,7 +419,7 @@ export default function SelfAssessment() {
             {control ? (
               <>
                 {/* Control header */}
-                <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}`, background:"#040C14", position:"sticky", top:0, zIndex:10 }}>
+                <div style={{ padding:"14px 20px", borderBottom:`1px solid ${C.border}`, background:C.rowA, position:"sticky", top:0, zIndex:10 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                     <div>
                       <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:6 }}>
@@ -435,7 +435,7 @@ export default function SelfAssessment() {
                     <div style={{ display:"flex", flexDirection:"column", gap:4, minWidth:180 }}>
                       <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:1 }}>IMPLEMENTATION STATUS</div>
                       <select value={assessment.status || "Not Assessed"} onChange={e => updateStatus(selectedControl, e.target.value)}
-                        style={{ background:"#0A1828", border:`1px solid ${IMPL_STATUS[assessment.status||"Not Assessed"]?.color||C.border}`, color:IMPL_STATUS[assessment.status||"Not Assessed"]?.color||C.textDim, borderRadius:5, padding:"6px 10px", ...mono, fontSize:11, cursor:"pointer", outline:"none" }}>
+                        style={{ background:C.input, border:`1px solid ${IMPL_STATUS[assessment.status||"Not Assessed"]?.color||C.border}`, color:IMPL_STATUS[assessment.status||"Not Assessed"]?.color||C.textDim, borderRadius:5, padding:"6px 10px", ...mono, fontSize:11, cursor:"pointer", outline:"none" }}>
                         {Object.entries(IMPL_STATUS).map(([k,s]) => (
                           <option key={k} value={k}>{s.label}</option>
                         ))}
@@ -448,7 +448,7 @@ export default function SelfAssessment() {
                 </div>
 
                 {/* Tabs */}
-                <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, padding:"0 20px", background:"#050D15" }}>
+                <div style={{ display:"flex", borderBottom:`1px solid ${C.border}`, padding:"0 20px", background:C.rowA }}>
                   {["statement","evidence","stigs","ai_analysis"].map(t => (
                     <button key={t} onClick={() => setActiveTab(t)}
                       style={{ ...mono, background:"none", border:"none", borderBottom:`2px solid ${activeTab===t?C.teal:"transparent"}`, color:activeTab===t?C.teal:C.textMute, padding:"10px 14px", cursor:"pointer", fontSize:10, fontWeight:activeTab===t?700:400, letterSpacing:0.5, textTransform:"uppercase" }}>
@@ -480,7 +480,7 @@ export default function SelfAssessment() {
                           ) : (
                             <>
                               <button className="btn-ghost" onClick={saveStatement}
-                                style={{ ...mono, background:C.teal, border:"none", color:"#020A10", borderRadius:4, padding:"5px 12px", cursor:"pointer", fontSize:10, fontWeight:700 }}>
+                                style={{ ...mono, background:C.teal, border:"none", color:C.headerBg, borderRadius:4, padding:"5px 12px", cursor:"pointer", fontSize:10, fontWeight:700 }}>
                                 ✓ Save
                               </button>
                               <button className="btn-ghost" onClick={() => setEditStatement(false)}
@@ -494,7 +494,7 @@ export default function SelfAssessment() {
 
                       {editStatement ? (
                         <textarea value={draftStatement} onChange={e => setDraftStatement(e.target.value)}
-                          style={{ width:"100%", minHeight:160, background:"#0A1828", border:`1px solid ${C.teal}`, borderRadius:6, color:C.text, padding:14, fontSize:12, lineHeight:1.7, resize:"vertical", outline:"none", fontFamily:"inherit" }}
+                          style={{ width:"100%", minHeight:160, background:C.input, border:`1px solid ${C.teal}`, borderRadius:6, color:C.text, padding:14, fontSize:12, lineHeight:1.7, resize:"vertical", outline:"none", fontFamily:"inherit" }}
                           placeholder="Describe how this control is implemented, who is responsible, what tools/systems are used, and where additional documentation exists..." />
                       ) : assessment.statement ? (
                         <div style={{ background:C.panel, border:`1px solid ${C.border}`, borderRadius:8, padding:16 }}>
@@ -577,7 +577,7 @@ export default function SelfAssessment() {
                           ))}
                         </div>
                       </div>
-                      <button style={{ ...mono, background:C.teal, border:"none", color:"#020A10", borderRadius:5, padding:"10px 20px", cursor:"pointer", fontSize:11, fontWeight:700, width:"100%" }}>
+                      <button style={{ ...mono, background:C.teal, border:"none", color:C.headerBg, borderRadius:5, padding:"10px 20px", cursor:"pointer", fontSize:11, fontWeight:700, width:"100%" }}>
                         ⚡ Generate Statement with AI (Bedrock Claude)
                       </button>
                     </div>
