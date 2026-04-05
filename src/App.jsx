@@ -178,7 +178,7 @@ function AppInner() {
                 ● DEMO MODE — GOVCLOUD BACKEND PENDING
               </div>
               <div style={{ ...mono, fontSize:10, color:A.green, background:`${A.green}0A`, border:`1px solid ${A.green}20`, borderRadius:4, padding:"4px 10px" }}>
-                ● ACME DEFENSE CORP
+                ● BALLARD IS3
               </div>
             </div>
           </div>

@@ -170,10 +170,10 @@ export default function MultiFramework() {
       {/* Header */}
       <div style={{ background:"#020810", borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>S</div>
+          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>RR</div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:C.white }}> Multi-Framework</div>
-            <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>ASSESS ONCE Â· COMPLY WITH ALL</div>
+            <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>ASSESS ONCE · COMPLY WITH ALL</div>
           </div>
           <div style={{ width:1, height:24, background:C.border, margin:"0 8px" }} />
           {NAV.map(n => (
