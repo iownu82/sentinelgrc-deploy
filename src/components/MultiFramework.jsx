@@ -172,7 +172,7 @@ export default function MultiFramework() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>RR</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}> Multi-Framework</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>Multi-Framework</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>ASSESS ONCE · COMPLY WITH ALL</div>
           </div>
           <div style={{ width:1, height:24, background:C.border, margin:"0 8px" }} />
@@ -184,7 +184,7 @@ export default function MultiFramework() {
         {/* Deploy mode toggle */}
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
           <span style={{ ...mono, fontSize:11, color:C.textMute }}>DEPLOY MODE:</span>
-          {[["dod","ð DoD Site"],["contractor","ð¢ Contractor Site"],["dual","â¡ Dual (LM/F-35)"]].map(([m,l]) => (
+          {[["dod","🏛 DoD Site"],["contractor","🏢 Contractor Site"],["dual","â¡ Dual (LM/F-35)"]].map(([m,l]) => (
             <button key={m} onClick={() => setDeployMode(m)}
               style={{ ...mono, background:deployMode===m?"rgba(0,212,170,0.08)":"transparent", border:`1px solid ${deployMode===m?"rgba(0,212,170,0.3)":C.border}`, color:deployMode===m?C.teal:C.textMute, borderRadius:4, padding:"4px 10px", cursor:"pointer", fontSize:11, fontWeight:deployMode===m?700:400 }}>{l}</button>
           ))}
@@ -195,7 +195,7 @@ export default function MultiFramework() {
       <div style={{ background:deployMode==="dual"?"rgba(170,102,255,0.07)":deployMode==="dod"?"rgba(0,212,170,0.05)":"rgba(26,122,255,0.05)", borderBottom:`1px solid ${deployMode==="dual"?"rgba(170,102,255,0.2)":deployMode==="dod"?"rgba(0,212,170,0.2)":"rgba(26,122,255,0.2)"}`, padding:"8px 20px", display:"flex", gap:20, alignItems:"center" }}>
         {deployMode === "dual" && (
           <>
-            <span style={{ fontSize:14 }}>â¡</span>
+            
             <span style={{ fontSize:11, color:C.textDim }}>
               <strong style={{ color:"#AA66FF" }}>Dual Mode Active (LM / F-35 JSF)</strong> â One assessment satisfies: NIST 800-53 Rev 5 (DoD ATO) + NIST 800-171 (DFARS) + CMMC 2.0 Level 2/3 (LM contractor) + CSRMC (DoD Sep 2025) simultaneously.
             </span>
@@ -218,7 +218,7 @@ export default function MultiFramework() {
                 const isActive = deployMode==="dual" || (deployMode==="dod" && ["n800_53","csrmc"].includes(key)) || (deployMode==="contractor" && ["n800_171","cmmc_l1","cmmc_l2","cmmc_l3"].includes(key));
                 return (
                   <div key={key} style={{ background:C.panel, border:`2px solid ${isActive?`${fw.color}40`:C.border}`, borderRadius:10, padding:"14px 12px", textAlign:"center", opacity:isActive?1:0.35 }}>
-                    <div style={{ fontSize:20, marginBottom:6 }}>{fw.icon}</div>
+                    <div style={{ fontSize:20, marginBottom:6 }}></div>
                     <GaugeArc score={data.score} color={fw.color} size={70} />
                     <div style={{ ...mono, fontSize:10, fontWeight:700, color:fw.color, marginTop:8 }}>{fw.short}</div>
                     <div style={{ fontSize:11, color:C.textMute, marginTop:2 }}>
