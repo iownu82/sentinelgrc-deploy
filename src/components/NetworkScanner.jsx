@@ -227,7 +227,7 @@ export default function NetworkScanner() {
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column",
       filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
-      <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||"#1A3A5C"};border-radius:2px}`}</style>
+      <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
 
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
@@ -357,7 +357,7 @@ export default function NetworkScanner() {
             )}
 
             {/* Terminal log */}
-            <div ref={logRef} style={{ flex:1, background:"#010810", border:`1px solid #0D2030`, borderRadius:8, padding:14, overflowY:"auto", fontFamily:"'Courier New',monospace", fontSize:11, lineHeight:1.8 }}>
+            <div ref={logRef} style={{ flex:1, background:C.bg, border:`1px solid #0D2030`, borderRadius:8, padding:14, overflowY:"auto", fontFamily:"'Courier New',monospace", fontSize:11, lineHeight:1.8 }}>
               {scanLog.length === 0 ? (
                 <div style={{ color:"#3A5570", textAlign:"center", marginTop:40 }}>
                   <div style={{ fontSize:32, marginBottom:10 }}>📡</div>
