@@ -1,10 +1,11 @@
 import { useState, useRef, useMemo, useCallback } from "react";
 import { useColors, useTheme } from "../theme.js";
 
+const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+
 // ── Severity mappings ─────────────────────────────────────────────────────
 // Nessus severity int → label
 const NESSUS_SEV = { 0:"Info", 1:"Low", 2:"Medium", 3:"High", 4:"Critical" };
-
 // DoD CAT mapping — prefer stig_severity field, fallback to CVSS/severity int
 function getDoD_CAT(stigSev, nessus_sev_int, cvss3, cvss2) {
   if (stigSev === "I"  || stigSev === "1") return "I";
@@ -17,7 +18,6 @@ function getDoD_CAT(stigSev, nessus_sev_int, cvss3, cvss2) {
   if (score > 0    || nessus_sev_int === 1) return "III";
   return null; // Info — no CAT
 }
-
 // NIST 800-53 control family suggestions by plugin family
 const FAMILY_TO_CONTROL = {
   "Windows":           ["CM-6","SI-2","CM-7"],
@@ -42,37 +42,28 @@ const FAMILY_TO_CONTROL = {
   "SNMP":              ["CM-6","SC-8","IA-3"],
   "Backdoors":         ["SI-3","IR-4","SC-7"],
 };
-
 function suggestControls(pluginFamily) {
   return FAMILY_TO_CONTROL[pluginFamily] || ["SI-2","RA-5","CM-6"];
 }
-
 // ── XML Parser ────────────────────────────────────────────────────────────
 function parseNessusFile(xmlText) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlText, "text/xml");
-
   const parseError = doc.querySelector("parsererror");
   if (parseError) throw new Error("Invalid XML — not a valid .nessus file");
-
   const root = doc.querySelector("NessusClientData_v2");
   if (!root) throw new Error("Not a valid .nessus file — missing NessusClientData_v2 root element");
-
   const reportName = doc.querySelector("Report")?.getAttribute("name") || "Unknown Scan";
   const findings = [];
   const hosts = [];
-
   const reportHosts = doc.querySelectorAll("ReportHost");
-
   reportHosts.forEach(host => {
     const hostName = host.getAttribute("name") || "Unknown";
-
     // Host properties
     const props = {};
     host.querySelectorAll("HostProperties tag").forEach(tag => {
       props[tag.getAttribute("name")] = tag.textContent;
     });
-
     const hostInfo = {
       name: hostName,
       ip: props["host-ip"] || hostName,
@@ -85,7 +76,6 @@ function parseNessusFile(xmlText) {
       credentialed: props["Credentialed_Scan"] === "true" || props["credentialed_scan"] === "true",
     };
     hosts.push(hostInfo);
-
     // ReportItems
     host.querySelectorAll("ReportItem").forEach(item => {
       const pluginID   = item.getAttribute("pluginID") || "";
@@ -95,11 +85,9 @@ function parseNessusFile(xmlText) {
       const port       = item.getAttribute("port") || "0";
       const protocol   = item.getAttribute("protocol") || "";
       const svcName    = item.getAttribute("svc_name") || "";
-
       // Skip severity 0 (informational) unless it has a stig_severity
       const stigSev    = item.querySelector("stig_severity")?.textContent?.trim() || "";
       if (sevInt === 0 && !stigSev) return;
-
       const cvss3      = item.querySelector("cvss3_base_score")?.textContent?.trim() || "";
       const cvss2      = item.querySelector("cvss_base_score")?.textContent?.trim() || "";
       const cvss3Vec   = item.querySelector("cvss3_vector")?.textContent?.trim() || "";
@@ -116,9 +104,7 @@ function parseNessusFile(xmlText) {
       const inNews       = item.querySelector("in_the_news")?.textContent?.trim() === "true";
       const metasploit   = item.querySelector("exploit_framework_metasploit")?.textContent?.trim() === "true";
       const seeAlso    = item.querySelector("see_also")?.textContent?.trim() || "";
-
       const dodCat = getDoD_CAT(stigSev, sevInt, cvss3, cvss2);
-
       findings.push({
         id: `${pluginID}-${hostName}-${port}`,
         pluginID,
@@ -153,7 +139,6 @@ function parseNessusFile(xmlText) {
       });
     });
   });
-
   // Sort: CAT I first, then by CVSS desc
   findings.sort((a, b) => {
     const catOrder = {"I":0,"II":1,"III":2,null:3};
@@ -161,10 +146,8 @@ function parseNessusFile(xmlText) {
     if (co !== 0) return co;
     return (b.cvss3 || b.cvss2 || 0) - (a.cvss3 || a.cvss2 || 0);
   });
-
   return { reportName, hosts, findings };
 }
-
 // ── Sample .nessus XML for demo ───────────────────────────────────────────
 const SAMPLE_NESSUS = `<?xml version="1.0" ?>
 <NessusClientData_v2>
@@ -274,11 +257,9 @@ const SAMPLE_NESSUS = `<?xml version="1.0" ?>
 </ReportHost>
 </Report>
 </NessusClientData_v2>`;
-
 // ── Sub-components ────────────────────────────────────────────────────────
 function CATBadge({ cat, C }) {
   if (!cat) return null;
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
   const colors = { I:C.red, II:C.orange, III:C.gold };
   const col = colors[cat] || C.textMute;
   return (
@@ -287,7 +268,6 @@ const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C",
     </span>
   );
 }
-
 function SevBadge({ sev, C }) {
   const colors = { Critical:C.red, High:C.orange, Medium:C.gold, Low:C.blue, Info:C.textMute };
   const col = colors[sev] || C.textMute;
@@ -297,14 +277,12 @@ function SevBadge({ sev, C }) {
     </span>
   );
 }
-
 // ── Main component ────────────────────────────────────────────────────────
 export default function NessusImporter() {
   const C = useColors();
   const theme = useTheme();
   const mono = { fontFamily:"'Courier New',monospace" };
   const fileRef = useRef(null);
-
   const [scanData, setScanData]     = useState(null);
   const [error, setError]           = useState(null);
   const [dragging, setDragging]     = useState(false);
@@ -316,7 +294,6 @@ export default function NessusImporter() {
   const [filterExploit, setFilterExploit] = useState(false);
   const [search, setSearch]         = useState("");
   const [activeTab, setActiveTab]   = useState("findings"); // findings | hosts | poam | export
-
   const loadFile = useCallback((text, filename) => {
     setParsing(true);
     setError(null);
@@ -331,7 +308,6 @@ export default function NessusImporter() {
     }
     setParsing(false);
   }, []);
-
   const handleDrop = (e) => {
     e.preventDefault();
     setDragging(false);
@@ -345,7 +321,6 @@ export default function NessusImporter() {
     reader.onload = (ev) => loadFile(ev.target.result, file.name);
     reader.readAsText(file);
   };
-
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -353,9 +328,7 @@ export default function NessusImporter() {
     reader.onload = (ev) => loadFile(ev.target.result, file.name);
     reader.readAsText(file);
   };
-
   const loadDemo = () => loadFile(SAMPLE_NESSUS, "SentinelGRC_Demo_Scan.nessus");
-
   const addToPoam = useCallback((finding) => {
     if (poamItems.find(p => p.id === finding.id)) return;
     setPoamItems(prev => [...prev, {
@@ -368,7 +341,6 @@ export default function NessusImporter() {
       milestones: finding.dodCat==="I"?"Apply vendor patch within 30 days":"Apply vendor patch within scheduled maintenance window",
     }]);
   }, [poamItems]);
-
   // Filtered findings
   const findings = useMemo(() => {
     if (!scanData) return [];
@@ -382,7 +354,6 @@ export default function NessusImporter() {
         f.cve.toLowerCase().includes(search.toLowerCase()) ||
         f.pluginID.includes(search));
   }, [scanData, filterCat, filterHost, filterExploit, search]);
-
   // KPIs
   const kpis = useMemo(() => {
     if (!scanData) return null;
@@ -397,7 +368,6 @@ export default function NessusImporter() {
       credentialed: scanData.hosts.filter(h=>h.credentialed).length,
     };
   }, [scanData]);
-
   // Export POAM as CSV
   const exportPoam = () => {
     if (!poamItems.length) return;
@@ -413,14 +383,11 @@ export default function NessusImporter() {
     const a = document.createElement("a"); a.href=url; a.download="POAM_from_nessus.csv"; a.click();
     URL.revokeObjectURL(url);
   };
-
   const catColor = { I:C.red, II:C.orange, III:C.gold };
-
   return (
     <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"'Helvetica Neue',Arial,sans-serif", display:"flex", flexDirection:"column",
       filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
       <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${C.bg}}::-webkit-scrollbar-thumb{background:${C.scroll||C.inputBorder};border-radius:2px}`}</style>
-
       {/* Header */}
       <div style={{ background:C.headerBg||C.panel, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -438,7 +405,6 @@ export default function NessusImporter() {
           </div>
         )}
       </div>
-
       {/* Drop zone (when no file loaded) */}
       {!scanData && (
         <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:40 }}>
@@ -458,20 +424,17 @@ export default function NessusImporter() {
             <div style={{ fontSize:12, color:C.textDim, marginBottom:6 }}>or click to browse</div>
             <div style={{ ...mono, fontSize:11, color:C.textMute, marginTop:10 }}>Exports from: Nessus Professional · Nessus Expert · ACAS · Tenable.sc</div>
           </div>
-
           <div style={{ display:"flex", gap:10, alignItems:"center" }}>
             <div style={{ height:1, width:60, background:C.border }} />
             <span style={{ ...mono, fontSize:11, color:C.textMute }}>or</span>
             <div style={{ height:1, width:60, background:C.border }} />
           </div>
-
           <button onClick={loadDemo} style={{ marginTop:14, ...mono, background:`${C.blue}0F`, border:`1px solid ${C.blue}30`, color:C.blue, borderRadius:6, padding:"10px 24px", cursor:"pointer", fontSize:12, fontWeight:700 }}>
             ▶ LOAD DEMO SCAN (F-35 Enclave)
           </button>
           <div style={{ ...mono, fontSize:11, color:C.textMute, marginTop:8 }}>7 findings across 2 hosts · CAT I/II/III · Credentialed scan</div>
         </div>
       )}
-
       {/* Main content (after file loaded) */}
       {scanData && (
         <>
@@ -494,7 +457,6 @@ export default function NessusImporter() {
                 </div>
               ))}
             </div>
-
             {/* Tab bar */}
             <div style={{ display:"flex", padding:"0 20px" }}>
               {[["findings","🔍 Findings"],["hosts","🖥 Hosts"],["poam",`📋 POAM (${poamItems.length})`],["export","📤 Export"]].map(([id,label]) => (
@@ -514,7 +476,6 @@ export default function NessusImporter() {
               </div>
             </div>
           </div>
-
           {/* ── FINDINGS TAB ──────────────────────────────────────────── */}
           {activeTab === "findings" && (
             <div style={{ flex:1, display:"flex", overflow:"hidden", height:"calc(100vh - 200px)" }}>
@@ -542,7 +503,6 @@ export default function NessusImporter() {
                   </label>
                   <span style={{ ...mono, fontSize:11, color:C.textMute, alignSelf:"center" }}>{findings.length} findings</span>
                 </div>
-
                 <div style={{ flex:1, overflowY:"auto" }}>
                   {findings.map(f => {
                     const isSel = selected?.id === f.id;
@@ -568,7 +528,6 @@ export default function NessusImporter() {
                   })}
                 </div>
               </div>
-
               {/* Finding detail */}
               {selected && (
                 <div style={{ flex:0.5, overflowY:"auto", background:C.panel }}>
@@ -589,14 +548,12 @@ export default function NessusImporter() {
                       <button onClick={()=>setSelected(null)} style={{ background:"transparent", border:`1px solid ${C.border}`, color:C.textMute, borderRadius:4, padding:"3px 9px", cursor:"pointer", fontSize:11, marginLeft:10 }}>✕</button>
                     </div>
                   </div>
-
                   <div style={{ padding:16 }}>
                     {/* Synopsis */}
                     <div style={{ background:`${catColor[selected.dodCat]||C.border}08`, border:`1px solid ${catColor[selected.dodCat]||C.border}25`, borderRadius:7, padding:13, marginBottom:13 }}>
                       <div style={{ ...mono, fontSize:10, color:C.textMute, fontWeight:600, marginBottom:5 }}>SYNOPSIS</div>
                       <div style={{ fontSize:12, color:C.text, lineHeight:1.7 }}>{selected.synopsis}</div>
                     </div>
-
                     {/* Metadata grid */}
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:13 }}>
                       {[
@@ -615,13 +572,11 @@ export default function NessusImporter() {
                         </div>
                       ))}
                     </div>
-
                     {/* Description */}
                     <div style={{ marginBottom:13 }}>
                       <div style={{ ...mono, fontSize:10, color:C.textMute, fontWeight:600, marginBottom:5 }}>DESCRIPTION</div>
                       <div style={{ fontSize:11, color:C.textDim, lineHeight:1.8 }}>{selected.description}</div>
                     </div>
-
                     {/* Plugin output */}
                     {selected.pluginOutput && (
                       <div style={{ marginBottom:13 }}>
@@ -631,13 +586,11 @@ export default function NessusImporter() {
                         </div>
                       </div>
                     )}
-
                     {/* Solution */}
                     <div style={{ background:`${C.green}08`, border:`1px solid ${C.green}25`, borderRadius:7, padding:13, marginBottom:13 }}>
                       <div style={{ ...mono, fontSize:10, color:C.green, fontWeight:600, marginBottom:5 }}>✓ REMEDIATION</div>
                       <div style={{ fontSize:11, color:C.textDim, lineHeight:1.7 }}>{selected.solution}</div>
                     </div>
-
                     {/* Suggested NIST controls */}
                     <div style={{ marginBottom:13 }}>
                       <div style={{ ...mono, fontSize:10, color:C.textMute, fontWeight:600, marginBottom:7 }}>SUGGESTED NIST 800-53 CONTROLS</div>
@@ -647,7 +600,6 @@ export default function NessusImporter() {
                         ))}
                       </div>
                     </div>
-
                     {/* Actions */}
                     <div style={{ display:"flex", gap:8 }}>
                       <button onClick={()=>addToPoam(selected)}
@@ -661,7 +613,6 @@ export default function NessusImporter() {
               )}
             </div>
           )}
-
           {/* ── HOSTS TAB ─────────────────────────────────────────────── */}
           {activeTab === "hosts" && (
             <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -696,7 +647,6 @@ export default function NessusImporter() {
               </div>
             </div>
           )}
-
           {/* ── POAM TAB ──────────────────────────────────────────────── */}
           {activeTab === "poam" && (
             <div style={{ flex:1, overflowY:"auto", padding:20 }}>
@@ -743,7 +693,6 @@ export default function NessusImporter() {
               )}
             </div>
           )}
-
           {/* ── EXPORT TAB ────────────────────────────────────────────── */}
           {activeTab === "export" && (
             <div style={{ flex:1, overflowY:"auto", padding:20 }}>
