@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useColors } from "../theme.js";
 import { loadSprsAssessment, saveSprsAssessment } from "../supabase.js";
 import { useAuth } from "./Auth.jsx";
 import { useColors, useTheme } from "../theme.js";
