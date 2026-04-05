@@ -111,8 +111,8 @@ function AppInner() {
                   <span style={{ fontSize:16, flexShrink:0 }}>{n.icon}</span>
                   {sidebarOpen && (
                     <div>
-                      <div style={{ fontSize:11, fontWeight:isActive?600:400, color:isActive?A.teal:t.dim, whiteSpace:"nowrap" }}>{n.label}</div>
-                      <div style={{ ...mono, fontSize:10, color:t.mute, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{n.desc}</div>
+                      <div style={{ fontSize:12, fontWeight:700, color:isActive?A.teal:(theme==="light"?"#111111":t.dim), whiteSpace:"nowrap" }}>{n.label}</div>
+                      <div style={{ ...mono, fontSize:10, color:theme==="light"?"#444444":t.mute, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{n.desc}</div>
                     </div>
                   )}
                 </div>
