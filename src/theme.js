@@ -20,19 +20,18 @@ const DARK = {
 };
 
 const LIGHT = {
-  bg:"#EEF3F8", panel:"#FFFFFF", panelAlt:"#F4F8FC", panel2:"#F4F8FC",
-  border:"#C0D0E0", borderMd:"#A0B8D0",
-  // After invert filter: near-black pre-filter → near-white post-filter = crisp readable text
-  text:"#020608",        // almost black → inverts to almost white
-  textDim:"#060E18",     // very dark → inverts to bright
-  dim:"#060E18",
-  textMute:"#0A1828",    // dark navy → inverts to light
-  mute:"#0A1828",
-  white:"#010305",       // blackest → inverts to white headings
+  bg:"#F4F7FB", panel:"#FFFFFF", panelAlt:"#EEF3F8", panel2:"#EEF3F8",
+  border:"#C0CDD8", borderMd:"#A0B4C4",
+  text:"#0D1B2A",       // near-black — main body text
+  textDim:"#1E3448",    // dark navy — secondary text
+  dim:"#1E3448",
+  textMute:"#374F66",   // medium-dark — captions/labels, clearly readable
+  mute:"#374F66",
+  white:"#0A1525",      // darkest — headings
   input:"#FFFFFF", inputBorder:"#98B8D0",
   rowA:"#FFFFFF", rowB:"#F4F8FC", scroll:"#98B8D0", headerBg:"#FFFFFF",
-  teal:"#005C48", blue:"#003E9A", red:"#A01818",
-  orange:"#8A3800", gold:"#6A4C00", green:"#004C2C", purple:"#461E8A",
+  teal:"#007A5E", blue:"#1A5FCC", red:"#C0181E",
+  orange:"#B05000", gold:"#8A6A00", green:"#006B3C", purple:"#6A2FBB",
 };
 
 export const THEMES = { dark: DARK, light: LIGHT };
