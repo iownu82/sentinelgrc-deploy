@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useColors } from "../theme.js";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from "recharts";
 
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:C.bg, panel:C.panel, panelAlt:C.panelAlt, panel2:C.panelAlt, border:C.border, borderMd:C.borderMd, text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:C.input, inputBorder:C.inputBorder, rowA:C.rowA, rowB:C.rowB, scroll:C.inputBorder, headerBg:C.headerBg, teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
 
 
 // ─── Mock Data representing normalized findings from all sources ───────────────
@@ -96,9 +96,9 @@ export default function UnifiedDashboard() {
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#050D15; } ::-webkit-scrollbar-thumb { background:#1A3A5C; } .row-hover:hover { background:rgba(26,90,140,0.14) !important; cursor:pointer; } .btn-hover:hover { opacity:0.8; }`}</style>
 
       {/* Header */}
-      <div style={{ background:"#020810", borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
+      <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>S</div>
+          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>UNIFIED SECURITY OPERATIONS CENTER · cATO DASHBOARD</div>
@@ -149,7 +149,7 @@ export default function UnifiedDashboard() {
                   <BarChart data={bySource} layout="vertical" margin={{top:0,right:8,left:0,bottom:0}}>
                     <XAxis type="number" tick={{fill:C.textMute,fontSize:11}} axisLine={false} tickLine={false} />
                     <YAxis dataKey="name" type="category" tick={{fill:C.textDim,fontSize:11,...mono}} axisLine={false} tickLine={false} width={70} />
-                    <Tooltip contentStyle={{background:"#0A1828",border:`1px solid ${C.border}`,borderRadius:6,fontSize:11,color:C.text}} />
+                    <Tooltip contentStyle={{background:C.input,border:`1px solid ${C.border}`,borderRadius:6,fontSize:11,color:C.text}} />
                     <Bar dataKey="value" radius={[0,3,3,0]}>
                       {bySource.map((e,i) => <Cell key={i} fill={e.color} />)}
                     </Bar>
@@ -213,7 +213,7 @@ export default function UnifiedDashboard() {
               {/* Filters */}
               <div style={{ display:"flex", gap:8, marginBottom:12, flexWrap:"wrap" }}>
                 <select value={filterSource} onChange={e=>setFilterSource(e.target.value)}
-                  style={{ ...mono, background:"#0A1828", border:`1px solid ${C.border}`, color:C.textDim, borderRadius:4, padding:"5px 10px", fontSize:10, cursor:"pointer", outline:"none" }}>
+                  style={{ ...mono, background:C.input, border:`1px solid ${C.border}`, color:C.textDim, borderRadius:4, padding:"5px 10px", fontSize:10, cursor:"pointer", outline:"none" }}>
                   <option value="ALL">All Sources</option>
                   {Object.entries(SOURCES).map(([k,s]) => <option key={k} value={k}>{s.label}</option>)}
                 </select>
@@ -279,7 +279,7 @@ export default function UnifiedDashboard() {
                 <div style={{ borderTop:`1px solid ${C.border}`, paddingTop:10, marginTop:10 }}>
                   <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:1, marginBottom:8 }}>NIST MAPPING</div>
                   <div style={{ ...mono, fontSize:11, color:C.teal, marginBottom:6 }}>{selectedFinding.control}</div>
-                  <button style={{ width:"100%", padding:"9px 0", background:C.teal, border:"none", color:"#020A10", borderRadius:5, cursor:"pointer", ...mono, fontSize:11, fontWeight:700, marginBottom:8 }}>
+                  <button style={{ width:"100%", padding:"9px 0", background:C.teal, border:"none", color:C.headerBg, borderRadius:5, cursor:"pointer", ...mono, fontSize:11, fontWeight:700, marginBottom:8 }}>
                     + CREATE POAM ENTRY
                   </button>
                   <button style={{ width:"100%", padding:"9px 0", background:"transparent", border:`1px solid ${C.border}`, color:C.textDim, borderRadius:5, cursor:"pointer", ...mono, fontSize:11 }}>
@@ -328,12 +328,12 @@ export default function UnifiedDashboard() {
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
             <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:4 }}>NIST 800-53 CONTROL FAMILY COVERAGE — SOURCES MAPPED PER FAMILY</div>
             {CONTROL_COVERAGE.map((cf, i) => (
-              <div key={cf.family} style={{ background: i%2===0?C.panel:"#0A1425", border:`1px solid ${C.border}`, borderRadius:8, padding:"14px 18px" }}>
+              <div key={cf.family} style={{ background: i%2===0?C.panel:C.bg, border:`1px solid ${C.border}`, borderRadius:8, padding:"14px 18px" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
                   <div style={{ ...mono, fontWeight:700, fontSize:14, color:C.teal, minWidth:32 }}>{cf.family}</div>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:12, color:C.white, marginBottom:4 }}>{cf.name}</div>
-                    <div style={{ height:6, background:"#0A1828", borderRadius:3, overflow:"hidden" }}>
+                    <div style={{ height:6, background:C.input, borderRadius:3, overflow:"hidden" }}>
                       <div style={{ width:`${cf.score}%`, height:"100%", background:cf.score>=80?C.green:cf.score>=60?C.teal:cf.score>=40?C.orange:C.red, borderRadius:3, transition:"width 0.8s ease" }} />
                     </div>
                   </div>
