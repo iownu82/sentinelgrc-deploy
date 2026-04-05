@@ -64,7 +64,7 @@ function AppInner() {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div style={{ display:"flex", minHeight:"100vh", background:"#03080E", color:"#C8D8E8", filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
+      <div style={{ display:"flex", minHeight:"100vh", background:t.bg, color:t.text }}>
         <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${t.bg}}::-webkit-scrollbar-thumb{background:${t.scroll};border-radius:2px}*{box-sizing:border-box;margin:0;padding:0;transition:background-color 0.2s,border-color 0.2s,color 0.2s}`}</style>
 
         {/* Sidebar */}
@@ -162,10 +162,10 @@ function AppInner() {
       {showAuth && <AuthModal onClose={()=>setShowAuth(false)} />}
 
         {/* Main */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden", filter:theme==="light"?"invert(1) hue-rotate(180deg) saturate(0.7) brightness(1.05)":"none" }}>
 
           {/* Top bar */}
-          <div style={{ background:theme==="light"?"#02060C":t.headerBg, borderBottom:`1px solid ${theme==="light"?"#0D1E2E":t.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
+          <div style={{ background:t.headerBg, borderBottom:`1px solid ${t.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <span style={{ fontSize:18 }}>{current?.icon}</span>
               <div>
