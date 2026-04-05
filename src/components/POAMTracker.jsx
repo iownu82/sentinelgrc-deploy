@@ -423,6 +423,7 @@ function Detail({ poam, onUpdate, onClose }) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function POAMTracker() {
+  const C = useColors();
   const [theme, setTheme] = useState("dark");
   const [poams, setPoams] = useState(POAMS_INIT);
   const [sel, setSel] = useState(null);
