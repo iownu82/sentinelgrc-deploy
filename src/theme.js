@@ -22,13 +22,13 @@ const DARK = {
 const LIGHT = {
   bg:"#EEF3F8", panel:"#FFFFFF", panelAlt:"#F4F8FC", panel2:"#F4F8FC",
   border:"#C0D0E0", borderMd:"#A0B8D0",
-  // ── Text — all dark for readability on white ──
-  text:"#0A1828",        // near-black main text
-  textDim:"#1E3450",     // was #2A4060 — even darker secondary
-  dim:"#1E3450",
-  textMute:"#3A5878",    // was #4A6080 — much darker labels/captions
-  mute:"#3A5878",
-  white:"#060E1A",       // heading color in light mode — near-black
+  // After invert filter: near-black pre-filter → near-white post-filter = crisp readable text
+  text:"#020608",        // almost black → inverts to almost white
+  textDim:"#060E18",     // very dark → inverts to bright
+  dim:"#060E18",
+  textMute:"#0A1828",    // dark navy → inverts to light
+  mute:"#0A1828",
+  white:"#010305",       // blackest → inverts to white headings
   input:"#FFFFFF", inputBorder:"#98B8D0",
   rowA:"#FFFFFF", rowB:"#F4F8FC", scroll:"#98B8D0", headerBg:"#FFFFFF",
   teal:"#005C48", blue:"#003E9A", red:"#A01818",
