@@ -390,7 +390,7 @@ export default function MultiFramework() {
               {[
                 { phase:"Phase 1: Design", tenets:["Cyber-informed engineering from Day 1","Security requirements embedded in architecture","Supply chain risk management plan","System boundary and categorization"], controls:["CA-2","CA-6","RA-3","SA-8","SR-2","PM-9"], score:72 },
                 { phase:"Phase 2: Build", tenets:["DevSecOps integration","Measurable survivability parameters","STIG/SRG configuration baselines","Supply chain component verification"], controls:["CM-2","CM-6","CM-7","SI-7","SR-11","SA-11"], score:68 },
-                { phase:"Phase 3: Test", tenets:["Threat-informed validation","Penetration testing","Automated compliance checks","AI-assisted assessment (SentinelGRC)"], controls:["CA-2","RA-5","SI-2","AU-2","CA-7"], score:81 },
+                { phase:"Phase 3: Test", tenets:["Threat-informed validation","Penetration testing","Automated compliance checks","AI-assisted assessment (RiskRadar)"], controls:["CA-2","RA-5","SI-2","AU-2","CA-7"], score:81 },
                 { phase:"Phase 4: Onboard", tenets:["cATO enrollment","ISCM pipeline activated","Real-time monitoring begins","Constant ATO posture established"], controls:["CA-7","AU-12","AC-2","IA-2","SC-7"], score:65 },
                 { phase:"Phase 5: Operations", tenets:["Real-time dashboards and alerts","CSSP watch officer authority","Automated disconnect for high risk","Continuous risk management"], controls:["CA-7","IR-6","AU-6","SI-4","SC-7","CA-5"], score:58 },
               ].map(p => (
@@ -467,7 +467,7 @@ export default function MultiFramework() {
               <div style={{ background:C.panel, border:`2px solid rgba(170,102,255,0.3)`, borderRadius:8, padding:16 }}>
                 <div style={{ ...mono, fontSize:11, color:"#AA66FF", letterSpacing:1, marginBottom:8 }}>WHY DUAL MODE MATTERS FOR F-35/LM</div>
                 <div style={{ fontSize:11, color:C.textDim, lineHeight:1.8 }}>
-                  Your F-35 work requires maintaining compliance with <strong style={{ color:C.teal }}>NIST 800-53 Rev 5 + CSRMC</strong> for the DoD network side AND <strong style={{ color:C.blue }}>CMMC Level 3 + 800-171</strong> for the LM contractor side. SentinelGRC's dual mode means one control assessment automatically satisfies both. Your team doesn't run two parallel compliance programs — you run one and export two packages.
+                  Your F-35 work requires maintaining compliance with <strong style={{ color:C.teal }}>NIST 800-53 Rev 5 + CSRMC</strong> for the DoD network side AND <strong style={{ color:C.blue }}>CMMC Level 3 + 800-171</strong> for the LM contractor side. RiskRadar's dual mode means one control assessment automatically satisfies both. Your team doesn't run two parallel compliance programs — you run one and export two packages.
                 </div>
               </div>
             </div>
