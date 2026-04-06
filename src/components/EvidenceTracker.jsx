@@ -69,6 +69,7 @@ const MOCK_EVIDENCE = [
 const ROLES = ["ISSO","SA","NA","ISSM","SCA","PM"];
 // ── Sub-components ─────────────────────────────────────────────────────────
 function StatusBadge({ status, color }) {
+  const C = useColors();
   return (
     <span style={{ fontFamily:"monospace", fontSize:11, fontWeight:700, color, background:`${color}18`, border:`1px solid ${color}40`, borderRadius:3, padding:"2px 7px", whiteSpace:"nowrap" }}>
       {status}
@@ -76,6 +77,7 @@ function StatusBadge({ status, color }) {
   );
 }
 function TypeBadge({ type }) {
+  const C = useColors();
   const t = EVIDENCE_TYPES.find(e => e.id === type) || EVIDENCE_TYPES[EVIDENCE_TYPES.length-1];
   return (
     <span style={{ display:"inline-flex", alignItems:"center", gap:4, fontFamily:"monospace", fontSize:11, fontWeight:600, color:t.color, background:`${t.color}14`, border:`1px solid ${t.color}30`, borderRadius:3, padding:"2px 7px", whiteSpace:"nowrap" }}>
@@ -85,6 +87,7 @@ function TypeBadge({ type }) {
 }
 // ── Drop zone ──────────────────────────────────────────────────────────────
 function DropZone({ onFileAdded, C }) {
+  const C = useColors();
   const [dragging, setDragging] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [newEvidence, setNewEvidence] = useState({
@@ -237,6 +240,7 @@ function DropZone({ onFileAdded, C }) {
 }
 // ── Evidence detail panel ──────────────────────────────────────────────────
 function EvidenceDetail({ ev, onClose, C }) {
+  const C = useColors();
   const expiry = getExpiryStatus(ev.uploadDate, ev.type);
   const evType = EVIDENCE_TYPES.find(t => t.id === ev.type) || EVIDENCE_TYPES[EVIDENCE_TYPES.length-1];
   const cuiMark = CUI_MARKINGS.find(m => m.id === ev.cui) || CUI_MARKINGS[0];
