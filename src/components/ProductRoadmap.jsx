@@ -205,10 +205,6 @@ export default function ProductRoadmap() {
                 return (
                   <div key={i} onClick={() => setActivePhase(i)} style={{ flex:1, minWidth:160, cursor:"pointer", position:"relative" }}>
                     {/* Connector line */}
-                    {i < ROADMAP.length-1 && (
-                    )}
-                    {i > 0 && (
-                    )}
                     <div style={{ background:isActive?`${vColor}0C`:C.panel, border:`2px solid ${isActive?vColor:C.border}`, borderRadius:8, margin:"0 6px", padding:"12px 14px", transition:"all 0.2s" }}>
                       <div style={{ display:"flex", gap:6, alignItems:"center", marginBottom:6, position:"relative", zIndex:2 }}>
                         <div style={{ width:12, height:12, borderRadius:"50%", background:isActive?vColor:`${vColor}40`, border:`2px solid ${vColor}`, flexShrink:0 }} />
