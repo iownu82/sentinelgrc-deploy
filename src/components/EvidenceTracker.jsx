@@ -87,6 +87,7 @@ function TypeBadge({ type }) {
 }
 // ── Drop zone ──────────────────────────────────────────────────────────────
 function DropZone({ onFileAdded, C }) {
+  const [dragging, setDragging] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [newEvidence, setNewEvidence] = useState({
     name:"", type:"scan", controls:[], uploadedBy:"ISSO", cui:"none", notes:""
