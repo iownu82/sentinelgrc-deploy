@@ -69,7 +69,7 @@ export function AuthModal({ onClose }) {
         <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:24 }}>
           <div style={{ width:28, height:28, background:"linear-gradient(135deg,#00D4AA,#1A7AFF)", borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:13, fontWeight:900, color:"#060E18" }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:"#F0F8FF" }}>SentinelGRC</div>
+            <div style={{ fontSize:13, fontWeight:700, color:"#F0F8FF" }}>RiskRadar</div>
             <div style={{ ...mono, fontSize:9, color:"#3A5570", letterSpacing:0.8 }}>SECURE YOUR AUTHORIZATION</div>
           </div>
           <button onClick={onClose} style={{ marginLeft:"auto", background:"transparent", border:"none", color:"#3A5570", cursor:"pointer", fontSize:18 }}>✕</button>
