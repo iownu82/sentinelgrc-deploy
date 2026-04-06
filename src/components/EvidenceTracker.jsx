@@ -87,7 +87,6 @@ function TypeBadge({ type }) {
 }
 // ── Drop zone ──────────────────────────────────────────────────────────────
 function DropZone({ onFileAdded, C }) {
-  const C = useColors();
   const [dragging, setDragging] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [newEvidence, setNewEvidence] = useState({
@@ -240,7 +239,6 @@ function DropZone({ onFileAdded, C }) {
 }
 // ── Evidence detail panel ──────────────────────────────────────────────────
 function EvidenceDetail({ ev, onClose, C }) {
-  const C = useColors();
   const expiry = getExpiryStatus(ev.uploadDate, ev.type);
   const evType = EVIDENCE_TYPES.find(t => t.id === ev.type) || EVIDENCE_TYPES[EVIDENCE_TYPES.length-1];
   const cuiMark = CUI_MARKINGS.find(m => m.id === ev.cui) || CUI_MARKINGS[0];
