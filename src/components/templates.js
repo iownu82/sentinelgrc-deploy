@@ -1,4 +1,4 @@
-// SentinelGRC — Complete NIST SP 800-53 Rev 5 Control Statement Templates
+// RiskRadar — Complete NIST SP 800-53 Rev 5 Control Statement Templates
 // All 20 control families — DoD Moderate/High baseline
 // Tool placeholders: [TOOL:id] — auto-populated based on environment config
 // Org placeholders: [ORG], [SYSTEM], [ISSO], [ISSM], [AO]
