@@ -87,7 +87,7 @@ export default function UnifiedDashboard() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>UNIFIED SECURITY OPERATIONS CENTER · cATO DASHBOARD</div>
           </div>
           <div style={{ width:1, height:24, background:C.border, margin:"0 8px" }} />
