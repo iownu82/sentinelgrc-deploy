@@ -141,7 +141,7 @@ const PackageCard = ({ pkg, selected, onToggle }) => (
     <div style={{ display:"flex", gap:12, alignItems:"flex-start", marginBottom:12 }}>
       <div style={{ fontSize:28 }}>{pkg.icon}</div>
       <div>
-        <div style={{ fontSize:14, fontWeight:700, color:"#F0F8FF" }}>{pkg.label}</div>
+        <div style={{ fontSize:14, fontWeight:700, color:C.white }}>{pkg.label}</div>
         <div style={{ ...mono, fontSize:10, color:pkg.color, marginTop:2 }}>{pkg.subtitle}</div>
         <div style={{ fontSize:10, color:"#3A5570", marginTop:2 }}>For: {pkg.audience}</div>
       </div>
@@ -157,12 +157,12 @@ const PackageCard = ({ pkg, selected, onToggle }) => (
 // ─── Deliverable Preview ──────────────────────────────────────────────────────
 const DeliverableRow = ({ d, pkgColor, included }) => (
   <div style={{ display:"flex", gap:10, padding:"10px 0", borderBottom:`1px solid #0A1828`, alignItems:"flex-start", opacity:included?1:0.4 }}>
-    <div style={{ width:24, height:24, borderRadius:"50%", background:included?`${pkgColor}14`:"#1A2A3A", border:`1px solid ${included?pkgColor:C.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, minWidth:24 }}>
+    <div style={{ width:24, height:24, borderRadius:"50%", background:included?`${pkgColor}14`:C.borderMd, border:`1px solid ${included?pkgColor:C.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, minWidth:24 }}>
       {included ? "✓" : "—"}
     </div>
     <div style={{ flex:1 }}>
       <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:3 }}>
-        <span style={{ fontSize:12, color:"#F0F8FF", fontWeight:500 }}>{d.name}</span>
+        <span style={{ fontSize:12, color:C.white, fontWeight:500 }}>{d.name}</span>
         <FormatBadge format={d.format} />
         {d.required && <span style={{ ...mono, fontSize:10, color:"#FF4444" }}>REQUIRED</span>}
         {d.pages && <span style={{ ...mono, fontSize:10, color:"#3A5570" }}>{d.pages} pages</span>}
@@ -179,7 +179,7 @@ const GenerationStep = ({ label, status, detail }) => {
     <div style={{ display:"flex", gap:12, alignItems:"flex-start", padding:"8px 0" }}>
       <div style={{ ...mono, fontSize:14, color:s.color, minWidth:20, animation:status==="running"?"spin 1s linear infinite":"none" }}>{s.icon}</div>
       <div>
-        <div style={{ fontSize:12, color:status==="pending"?"#3A5570":"#F0F8FF" }}>{label}</div>
+        <div style={{ fontSize:12, color:status==="pending"?"#3A5570":C.white }}>{label}</div>
         {detail && status !== "pending" && <div style={{ ...mono, fontSize:11, color:"#3A5570", marginTop:2 }}>{detail}</div>}
       </div>
     </div>
@@ -194,7 +194,7 @@ const DownloadBtn = ({ label, format, size, color, pkg }) => (
     }}>
     <span style={{ fontSize:18 }}>{format==="DOCX"?"📄":format==="XLSX"?"📊":format==="PDF"?"📋":format==="XML"?"📝":"📁"}</span>
     <div style={{ flex:1, textAlign:"left" }}>
-      <div style={{ fontSize:12, color:"#F0F8FF", fontWeight:500 }}>{label}</div>
+      <div style={{ fontSize:12, color:C.white, fontWeight:500 }}>{label}</div>
       <div style={{ ...mono, fontSize:11, color:"#3A5570" }}>{format} · {size}</div>
     </div>
     <span style={{ color, fontSize:14, fontWeight:700 }}>↓</span>
@@ -255,7 +255,7 @@ export default function ATOGenerator() {
           {/* Step indicator */}
           {["configure","review","generating","complete"].map((s, i, arr) => (
             <div key={s} style={{ display:"flex", alignItems:"center", gap:6 }}>
-              <div style={{ width:24, height:24, borderRadius:"50%", background:step===s?"rgba(0,212,170,0.15)":arr.indexOf(step)>i?C.green:"#1A2A3A", border:`2px solid ${step===s?C.teal:arr.indexOf(step)>i?C.green:C.border}`, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:10, fontWeight:700, color:step===s?C.teal:arr.indexOf(step)>i?C.green:C.textMute }}>
+              <div style={{ width:24, height:24, borderRadius:"50%", background:step===s?"rgba(0,212,170,0.15)":arr.indexOf(step)>i?C.green:C.borderMd, border:`2px solid ${step===s?C.teal:arr.indexOf(step)>i?C.green:C.border}`, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:10, fontWeight:700, color:step===s?C.teal:arr.indexOf(step)>i?C.green:C.textMute }}>
                 {arr.indexOf(step) > i ? "✓" : i+1}
               </div>
               <span style={{ ...mono, fontSize:11, color:step===s?C.teal:C.textMute, textTransform:"uppercase" }}>{s}</span>
@@ -326,7 +326,7 @@ export default function ATOGenerator() {
                 </div>
               </div>
               <button className="btn-h" disabled={selected.size === 0} onClick={() => setStep("review")}
-                style={{ background:selected.size>0?C.teal:"#1A2A3A", border:"none", color:selected.size>0?C.headerBg:C.textMute, borderRadius:6, padding:"11px 0", cursor:selected.size>0?"pointer":"not-allowed", ...mono, fontSize:12, fontWeight:700, transition:"all 0.2s" }}>
+                style={{ background:selected.size>0?C.teal:C.borderMd, border:"none", color:selected.size>0?C.headerBg:C.textMute, borderRadius:6, padding:"11px 0", cursor:selected.size>0?"pointer":"not-allowed", ...mono, fontSize:12, fontWeight:700, transition:"all 0.2s" }}>
                 {selected.size > 0 ? `REVIEW ${totalDeliverables} DELIVERABLES →` : "SELECT AT LEAST ONE PACKAGE"}
               </button>
             </div>
