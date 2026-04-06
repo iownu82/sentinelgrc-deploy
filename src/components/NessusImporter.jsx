@@ -151,7 +151,7 @@ function parseNessusFile(xmlText) {
 // ── Sample .nessus XML for demo ───────────────────────────────────────────
 const SAMPLE_NESSUS = `<?xml version="1.0" ?>
 <NessusClientData_v2>
-<Report name="SentinelGRC Demo Scan - F35 Enclave" xmlns:cm="http://www.nessus.org/cm">
+<Report name="RiskRadar Demo Scan - F35 Enclave" xmlns:cm="http://www.nessus.org/cm">
 <ReportHost name="10.1.10.50">
 <HostProperties>
 <tag name="host-ip">10.1.10.50</tag>
@@ -328,7 +328,7 @@ export default function NessusImporter() {
     reader.onload = (ev) => loadFile(ev.target.result, file.name);
     reader.readAsText(file);
   };
-  const loadDemo = () => loadFile(SAMPLE_NESSUS, "SentinelGRC_Demo_Scan.nessus");
+  const loadDemo = () => loadFile(SAMPLE_NESSUS, "RiskRadar_Demo_Scan.nessus");
   const addToPoam = useCallback((finding) => {
     if (poamItems.find(p => p.id === finding.id)) return;
     setPoamItems(prev => [...prev, {
@@ -393,7 +393,7 @@ export default function NessusImporter() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg,${C.teal},${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.bg }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Nessus Scan Importer</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar — Nessus Scan Importer</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>NESSUS XML v2 · ACAS/TENABLE.SC · DoD CAT I/II/III MAPPING · eMASS POAM EXPORT</div>
           </div>
         </div>
