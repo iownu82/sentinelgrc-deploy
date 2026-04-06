@@ -171,9 +171,9 @@ export default function MultiFramework() {
       <style>{`* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#050D15; } ::-webkit-scrollbar-thumb { background:#1A3A5C; } .row-h:hover { background:rgba(26,90,140,0.14) !important; cursor:pointer; }`}</style>
 
       {/* Header */}
-      <div style={{ background:"#020810", borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
+      <div style={{ background:C.headerBg, borderBottom:`1px solid ${C.border}`, padding:"10px 20px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:"#060E18" }}>RR</div>
+          <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>RR</div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:C.white }}>Multi-Framework</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>ASSESS ONCE · COMPLY WITH ALL</div>
@@ -249,7 +249,7 @@ export default function MultiFramework() {
                     <PolarAngleAxis dataKey="subject" tick={{ fill:C.textDim, fontSize:10, fontFamily:"monospace" }} />
                     <Radar name="800-53" dataKey="A" stroke={C.teal} fill={C.teal} fillOpacity={0.15} strokeWidth={2} />
                     <Radar name="800-171" dataKey="B" stroke={C.blue} fill={C.blue} fillOpacity={0.10} strokeWidth={2} />
-                    <Tooltip contentStyle={{ background:"#0A1828", border:`1px solid ${C.border}`, borderRadius:6, fontSize:11 }} />
+                    <Tooltip contentStyle={{ background:C.input, border:`1px solid ${C.border}`, borderRadius:6, fontSize:11 }} />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
@@ -260,7 +260,7 @@ export default function MultiFramework() {
                   <div style={{ ...mono, fontSize:11, color:C.textMute, letterSpacing:1, marginBottom:10 }}>SPRS SCORE</div>
                   <div style={{ ...mono, fontSize:48, fontWeight:900, color:sprs>=90?C.green:sprs>=70?C.teal:C.orange, lineHeight:1 }}>{sprs}</div>
                   <div style={{ ...mono, fontSize:10, color:C.textMute, marginTop:4 }}>/ 110 maximum</div>
-                  <div style={{ height:6, background:"#0A1828", borderRadius:3, margin:"12px 0", overflow:"hidden" }}>
+                  <div style={{ height:6, background:C.input, borderRadius:3, margin:"12px 0", overflow:"hidden" }}>
                     <div style={{ width:`${(sprs+203)/313*100}%`, height:"100%", background:C.green, borderRadius:3 }} />
                   </div>
                   <div style={{ fontSize:10, color:C.textDim, lineHeight:1.6 }}>
@@ -276,7 +276,7 @@ export default function MultiFramework() {
                         <span style={{ fontSize:10, color:C.textDim }}>{l}</span>
                         <span style={{ ...mono, fontSize:10, fontWeight:700, color:c }}>{s}%</span>
                       </div>
-                      <div style={{ height:4, background:"#0A1828", borderRadius:2, overflow:"hidden" }}>
+                      <div style={{ height:4, background:C.input, borderRadius:2, overflow:"hidden" }}>
                         <div style={{ width:`${s}%`, height:"100%", background:c, borderRadius:2 }} />
                       </div>
                     </div>
@@ -300,7 +300,7 @@ export default function MultiFramework() {
             </div>
 
             {/* Table header */}
-            <div style={{ display:"grid", gridTemplateColumns:"80px 140px 80px 90px 100px 100px 120px 80px", gap:0, padding:"7px 12px", background:"#040C14", borderBottom:`1px solid ${C.border}`, borderRadius:"6px 6px 0 0" }}>
+            <div style={{ display:"grid", gridTemplateColumns:"80px 140px 80px 90px 100px 100px 120px 80px", gap:0, padding:"7px 12px", background:C.rowA, borderBottom:`1px solid ${C.border}`, borderRadius:"6px 6px 0 0" }}>
               {["800-53","CONTROL","STATUS","800-171","CMMC L1","CMMC L2","CSRMC PHASES","DFARS"].map(h => (
                 <div key={h} style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>{h}</div>
               ))}
@@ -425,7 +425,7 @@ export default function MultiFramework() {
                   Required under DFARS 252.204-7019. Contracting officers review before award.
                 </div>
               </div>
-              <div style={{ background:"#06101A", border:`1px solid ${C.border}`, borderRadius:6, padding:12 }}>
+              <div style={{ background:C.panelAlt, border:`1px solid ${C.border}`, borderRadius:6, padding:12 }}>
                 <div style={{ ...mono, fontSize:11, color:C.textMute, marginBottom:8 }}>DFARS OBLIGATIONS FOR F-35/LM</div>
                 {[
                   ["252.204-7012","Safeguarding Covered Defense Information","CRITICAL — 72hr incident report"],
@@ -451,12 +451,12 @@ export default function MultiFramework() {
                   { level:"Level 2", score:78, color:C.teal, note:"110 practices (800-171). C3PAO assessment. Annual affirmation.", req:"Contractors handling CUI (most LM contracts)" },
                   { level:"Level 3", score:52, color:C.orange, note:"134 practices (800-171 + 800-172). DIBCAC (gov't-led). F-35 likely requires this.", req:"High-value/critical programs (JSF, nuclear, etc.)" },
                 ].map(l => (
-                  <div key={l.level} style={{ marginBottom:12, padding:"10px 12px", background:"#06101A", border:`1px solid ${l.color}30`, borderRadius:6 }}>
+                  <div key={l.level} style={{ marginBottom:12, padding:"10px 12px", background:C.panelAlt, border:`1px solid ${l.color}30`, borderRadius:6 }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
                       <span style={{ ...mono, fontWeight:700, fontSize:12, color:l.color }}>{l.level}</span>
                       <span style={{ ...mono, fontSize:14, fontWeight:800, color:l.color }}>{l.score}%</span>
                     </div>
-                    <div style={{ height:5, background:"#0A1828", borderRadius:3, marginBottom:6, overflow:"hidden" }}>
+                    <div style={{ height:5, background:C.input, borderRadius:3, marginBottom:6, overflow:"hidden" }}>
                       <div style={{ width:`${l.score}%`, height:"100%", background:l.color, borderRadius:3 }} />
                     </div>
                     <div style={{ fontSize:10, color:C.textDim, marginBottom:3 }}>{l.note}</div>
