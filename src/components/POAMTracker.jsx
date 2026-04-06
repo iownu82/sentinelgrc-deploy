@@ -442,7 +442,7 @@ export default function POAMTracker() {
         <div style={{ background:theme==="dark"?C.headerBg:t.white, borderBottom:`1px solid ${t.border}`, padding:"10px 20px", display:"flex", alignItems:"center", gap:12, position:"sticky", top:0, zIndex:100 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg,${A.teal},${A.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"monospace", fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:t.white }}>SentinelGRC — POAM Tracker</div>
+            <div style={{ fontSize:13, fontWeight:700, color:t.white }}>RiskRadar — POAM Tracker</div>
             <div style={{ fontFamily:"monospace", fontSize:10, color:t.mute, letterSpacing:0.8 }}>eMASS-ALIGNED · CONTINUOUS MONITORING · cATO</div>
           </div>
           <div style={{ marginLeft:"auto", display:"flex", gap:10, alignItems:"center" }}>
