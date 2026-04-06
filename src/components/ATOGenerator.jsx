@@ -135,7 +135,9 @@ const StatusBar = ({ label, score, color }) => (
   </div>
 );
 // ─── Package Selector Card ────────────────────────────────────────────────────
-const PackageCard = ({ pkg, selected, onToggle }) => (
+const PackageCard = ({ pkg, selected, onToggle }) => {
+  const C = useColors();
+  return (
   <div onClick={onToggle} style={{ background:selected?`${pkg.color}0A`:C.panel, border:`2px solid ${selected?pkg.color:C.border}`, borderRadius:10, padding:18, cursor:"pointer", transition:"all 0.2s", position:"relative" }}>
     {selected && <div style={{ position:"absolute", top:10, right:12, ...mono, fontSize:10, color:pkg.color, fontWeight:700 }}>✓ SELECTED</div>}
     <div style={{ display:"flex", gap:12, alignItems:"flex-start", marginBottom:12 }}>
@@ -154,6 +156,7 @@ const PackageCard = ({ pkg, selected, onToggle }) => (
     <div style={{ ...mono, fontSize:10, color:"#3A5570" }}>{pkg.deliverables.length} deliverables · {pkg.deliverables.filter(d=>d.required).length} required</div>
   </div>
 );
+};
 // ─── Deliverable Preview ──────────────────────────────────────────────────────
 const DeliverableRow = ({ d, pkgColor, included }) => (
   <div style={{ display:"flex", gap:10, padding:"10px 0", borderBottom:`1px solid #0A1828`, alignItems:"flex-start", opacity:included?1:0.4 }}>
