@@ -124,7 +124,7 @@ export default function ControlTemplates() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:"linear-gradient(135deg,#00D4AA,#1A7AFF)", borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.bg }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Control Statement Templates</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar — Control Statement Templates</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>800-53 REV 5 COMPLETE · 20 FAMILIES · ALL BASE CONTROLS + ENHANCEMENTS · LAZY-LOADED</div>
           </div>
         </div>
