@@ -135,7 +135,7 @@ const INITIAL_ASSESSMENTS = {
   "AU-11": { status:"Implemented",     statement:"Audit records are retained for 3 years in compliance with NARA requirements. Online retention is 1 year in Splunk; archived to encrypted S3 for 2 additional years.", evidence:["Retention-Policy.pdf"], poam:null, stigLinks:[], lastUpdated:"2025-03-15", updatedBy:"J. Doe (ISSO)" },
   "AU-12": { status:"Partial",         statement:"Audit record generation is implemented for Windows systems via GPO and for Linux via auditd. Network devices are not yet fully configured for syslog forwarding.", evidence:["Auditd-Config.txt"], poam:"POAM-017", stigLinks:["RHEL-09-020040"], lastUpdated:"2025-03-20", updatedBy:"J. Doe (ISSO)" },
   "CA-2":  { status:"Not Assessed",    statement:"", evidence:[], poam:null, stigLinks:[], lastUpdated:"", updatedBy:"" },
-  "CA-5":  { status:"Implemented",     statement:"The POAM for this system is maintained in SentinelGRC and reviewed/updated monthly by the ISSO. The ISSM reviews the POAM quarterly. The AO is notified of significant changes within 5 business days.", evidence:["POAM-Current.xlsx"], poam:null, stigLinks:[], lastUpdated:"2025-03-22", updatedBy:"J. Doe (ISSO)" },
+  "CA-5":  { status:"Implemented",     statement:"The POAM for this system is maintained in RiskRadar and reviewed/updated monthly by the ISSO. The ISSM reviews the POAM quarterly. The AO is notified of significant changes within 5 business days.", evidence:["POAM-Current.xlsx"], poam:null, stigLinks:[], lastUpdated:"2025-03-22", updatedBy:"J. Doe (ISSO)" },
   "CA-6":  { status:"Inherited",       statement:"System authorization authority is delegated by the DoD Component AO. The current ATO was granted [DATE] and expires [DATE]. The AO designation letter is on file.", evidence:["ATO-Letter.pdf"], poam:null, stigLinks:[], lastUpdated:"2025-01-15", updatedBy:"J. Doe (ISSO)" },
   "CA-7":  { status:"Partial",         statement:TEMPLATES["CA-7"], evidence:["ConMon-Plan.pdf"], poam:"POAM-018", stigLinks:[], lastUpdated:"2025-03-22", updatedBy:"J. Doe (ISSO)" },
   "IA-2":  { status:"Implemented",     statement:TEMPLATES["IA-2"], evidence:["CAC-Auth-Config.pdf","MFA-Policy.pdf"], poam:null, stigLinks:[], lastUpdated:"2025-03-20", updatedBy:"J. Doe (ISSO)" },
@@ -247,7 +247,7 @@ export default function SelfAssessment() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Self-Assessment</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar — Self-Assessment</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>NIST SP 800-53 REV 5 · SAV PREPARATION · CSRMC PHASE 3</div>
           </div>
           <div style={{ width:1, height:24, background:C.border, margin:"0 8px" }} />
