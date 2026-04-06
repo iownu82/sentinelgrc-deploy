@@ -1,5 +1,5 @@
 /**
- * SentinelGRC — Supabase Data Layer
+ * RiskRadar — Supabase Data Layer
  *
  * Setup:
  *  1. Create a Supabase project at https://supabase.com
@@ -99,7 +99,7 @@ export async function loadPoamItems(systemId = "default") {
 }
 
 export async function savePoamItem(item, systemId = "default") {
-  console.log("[SentinelGRC] savePoamItem called", { id: item.id, systemId, supabaseConfigured: SUPABASE_CONFIGURED });
+  console.log("[RiskRadar] savePoamItem called", { id: item.id, systemId, supabaseConfigured: SUPABASE_CONFIGURED });
   if (!supabase) {
     const items = localGet(`poam_${systemId}`, []);
     const idx = items.findIndex(i => i.id === item.id);
@@ -109,7 +109,7 @@ export async function savePoamItem(item, systemId = "default") {
     return { data: item, error: null };
   }
   const userId = await getUserId();
-  console.log("[SentinelGRC] userId:", userId);
+  console.log("[RiskRadar] userId:", userId);
   // Helper: return null for empty strings (Postgres date/int columns reject "")
   const d = (v) => (v && v.toString().trim() !== "" ? v : null);
   const row = {
@@ -135,7 +135,7 @@ export async function savePoamItem(item, systemId = "default") {
     .upsert(row, { onConflict: "id" })
     .select()
     .single();
-  console.log("[SentinelGRC] upsert result:", { data, error });
+  console.log("[RiskRadar] upsert result:", { data, error });
   return { data, error };
 }
 

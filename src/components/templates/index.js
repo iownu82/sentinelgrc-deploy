@@ -1,4 +1,4 @@
-// SentinelGRC — Template Lazy Loader
+// RiskRadar — Template Lazy Loader
 // Explicit imports per family — Vite requires static paths for code splitting
 
 export const ALL_FAMILIES = [
