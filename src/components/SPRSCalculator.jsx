@@ -196,7 +196,7 @@ const REV3_CHANGES = [
   { type:"enhanced",    id:"STMTS",title:"422 determination statements in Rev 3 vs 320 in Rev 2 — more granular assessment criteria" },
   { type:"increased",   id:"SCOPES",title:"Rev 3 derives from 156 of 287 SP 800-53 Rev 5 moderate baseline controls — tighter alignment with 800-53" },
 ];
-// ── CSRMC Tenets — SentinelGRC readiness ─────────────────────────────────────
+// ── CSRMC Tenets — RiskRadar readiness ─────────────────────────────────────
 // Source: DoD CIO CSRMC announcement September 24, 2025
 // Note: CSRMC has no control catalog — it's a framework construct
 const CSRMC_TENETS = [
@@ -298,7 +298,7 @@ export default function SPRSCalculator() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg,${C.teal},${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.bg }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — SPRS Score Calculator</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar — SPRS Score Calculator</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>NIST SP 800-171 Rev 2 · 110 PRACTICES · DoD ASSESSMENT METHODOLOGY v1.2.1</div>
           </div>
         </div>
@@ -623,7 +623,7 @@ export default function SPRSCalculator() {
           <div style={{ background:`${C.teal}0A`, border:`1px solid ${C.teal}25`, borderRadius:8, padding:14, marginBottom:16 }}>
             <div style={{ fontFamily:"monospace", fontSize:11, fontWeight:700, color:C.teal, marginBottom:6 }}>🔮 NIST SP 800-171 REV 3 — WHAT'S COMING</div>
             <div style={{ fontSize:12, color:C.textDim, lineHeight:1.8 }}>
-              Rev 3 was published <strong>May 14, 2024</strong> and reduces from 110 → 97 requirements. However, <strong>DoD Class Deviation 2024-O0013</strong> requires contractors to continue using Rev 2 until further notice. Rev 3 adoption requires new DoD rulemaking — no firm timeline. SentinelGRC will update automatically when mandated.
+              Rev 3 was published <strong>May 14, 2024</strong> and reduces from 110 → 97 requirements. However, <strong>DoD Class Deviation 2024-O0013</strong> requires contractors to continue using Rev 2 until further notice. Rev 3 adoption requires new DoD rulemaking — no firm timeline. RiskRadar will update automatically when mandated.
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:16 }}>
@@ -662,7 +662,7 @@ export default function SPRSCalculator() {
               <div>1. Keep scoring against Rev 2 (110 practices) — this is what DoD requires today</div>
               <div>2. Start gap analysis against the 2 new families (PL + SR) now — these are the biggest new additions</div>
               <div>3. Run <span style={{ fontFamily:"monospace", color:C.teal }}>poll_nist_updates.py</span> monthly — it will flag when NIST publishes Rev 3 in OSCAL format</div>
-              <div>4. SentinelGRC will add a Rev 3 toggle once DoD mandates the transition</div>
+              <div>4. RiskRadar will add a Rev 3 toggle once DoD mandates the transition</div>
             </div>
           </div>
         </div>
@@ -715,7 +715,7 @@ export default function SPRSCalculator() {
                   </div>
                   <div style={{ fontSize:11, color:C.text, marginBottom:4 }}>{t.desc}</div>
                   <div style={{ fontSize:11, color:t.aligned?C.green:C.orange, fontFamily:"monospace" }}>
-                    SentinelGRC: {t.impl}
+                    RiskRadar: {t.impl}
                   </div>
                 </div>
               </div>
@@ -725,7 +725,7 @@ export default function SPRSCalculator() {
             <div style={{ fontFamily:"monospace", fontSize:11, color:C.blue, fontWeight:700, marginBottom:4 }}>ℹ CSRMC & DIB CONTRACTORS</div>
             <div style={{ fontSize:11, color:C.textDim, lineHeight:1.8 }}>
               CSRMC is directed at DoD internal systems — CMMC remains mandatory for DIB contractors handling FCI/CUI. However, CSRMC's emphasis on <strong>continuous monitoring, automation, and reciprocity</strong> is expected to filter into future contractual requirements. 
-              Organizations implementing SentinelGRC's cATO continuous monitoring approach are already aligned with CSRMC Phase 5 operations requirements — a first-mover advantage when CSRMC language appears in future solicitations.
+              Organizations implementing RiskRadar's cATO continuous monitoring approach are already aligned with CSRMC Phase 5 operations requirements — a first-mover advantage when CSRMC language appears in future solicitations.
             </div>
           </div>
         </div>
