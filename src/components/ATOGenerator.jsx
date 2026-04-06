@@ -192,8 +192,8 @@ const GenerationStep = ({ label, status, detail }) => {
 const DownloadBtn = ({ label, format, size, color, pkg }) => (
   <button style={{ background:`${color}10`, border:`1px solid ${color}30`, borderRadius:6, padding:"10px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:10, width:"100%", marginBottom:8 }}
     onClick={() => {
-      // In production: triggers actual file download from SentinelGRC API
-      alert(`Downloading: ${label}\n\nIn production, this downloads an encrypted ${format} file from the SentinelGRC API.\n\nThe file is:\n• Encrypted with your org's KMS key\n• Watermarked with your EDIPI\n• Logged to the immutable audit trail`);
+      // In production: triggers actual file download from RiskRadar API
+      alert(`Downloading: ${label}\n\nIn production, this downloads an encrypted ${format} file from the RiskRadar API.\n\nThe file is:\n• Encrypted with your org's KMS key\n• Watermarked with your EDIPI\n• Logged to the immutable audit trail`);
     }}>
     <span style={{ fontSize:18 }}>{format==="DOCX"?"📄":format==="XLSX"?"📊":format==="PDF"?"📋":format==="XML"?"📝":"📁"}</span>
     <div style={{ flex:1, textAlign:"left" }}>
@@ -250,7 +250,7 @@ export default function ATOGenerator() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg, ${C.teal}, ${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — ATO Package Generator</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar — ATO Package Generator</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>EMASS · DIBCAC · SPRS · SAV · F-35 JSF PROGRAM</div>
           </div>
         </div>
@@ -386,7 +386,7 @@ export default function ATOGenerator() {
                     ))}
                     <div style={{ marginTop:12, padding:"10px 14px", background:"rgba(0,212,170,0.05)", border:`1px solid rgba(0,212,170,0.15)`, borderRadius:6 }}>
                       <div style={{ fontSize:11, color:C.textDim, lineHeight:1.7 }}>
-                        💡 All documents are auto-populated from your SentinelGRC assessment data — control statements, POAM entries, scan results, and evidence links. You review and approve before final submission to the AO or C3PAO.
+                        💡 All documents are auto-populated from your RiskRadar assessment data — control statements, POAM entries, scan results, and evidence links. You review and approve before final submission to the AO or C3PAO.
                       </div>
                     </div>
                   </div>
