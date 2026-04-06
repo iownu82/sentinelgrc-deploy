@@ -400,7 +400,7 @@ export default function EvidenceTracker() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg,${C.teal},${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.bg }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Evidence Tracker</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar — Evidence Tracker</div>
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8 }}>CHAIN OF CUSTODY · ATO EVIDENCE LIBRARY · EXPIRY MONITORING</div>
           </div>
         </div>
