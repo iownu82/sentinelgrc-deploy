@@ -105,7 +105,7 @@ const ROADMAP = [
     version:"cloud", color:"#1A7AFF",
     milestones:[
       "Engage 3PAO for FedRAMP Moderate assessment",
-      "Complete SentinelGRC's own SSP (dogfooding)",
+      "Complete RiskRadar's own SSP (dogfooding)",
       "FedRAMP Ready designation",
       "DoD IL4 Provisional Authorization (DISA)",
       "DISA APL application",
@@ -172,7 +172,7 @@ export default function ProductRoadmap() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:30, height:30, background:`linear-gradient(135deg,${C.teal},${C.blue})`, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", ...mono, fontSize:14, fontWeight:900, color:C.panelAlt }}>S</div>
           <div>
-            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>SentinelGRC — Product Strategy</div>
+            <div style={{ fontSize:13, fontWeight:700, color:C.white }}>RiskRadar — Product Strategy</div>
             <div style={{ ...mono, fontSize:10, color:C.mute, letterSpacing:0.8 }}>CLOUD SAAS · CLASSIFIED ON-PREM · SAP PROGRAMS</div>
           </div>
         </div>
@@ -327,9 +327,9 @@ export default function ProductRoadmap() {
                 icon:"🔐",
                 color:C.gold,
                 items:[
-                  { heading:"Read-in requirement", body:"Every user of SentinelGRC in a SAP environment must be specifically 'read into' the program — not just cleared at the right level. The Special Security Officer (SSO) maintains the access roster. SentinelGRC must query or maintain that roster as part of authentication." },
-                  { heading:"PSO / SSO roles in SentinelGRC", body:"The Program Security Officer needs a read-only compliance posture view. The SSO needs full audit log access and user access reports. Neither has POAM write access — that's the ISSO's domain." },
-                  { heading:"Access accounting", body:"SAP programs require periodic certification of access needs — typically every 6 months. SentinelGRC's audit trail needs to support this: who accessed what, when, for how long, what actions they took." },
+                  { heading:"Read-in requirement", body:"Every user of RiskRadar in a SAP environment must be specifically 'read into' the program — not just cleared at the right level. The Special Security Officer (SSO) maintains the access roster. RiskRadar must query or maintain that roster as part of authentication." },
+                  { heading:"PSO / SSO roles in RiskRadar", body:"The Program Security Officer needs a read-only compliance posture view. The SSO needs full audit log access and user access reports. Neither has POAM write access — that's the ISSO's domain." },
+                  { heading:"Access accounting", body:"SAP programs require periodic certification of access needs — typically every 6 months. RiskRadar's audit trail needs to support this: who accessed what, when, for how long, what actions they took." },
                 ]
               },
               {
@@ -337,9 +337,9 @@ export default function ProductRoadmap() {
                 icon:"📋",
                 color:C.red,
                 items:[
-                  { heading:"Program-specific compartment markings", body:"A POAM in a SAP program doesn't just say 'SECRET.' It has the full classification string: 'SECRET // SAR-XX // NOFORN // RELIDO' where SAR-XX is the Special Access Required indicator for that specific program. SentinelGRC needs an admin-configurable classification string field." },
+                  { heading:"Program-specific compartment markings", body:"A POAM in a SAP program doesn't just say 'SECRET.' It has the full classification string: 'SECRET // SAR-XX // NOFORN // RELIDO' where SAR-XX is the Special Access Required indicator for that specific program. RiskRadar needs an admin-configurable classification string field." },
                   { heading:"Vulnerability data classification", body:"The vulnerability findings themselves may be classified above SECRET if they reveal capabilities or limitations of the weapons system. The CVSS score of a vulnerability in the F-35 fire control system is not unclassified data." },
-                  { heading:"Document control", body:"ATO packages and POAMs generated in a SAP environment must go through classified document control — tracked, numbered, distributed by need-to-know. SentinelGRC's report download function needs to interface with or log to whatever document tracking system the program uses." },
+                  { heading:"Document control", body:"ATO packages and POAMs generated in a SAP environment must go through classified document control — tracked, numbered, distributed by need-to-know. RiskRadar's report download function needs to interface with or log to whatever document tracking system the program uses." },
                 ]
               },
               {
@@ -347,8 +347,8 @@ export default function ProductRoadmap() {
                 icon:"🔌",
                 color:C.blue,
                 items:[
-                  { heading:"No standard tool connectors", body:"There's no CrowdStrike Falcon in a SAP enclave. There's no Zscaler. The tools that exist in a SAP environment are approved specifically for that program and may be unique. SentinelGRC's connector framework needs to be extensible — custom connectors that a program's admin can configure." },
-                  { heading:"ACAS will exist", body:"ACAS (Tenable.sc) is almost universal even in classified environments. The file import model works fine — ACAS operator exports .nessus, transfers via approved media if networks are separate, ISSO imports into SentinelGRC." },
+                  { heading:"No standard tool connectors", body:"There's no CrowdStrike Falcon in a SAP enclave. There's no Zscaler. The tools that exist in a SAP environment are approved specifically for that program and may be unique. RiskRadar's connector framework needs to be extensible — custom connectors that a program's admin can configure." },
+                  { heading:"ACAS will exist", body:"ACAS (Tenable.sc) is almost universal even in classified environments. The file import model works fine — ACAS operator exports .nessus, transfers via approved media if networks are separate, ISSO imports into RiskRadar." },
                   { heading:"Built-in SCAP/OpenSCAP runner", body:"In environments without an ACAS, the built-in OpenSCAP runner we're building for Phase 2 becomes critical. It provides vulnerability and STIG compliance scanning without any external tool dependency." },
                 ]
               },
@@ -357,7 +357,7 @@ export default function ProductRoadmap() {
                 icon:"📦",
                 color:C.purple,
                 items:[
-                  { heading:"No internet-based updates ever", body:"SentinelGRC on-prem updates for SAP environments are delivered via program-specific classified media handling procedures. This means packaging updates as signed, hash-verified archives that a classified sysadmin transfers via approved removable media." },
+                  { heading:"No internet-based updates ever", body:"RiskRadar on-prem updates for SAP environments are delivered via program-specific classified media handling procedures. This means packaging updates as signed, hash-verified archives that a classified sysadmin transfers via approved removable media." },
                   { heading:"PSO approval required", body:"Unlike a standard classified update process (ISSM + AO approve), SAP updates require PSO involvement. The update manifest — listing every changed file, new capability, and security fix — must be reviewed before installation." },
                   { heading:"LLM model updates", body:"If the AI model is updated (e.g., Llama 3 → Llama 3.1), the model weights themselves must go through the same approval process. Model weights are large (7–70GB) — this needs an efficient media transfer process for the classified context." },
                 ]
@@ -367,8 +367,8 @@ export default function ProductRoadmap() {
                 icon:"✈",
                 color:C.orange,
                 items:[
-                  { heading:"Dual classification levels", body:"F-35 data exists at multiple levels — unclassified, CUI, Secret, and TS/SAP depending on what system and what data. A single ISSO often has to move between these environments. SentinelGRC should eventually support separate instances for each level, each with appropriate controls." },
-                  { heading:"Your competitive moat", body:"You've operated in this environment. Most GRC vendors haven't been within 100 miles of a SAP program. Your ability to design SentinelGRC correctly for this context — classification markings, PSO roles, document control, compartment tracking — is a genuine moat that no Vanta, Drata, or Tugboat Logic can claim." },
+                  { heading:"Dual classification levels", body:"F-35 data exists at multiple levels — unclassified, CUI, Secret, and TS/SAP depending on what system and what data. A single ISSO often has to move between these environments. RiskRadar should eventually support separate instances for each level, each with appropriate controls." },
+                  { heading:"Your competitive moat", body:"You've operated in this environment. Most GRC vendors haven't been within 100 miles of a SAP program. Your ability to design RiskRadar correctly for this context — classification markings, PSO roles, document control, compartment tracking — is a genuine moat that no Vanta, Drata, or Tugboat Logic can claim." },
                   { heading:"The sales path", body:"SAP program contracts are almost always sole-source after initial qualification. If you become the tool of record for one F-35 SAP environment, that contract has a very long tail and very low competitive pressure. These programs don't re-compete their security tools every year." },
                 ]
               },
