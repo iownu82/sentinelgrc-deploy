@@ -39,13 +39,12 @@ const NAV = [
 
 // ─── Dashboard (shown after auth) ────────────────────────────────────────────
 function Dashboard() {
-  const { member } = useAuth();
-  const robAccepted = useROBAccepted(member?.id);
-  const [showROB, setShowROB] = useState(!robAccepted);
   const [theme, setTheme] = useState("dark");
   const [active, setActive] = useState("multi");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { member, org, role, isDemo } = useAuth();
+  const robAccepted = useROBAccepted(member?.id);
+  const [showROB, setShowROB] = useState(!robAccepted);
 
   const t = THEMES[theme];
 
