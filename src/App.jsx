@@ -14,6 +14,8 @@ import NetworkScanner from "./components/NetworkScanner.jsx";
 import SPRSCalculator from "./components/SPRSCalculator.jsx";
 import NessusImporter from "./components/NessusImporter.jsx";
 import { AuthProvider, UserMenu, useAuth } from "./components/Auth.jsx";
+import AdminConsole from "./components/AdminConsole.jsx";
+import UpdatesFeed from "./components/UpdatesFeed.jsx";
 
 const mono = { fontFamily:"'Courier New',monospace" };
 
