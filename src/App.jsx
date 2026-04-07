@@ -18,6 +18,7 @@ import RulesOfBehaviorModal, { useROBAccepted } from "./components/RulesOfBehavi
 import SetupPage from "./components/SetupPage.jsx";
 import ISSODesignation from "./components/ISSODesignation.jsx";
 import ISSOInviteAcceptance from "./components/ISSOInviteAcceptance.jsx";
+import YubiKeyTest from "./components/YubiKeyTest.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
 
@@ -38,6 +39,7 @@ const NAV = [
   { id:"nessus",    label:"Nessus Importer",    icon:"📥", desc:"ACAS · .nessus XML · DoD CAT I/II/III · POAM export" },
   { id:"updates",   label:"Security Updates",    icon:"🔄", desc:"NIST NVD · CISA KEV · DISA STIG/IAVA · DVD ISO transfer" },
   { id:"admin",     label:"Admin Console",       icon:"🛡",  desc:"Org management · Bootstrap tokens · User oversight" },
+  { id:"yubikey",   label:"YubiKey / MFA Test",   icon:"🔐", desc:"FIDO2 enrollment · WebAuthn test · Hardware MFA" },
 ];
 
 // ─── Dashboard (shown after auth) ────────────────────────────────────────────
@@ -67,6 +69,7 @@ function Dashboard() {
       case "nessus":    return <NessusImporter />;
       case "updates":   return <UpdatesFeed />;
       case "admin":     return <AdminConsole />;
+      case "yubikey":   return <YubiKeyTest />;
       default:          return <MultiFramework />;
     }
   };
