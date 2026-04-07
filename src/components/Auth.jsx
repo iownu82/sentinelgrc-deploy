@@ -211,9 +211,7 @@ function Logo() {
       <div style={{ fontSize:28, fontWeight:900, letterSpacing:2, color:'#e0e8f0' }}>
         <span style={{ color:'#cc2222' }}>RISK</span>RADAR
       </div>
-      <div style={{ fontSize:11, color:'#4a7a9b', letterSpacing:3, marginTop:4 }}>
-        BALLARD IS3 · DOD GRC PLATFORM
-      </div>
+
     </div>
   );
 }
@@ -292,14 +290,14 @@ function LoginBanner({ onAccept }) {
           <div style={{ background:'#0a1520', border:'1px solid #1e3a5f', borderRadius:4,
             padding:16, marginBottom:24, fontSize:11, color:'#4a7a9b' }}>
             <strong style={{ color:'#6a9ab0', display:'block', marginBottom:8 }}>
-              RULES OF BEHAVIOR (PL-4, PS-6)
+              RULES OF BEHAVIOR
             </strong>
             • You are only authorized to access data within your assigned organization<br/>
             • Sharing credentials or access with unauthorized personnel is prohibited<br/>
             • CUI must not be transmitted via unencrypted channels<br/>
             • Report security incidents to your ISSM immediately<br/>
             • Annual Cyber Awareness training is mandatory — accounts expire upon cert expiry<br/>
-            • Session inactivity timeout is 15 minutes — re-authentication is required
+            • Session inactivity timeout applies — re-authentication may be required
           </div>
           <label style={{ display:'flex', alignItems:'flex-start', gap:12, cursor:'pointer',
             marginBottom:24, fontSize:12, color:'#a0b8d0' }}>
@@ -313,9 +311,7 @@ function LoginBanner({ onAccept }) {
             </Btn>
           </div>
         </div>
-        <div style={{ textAlign:'center', marginTop:16, fontSize:10, color:'#2a4a6b', letterSpacing:1 }}>
-          NIST 800-53 AC-8 · FIPS 200 · DFARS 252.204-7012 · CMMC 2.0 LEVEL 2
-        </div>
+
       </div>
     </Screen>
   );
@@ -366,19 +362,11 @@ function LoginForm({ onLogin, err, sessionExpired }) {
         <Input label='Password' type='password' value={pass}
           onChange={e=>setPass(e.target.value)} placeholder='••••••••••••••••'
           autoComplete='current-password' maxLength={128} />
-        <div style={{ fontSize:10, color:'#2a4a6b', marginBottom:16, letterSpacing:1 }}>
-          ⚡ PBKDF2-SHA256 client-side hashing active · TLS 1.3 enforced
-        </div>
+
         <Btn fullWidth onClick={submit} disabled={!email || !pass || busy}>
           {busy ? 'AUTHENTICATING…' : 'SECURE LOGIN →'}
         </Btn>
-        <Divider label='SECURITY STATUS' />
-        <div style={{ fontSize:10, color:'#2a4a6b', lineHeight:1.8 }}>
-          Max login attempts: <span style={{color:'#4a7a9b'}}>3</span> before lockout (AC-7)<br/>
-          Session timeout: <span style={{color:'#4a7a9b'}}>15 minutes</span> inactivity (AC-11)<br/>
-          MFA: <span style={{color:'#4a7a9b'}}>Required (TOTP → CAC Phase 3)</span><br/>
-          Encryption: <span style={{color:'#4a7a9b'}}>AES-256 · TLS 1.3 · FIPS 140-2</span>
-        </div>
+
       </Card>
     </Screen>
   );
@@ -404,9 +392,7 @@ function MFAChallenge({ onVerify, err, onBack }) {
           <div style={{ fontSize:13, color:'#e0e8f0', fontWeight:700, letterSpacing:1 }}>
             MULTI-FACTOR AUTHENTICATION
           </div>
-          <div style={{ fontSize:10, color:'#4a7a9b', letterSpacing:1, marginTop:6 }}>
-            PHASE 1: TOTP · PHASE 3: CAC + PIN (IA-2)
-          </div>
+
         </div>
         {isDemo && (
           <div style={{ background:'rgba(0,100,180,0.1)', border:'1px solid #003366',
@@ -471,7 +457,6 @@ function AccountLocked({ email }) {
             </div>
           </div>
           <div style={{ fontSize:10, color:'#2a4a6b', lineHeight:1.8 }}>
-            Control: NIST 800-53 AC-7 · CMMC IA.3.083<br/>
             This lockout event has been logged and your ISSM has been notified.
           </div>
         </div>
@@ -496,10 +481,7 @@ function SessionExpired({ onReauth }) {
             All session tokens have been invalidated.<br/>
             Full re-authentication is required to continue.
           </div>
-          <div style={{ fontSize:10, color:'#4a7a9b', marginBottom:24, lineHeight:1.8 }}>
-            Control: NIST 800-53 AC-11 (Session Lock)<br/>
-            Phase 3: CAC + PIN re-authentication required
-          </div>
+
           <Btn fullWidth onClick={onReauth}>
             RE-AUTHENTICATE →
           </Btn>
@@ -539,8 +521,7 @@ function CyberAwarenessExpired() {
             </div>
           </div>
           <div style={{ fontSize:10, color:'#2a4a6b', lineHeight:1.8 }}>
-            Control: NIST 800-53 AT-2 / AT-4 · CMMC AT.2.056<br/>
-            JKO URL: <span style={{color:'#4a7a9b'}}>jko.jten.mil</span>
+            JKO: <span style={{color:'#4a7a9b'}}>jko.jten.mil</span>
           </div>
         </div>
       </Card>
