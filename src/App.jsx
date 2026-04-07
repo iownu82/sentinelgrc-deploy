@@ -14,6 +14,7 @@ import NetworkScanner from "./components/NetworkScanner.jsx";
 import SPRSCalculator from "./components/SPRSCalculator.jsx";
 import NessusImporter from "./components/NessusImporter.jsx";
 import { AuthProvider, UserMenu, useAuth } from "./components/Auth.jsx";
+import RulesOfBehaviorModal, { useROBAccepted } from "./components/RulesOfBehavior.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
 
@@ -106,7 +107,9 @@ function Dashboard() {
             {NAV.map(n => {
               const isActive = active === n.id;
               return (
-                <div key={n.id} onClick={() => setActive(n.id)}
+    <>
+      {showROB && <RulesOfBehaviorModal onAccept={()=>setShowROB(false)} />}
+                    <div key={n.id} onClick={() => setActive(n.id)}
                   title={!sidebarOpen ? n.label : ""}
                   style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 10px", borderRadius:7, marginBottom:3, cursor:"pointer", background:isActive?`${A.teal}14`:"transparent", border:isActive?`1px solid ${A.teal}30`:"1px solid transparent", overflow:"hidden" }}>
                   <span style={{ fontSize:16, flexShrink:0 }}>{n.icon}</span>
