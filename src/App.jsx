@@ -15,6 +15,9 @@ import SPRSCalculator from "./components/SPRSCalculator.jsx";
 import NessusImporter from "./components/NessusImporter.jsx";
 import { AuthProvider, UserMenu, useAuth } from "./components/Auth.jsx";
 import RulesOfBehaviorModal, { useROBAccepted } from "./components/RulesOfBehavior.jsx";
+import SetupPage from "./components/SetupPage.jsx";
+import ISSODesignation from "./components/ISSODesignation.jsx";
+import ISSOInviteAcceptance from "./components/ISSOInviteAcceptance.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
 
@@ -187,6 +190,32 @@ function Dashboard() {
 
 // ─── Root — Auth gates everything ────────────────────────────────────────────
 export default function App() {
+  // Detect setup/invite URL params BEFORE auth gate renders
+  const params = new URLSearchParams(window.location.search);
+  const setupToken  = params.get('setup');
+  const issoToken   = params.get('isso');
+  const orgSlug     = params.get('org') || '';
+
+  // ISSM bootstrap setup flow
+  if (setupToken) {
+    return <SetupPage token={setupToken} orgSlug={orgSlug}
+      onComplete={(next) => {
+        if (next === 'isso_designation') {
+          window.history.replaceState({}, '', '/');
+          window.location.reload();
+        }
+      }} />;
+  }
+
+  // ISSO invite acceptance flow
+  if (issoToken) {
+    return <ISSOInviteAcceptance token={issoToken} orgSlug={orgSlug}
+      onComplete={() => {
+        window.history.replaceState({}, '', '/');
+        window.location.reload();
+      }} />;
+  }
+
   return (
     <AuthProvider>
       <Dashboard />
