@@ -3,7 +3,7 @@ import { sha256 } from '../auth/crypto.js';
 
 const mono={fontFamily:"'Courier New',monospace"};
 const SEV_C={CRITICAL:'#cc2222',HIGH:'#cc6600',MEDIUM:'#aaaa00',LOW:'#4a7a9b',INFO:'#2a5a7b'};
-const CAT_L={CVE:'CVE',IAVA:'IAVA/IAVB',KEV:'CISA KEV',STIG_UPDATE:'STIG',POLICY:'POLICY'};
+const CAT_L={CVE:'CVE',IAVA:'IAVA/IAVB',KEV:'CISA KEV',STIG_UPDATE:'STIG',POLICY:'POLICY',CNSSI:'CNSSI 1253',JSIG:'JSIG'};
 const DEMO=[
   {id:'CVE-2026-1234',source:'NIST NVD',cat:'CVE',sev:'CRITICAL',cvss:9.8,date:'2026-04-05',transferred:false,
    title:'Windows NTLM Authentication Remote Code Execution',
@@ -20,6 +20,12 @@ const DEMO=[
   {id:'CMMC-UPD-02',source:'CMMC AB',cat:'POLICY',sev:'MEDIUM',cvss:null,date:'2026-04-01',transferred:false,
    title:'CMMC Assessment Guide v2.2 Released',
    desc:'Updated scoring methodology for AC.2.006 and IA.3.083. All L2 assessments after June 2026 must use v2.2.'},
+  {id:'CNSSI-2026-01',source:'CNSSI',cat:'CNSSI',sev:'HIGH',cvss:null,date:'2026-04-05',transferred:false,
+   title:'CNSSI 1253 Rev 3 — NSS Security Categorization Update',
+   desc:'Updated NSS overlay controls for MODERATE-HIGH systems. New requirements for SC-28(1) hardware encryption and IA-3 machine authentication affecting National Security Systems.'},
+  {id:'JSIG-2026-02',source:'JSIG',cat:'JSIG',sev:'HIGH',cvss:null,date:'2026-04-03',transferred:false,
+   title:'JSIG Rev 4 Errata — SAP Audit Requirements Updated',
+   desc:'Updated audit requirements for Special Access Programs. AU-2 event logging now requires CAC thumbprint in all privileged action records. Effective immediately for all SAP information systems.'},
   {id:'CSRMC-2026-01',source:'DoD CIO',cat:'POLICY',sev:'INFO',cvss:null,date:'2026-03-28',transferred:false,
    title:'CSRMC Phase 2 Build Guidance Released',
    desc:'DoD CIO released Phase 2 implementation guidance outlining DevSecOps pipeline and continuous monitoring specs.'},
@@ -64,7 +70,7 @@ export default function UpdatesFeed(){
     setBusy(false);
   };
 
-  const FILTERS=['ALL','PENDING','CRITICAL','HIGH','CVE','IAVA','KEV','STIG_UPDATE','POLICY'];
+  const FILTERS=['ALL','PENDING','CRITICAL','HIGH','CVE','IAVA','KEV','STIG_UPDATE','POLICY','CNSSI','JSIG'];
 
   return(
     <div style={{padding:24,...mono,color:'#c0d8f0'}}>
@@ -72,7 +78,7 @@ export default function UpdatesFeed(){
         <div>
           <div style={{fontSize:16,fontWeight:900,color:'#e0e8f0',letterSpacing:2}}>🔄 SECURITY UPDATES</div>
           <div style={{fontSize:10,color:'#4a7a9b',marginTop:3}}>
-            Sources: NIST NVD · CISA KEV · DISA STIG/IAVA · CMMC AB · DoD CIO · Last polled: 2026-04-06 08:00 UTC
+            Sources: NIST NVD · CISA KEV · DISA STIG/IAVA · CMMC AB · DoD CIO · CNSSI 1253 · JSIG · Last polled: 2026-04-06 08:00 UTC
           </div>
         </div>
         <div style={{display:'flex',gap:8}}>
