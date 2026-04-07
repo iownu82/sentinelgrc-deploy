@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, createContext, useContext, useCallback } from 'react';
 import { useColors } from '../theme.js';
+import { checkRateLimit, recordAttempt, resetRateLimit, formatResetTime } from '../security/rateLimiter.js';
+import { auditLog, EVENTS } from '../security/auditLogger.js';
 import { generateSessionId } from '../auth/crypto.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -69,6 +71,14 @@ export function AuthProvider({ children }) {
 
   const doLogin = async (email, password) => {
     setErr('');
+    // Rate limit check (AC-7, SC-5)
+    const rl = checkRateLimit('login', email);
+    if (!rl.allowed) {
+      setErr('Too many attempts. Try again in ' + formatResetTime(rl.resetIn) + '.');
+      await auditLog(EVENTS.LOGIN_FAIL, { actorId: email, details: { reason: 'rate_limited' } });
+      return;
+    }
+    recordAttempt('login', email);
     const ak = S.ATM + btoa(email).slice(0,12);
     const lk = S.LCK + btoa(email).slice(0,12);
     if (localStorage.getItem(lk)) { setLock(email); setPhase('locked'); return; }
@@ -83,6 +93,7 @@ export function AuthProvider({ children }) {
       if (next >= MAX_ATTEMPTS) {
         localStorage.setItem(lk, Date.now().toString());
         setLock(email); setPhase('locked');
+        auditLog(EVENTS.LOGIN_LOCKED, { actorId: email, details: { reason: 'max_attempts_exceeded' } });
       } else {
         setErr('Invalid credentials. ' + (MAX_ATTEMPTS - next) + ' attempt' + (MAX_ATTEMPTS-next===1?'':'s') + ' remaining.');
       }
@@ -92,6 +103,7 @@ export function AuthProvider({ children }) {
   const doMFA = (code) => {
     setErr('');
     if (code === DEMO.mfa) {
+      auditLog(EVENTS.MFA_SUCCESS, { actorId: DEMO.email, actorRole: DEMO.role, orgId: DEMO.slug });
       setUser({ id:'demo', email: DEMO.email });
       setMember({ id:'dm', role:DEMO.role, status:'active', display_name:DEMO.name, cyber_awareness_date:DEMO.cyber });
       setOrg({ id:'do', name:DEMO.org, slug:DEMO.slug, status:'active' });
