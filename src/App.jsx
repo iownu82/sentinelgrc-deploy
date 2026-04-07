@@ -30,6 +30,8 @@ const NAV = [
   { id:"scanner",   label:"Network Scanner",    icon:"📡", desc:"Nmap · SSH config · STIG compliance · POAM" },
   { id:"sprs",      label:"SPRS Calculator",    icon:"🎯", desc:"NIST 800-171 · Live score · DoD SPRS submission" },
   { id:"nessus",    label:"Nessus Importer",    icon:"📥", desc:"ACAS · .nessus XML · DoD CAT I/II/III · POAM export" },
+  { id:"updates",   label:"Security Updates",    icon:"🔄", desc:"NIST NVD · CISA KEV · DISA STIG/IAVA · DVD ISO transfer" },
+  { id:"admin",     label:"Admin Console",       icon:"🛡",  desc:"Org management · Bootstrap tokens · User oversight" },
 ];
 
 // ─── Dashboard (shown after auth) ────────────────────────────────────────────
@@ -55,6 +57,8 @@ function Dashboard() {
       case "scanner":   return <NetworkScanner />;
       case "sprs":      return <SPRSCalculator />;
       case "nessus":    return <NessusImporter />;
+      case "updates":   return <UpdatesFeed />;
+      case "admin":     return <AdminConsole />;
       default:          return <MultiFramework />;
     }
   };
