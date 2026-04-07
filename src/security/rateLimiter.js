@@ -4,14 +4,14 @@
  * Phase 4: enforce server-side at API gateway / AWS WAF
  *
  * Controls:
- *   - Login:  max 5 attempts per 15 min per IP bucket (client-enforced)
+ *   - Login:  max 3 attempts per 15 min per IP bucket (client-enforced) — matches AC-7 lockout
  *   - Setup:  max 3 attempts per 1 hour
  *   - MFA:    max 5 attempts per 5 min (then force re-login)
  *   - ISSO:   max 3 invite sends per hour per org
  */
 
 const WINDOWS = {
-  login:  { max: 5,  windowMs: 15 * 60 * 1000, key: 'rl_login_'  },
+  login:  { max: 3,  windowMs: 15 * 60 * 1000, key: 'rl_login_'  },
   setup:  { max: 3,  windowMs: 60 * 60 * 1000, key: 'rl_setup_'  },
   mfa:    { max: 5,  windowMs:  5 * 60 * 1000, key: 'rl_mfa_'    },
   isso:   { max: 3,  windowMs: 60 * 60 * 1000, key: 'rl_isso_'   },
