@@ -13,72 +13,67 @@ import EvidenceTracker from "./components/EvidenceTracker.jsx";
 import NetworkScanner from "./components/NetworkScanner.jsx";
 import SPRSCalculator from "./components/SPRSCalculator.jsx";
 import NessusImporter from "./components/NessusImporter.jsx";
-import { AuthProvider, AuthModal, UserMenu, useAuth } from "./components/Auth.jsx";
-import { SUPABASE_CONFIGURED, signOut } from "./supabase.js";
+import { AuthProvider, UserMenu, useAuth } from "./components/Auth.jsx";
 
 const mono = { fontFamily:"'Courier New',monospace" };
 
 const NAV = [
-  { id:"multi",   label:"Multi-Framework",   icon:"🌐", desc:"800-53 · CMMC · CSRMC · SPRS" },
-  { id:"assess",  label:"Self-Assessment",    icon:"📋", desc:"800-53 Rev 5 control assessment" },
-  { id:"ato",     label:"ATO Generator",      icon:"🏛", desc:"eMASS · DIBCAC · SPRS · SAV" },
-  { id:"unified", label:"Security Dashboard", icon:"🔍", desc:"All tool feeds in one screen" },
-  { id:"poam",    label:"POAM Tracker",       icon:"📊", desc:"POAM management + eMASS export" },
-  { id:"deploy",  label:"Deployment Guide",   icon:"☁",  desc:"LM / F-35 deployment architecture" },
-  { id:"roadmap", label:"Product Roadmap",    icon:"🚀", desc:"Cloud SaaS → Classified → SAP" },
-  { id:"templates", label:"Control Templates", icon:"📝", desc:"800-53 Rev 5 — all families + enhancements" },
-  { id:"evidence",   label:"Evidence Tracker",    icon:"🗂", desc:"Chain of custody · ATO evidence library" },
-  { id:"scanner",   label:"Network Scanner",     icon:"📡", desc:"Nmap · SSH config · STIG compliance · POAM" },
-  { id:"sprs",      label:"SPRS Calculator",     icon:"🎯", desc:"NIST 800-171 · Live score · DoD SPRS submission" },
-  { id:"nessus",    label:"Nessus Importer",     icon:"📥", desc:"ACAS · .nessus XML · DoD CAT I/II/III · POAM export" },
+  { id:"multi",     label:"Multi-Framework",   icon:"🌐", desc:"800-53 · CMMC · CSRMC · SPRS" },
+  { id:"assess",    label:"Self-Assessment",    icon:"📋", desc:"800-53 Rev 5 control assessment" },
+  { id:"ato",       label:"ATO Generator",      icon:"🏛", desc:"eMASS · DIBCAC · SPRS · SAV" },
+  { id:"unified",   label:"Security Dashboard", icon:"🔍", desc:"All tool feeds in one screen" },
+  { id:"poam",      label:"POAM Tracker",       icon:"📊", desc:"POAM management + eMASS export" },
+  { id:"deploy",    label:"Deployment Guide",   icon:"☁",  desc:"LM / F-35 deployment architecture" },
+  { id:"roadmap",   label:"Product Roadmap",    icon:"🚀", desc:"Cloud SaaS → Classified → SAP" },
+  { id:"templates", label:"Control Templates",  icon:"📝", desc:"800-53 Rev 5 — all families" },
+  { id:"evidence",  label:"Evidence Tracker",   icon:"🗂", desc:"Chain of custody · ATO evidence library" },
+  { id:"scanner",   label:"Network Scanner",    icon:"📡", desc:"Nmap · SSH config · STIG compliance · POAM" },
+  { id:"sprs",      label:"SPRS Calculator",    icon:"🎯", desc:"NIST 800-171 · Live score · DoD SPRS submission" },
+  { id:"nessus",    label:"Nessus Importer",    icon:"📥", desc:"ACAS · .nessus XML · DoD CAT I/II/III · POAM export" },
 ];
 
-function AppInner() {
+// ─── Dashboard (shown after auth) ────────────────────────────────────────────
+function Dashboard() {
   const [theme, setTheme] = useState("dark");
   const [active, setActive] = useState("multi");
-  const [showAuth, setShowAuth] = useState(false);
-  const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { member, org, role, isDemo } = useAuth();
 
   const t = THEMES[theme];
 
   const renderView = () => {
     switch(active) {
-      case "multi":   return <MultiFramework />;
-      case "assess":  return <SelfAssessment />;
-      case "ato":     return <ATOGenerator />;
-      case "unified": return <UnifiedDashboard />;
-      case "poam":    return <POAMTracker />;
-      case "deploy":  return <DeploymentArch />;
-      case "roadmap": return <ProductRoadmap />;
+      case "multi":     return <MultiFramework />;
+      case "assess":    return <SelfAssessment />;
+      case "ato":       return <ATOGenerator />;
+      case "unified":   return <UnifiedDashboard />;
+      case "poam":      return <POAMTracker />;
+      case "deploy":    return <DeploymentArch />;
+      case "roadmap":   return <ProductRoadmap />;
       case "templates": return <ControlTemplates />;
       case "evidence":  return <EvidenceTracker />;
-      case "scanner":  return <NetworkScanner />;
-      case "sprs":     return <SPRSCalculator />;
-      case "nessus":  return <NessusImporter />;
-      default:        return <MultiFramework />;
+      case "scanner":   return <NetworkScanner />;
+      case "sprs":      return <SPRSCalculator />;
+      case "nessus":    return <NessusImporter />;
+      default:          return <MultiFramework />;
     }
   };
 
   const current = NAV.find(n => n.id === active);
+  const roleLabel = { issm:'ISSM', isso:'ISSO', assessor:'ASSESSOR',
+                       auditor:'AUDITOR', readonly:'READ-ONLY' }[role] || role?.toUpperCase();
 
   return (
     <ThemeContext.Provider value={theme}>
       <div style={{ display:"flex", minHeight:"100vh", background:t.bg, color:t.text }}>
         <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${t.bg}}::-webkit-scrollbar-thumb{background:${t.scroll};border-radius:2px}*{box-sizing:border-box;margin:0;padding:0;transition:background-color 0.2s,border-color 0.2s,color 0.2s}`}</style>
 
-        {/* Sidebar */}
+        {/* ── Sidebar ─────────────────────────────────────────────────── */}
         <div style={{ width:sidebarOpen?220:60, background:t.headerBg, borderRight:`1px solid ${t.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
 
           {/* Logo */}
           <div style={{ padding:"14px 12px", borderBottom:`1px solid ${t.border}`, display:"flex", alignItems:"center", gap:10, overflow:"hidden" }}>
             <BallardLogo />
-            {sidebarOpen && (
-              <div>
-                
-                
-              </div>
-            )}
           </div>
 
           {/* Theme toggle */}
@@ -120,37 +115,22 @@ function AppInner() {
             })}
           </nav>
 
-          {/* Auth / persistence status */}
+          {/* Org / Role status */}
           {sidebarOpen && (
             <div style={{ padding:"10px 14px", borderTop:`1px solid ${t.border}` }}>
-              {SUPABASE_CONFIGURED ? (
-                user ? (
-                  <div>
-                    <div style={{ ...mono, fontSize:9, color:A.green, marginBottom:4, fontWeight:700 }}>✓ CLOUD SYNC ACTIVE</div>
-                    <div style={{ fontSize:10, color:t.textDim, marginBottom:8, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                      {user.user_metadata?.org_name || user.email}
-                    </div>
-                    <button onClick={()=>signOut()}
-                      style={{ ...mono, fontSize:10, background:"transparent", border:`1px solid ${t.border}`, color:t.mute, borderRadius:4, padding:"4px 10px", cursor:"pointer", width:"100%" }}>
-                      Sign Out
-                    </button>
-                  </div>
-                ) : (
-                  <button onClick={()=>setShowAuth(true)}
-                    style={{ ...mono, fontSize:10, background:`${A.teal}14`, border:`1px solid ${A.teal}40`, color:A.teal, borderRadius:5, padding:"8px 0", cursor:"pointer", width:"100%", fontWeight:700 }}>
-                    🔐 SIGN IN TO SAVE DATA
-                  </button>
-                )
-              ) : (
-                <div style={{ ...mono, fontSize:9, color:t.mute, textAlign:"center", lineHeight:1.6 }}>
-                  LOCAL MODE<br/>
-                  <span style={{ fontSize:8 }}>Add .env to enable cloud sync</span>
-                </div>
-              )}
+              <div style={{ ...mono, fontSize:9, color:A.green, marginBottom:4, fontWeight:700 }}>
+                ● SESSION ACTIVE
+              </div>
+              <div style={{ fontSize:10, color:t.textDim, marginBottom:4, ...mono }}>
+                {org?.name || (isDemo ? 'Ballard IS3 (Demo)' : 'No Org')}
+              </div>
+              <div style={{ fontSize:9, color:'#4a7a9b', ...mono, letterSpacing:1 }}>
+                ROLE: {roleLabel || 'UNKNOWN'}{isDemo ? ' · DEMO' : ''}
+              </div>
             </div>
           )}
 
-          {/* Collapse */}
+          {/* Collapse toggle */}
           <div onClick={() => setSidebarOpen(!sidebarOpen)}
             style={{ padding:"11px 12px", borderTop:`1px solid ${t.border}`, cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ fontSize:13, color:t.mute }}>{sidebarOpen ? "◀" : "▶"}</span>
@@ -158,10 +138,7 @@ function AppInner() {
           </div>
         </div>
 
-      {/* Auth modal */}
-      {showAuth && <AuthModal onClose={()=>setShowAuth(false)} />}
-
-        {/* Main */}
+        {/* ── Main panel ──────────────────────────────────────────────── */}
         <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
 
           {/* Top bar */}
@@ -174,16 +151,19 @@ function AppInner() {
               </div>
             </div>
             <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-              <div style={{ ...mono, fontSize:10, color:t.mute, background:`${A.teal}0A`, border:`1px solid ${A.teal}20`, borderRadius:4, padding:"4px 10px" }}>
-                ● DEMO MODE — GOVCLOUD BACKEND PENDING
-              </div>
+              {isDemo && (
+                <div style={{ ...mono, fontSize:10, color:t.mute, background:`${A.teal}0A`, border:`1px solid ${A.teal}20`, borderRadius:4, padding:"4px 10px" }}>
+                  ● DEMO MODE — GOVCLOUD BACKEND PENDING
+                </div>
+              )}
               <div style={{ ...mono, fontSize:10, color:A.green, background:`${A.green}0A`, border:`1px solid ${A.green}20`, borderRadius:4, padding:"4px 10px" }}>
-                ● BALLARD IS3
+                ● {org?.name || 'BALLARD IS3'}
               </div>
+              <UserMenu />
             </div>
           </div>
 
-          {/* View */}
+          {/* Active view */}
           <div style={{ flex:1, overflowY:"auto" }}>
             {renderView()}
           </div>
@@ -191,13 +171,13 @@ function AppInner() {
       </div>
     </ThemeContext.Provider>
   );
-
 }
 
+// ─── Root — Auth gates everything ────────────────────────────────────────────
 export default function App() {
   return (
     <AuthProvider>
-      <AppInner />
+      <Dashboard />
     </AuthProvider>
   );
 }
