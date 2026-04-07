@@ -17,8 +17,8 @@ const S = {                                       // Storage keys (namespaced)
 // ═══ DEMO MODE — Active when Supabase is not configured ══════════════════════
 const DEMO = {
   email: 'admin@ballardis3.com',
-  pass:  'RiskRadar#2026!Admin',
-  mfa:   '123456',
+  pass:  'DemoAdmin2026RR',
+  mfa:   '000000',
   role:  'issm',
   name:  'Fredrick Ballard',
   org:   'Ballard IS3 — Test Org',
