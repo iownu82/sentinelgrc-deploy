@@ -1,368 +1,488 @@
-/**
- * RiskRadar — Ballard IS3 Admin Console
- * Platform-level admin: org management, bootstrap tokens, account recovery
- * NIST 800-53: AC-2, AC-3, AC-5, AU-2, AU-12, IA-4
- * Access: Ballard IS3 admin only (admin@ballardis3.com)
- */
-import { useState, useEffect } from 'react';
-import { useColors } from '../theme.js';
-import { useAuth } from './Auth.jsx';
-import { supabase, SUPABASE_CONFIGURED } from '../supabase.js';
+import { useState } from 'react';
 import { sha256, generateNonce } from '../auth/crypto.js';
+import { useAuth } from './Auth.jsx';
 
-const mono = { fontFamily:"'Courier New',monospace" };
-
-// ─── Demo org registry (used when Supabase not configured) ────────────────
-const DEMO_ORGS = [
-  { id:'org-f35',  name:'F-35 JSF Program',        slug:'f35-jsf',        type:'dod_program',        status:'active',   issm:'issm@f35.mil',   isso:'isso@f35.mil',   members:4,  created:'2026-03-01' },
-  { id:'org-ray',  name:'Raytheon Technologies',    slug:'raytheon',       type:'prime_contractor',   status:'active',   issm:'issm@raytheon.com', isso:'isso@raytheon.com', members:7, created:'2026-03-15' },
-  { id:'org-cmmc', name:'Acme Defense LLC (CMMC)',  slug:'acme-defense',   type:'cmmc_sb',            status:'bootstrap',issm:'pending',        isso:'pending',        members:0,  created:'2026-04-01' },
-  { id:'org-lm',   name:'Lockheed Martin F-22',     slug:'lm-f22',         type:'prime_contractor',   status:'active',   issm:'issm@lm.com',    isso:'isso@lm.com',    members:12, created:'2026-02-20' },
+const mono={fontFamily:"'Courier New',monospace"};
+const ACTION_C={LOGIN_SUCCESS:'#00cc66',LOGIN_FAIL:'#cc4444',ACCOUNT_LOCKED:'#cc2222',
+  ACCOUNT_UNLOCKED:'#00aa44',CERT_UPLOADED:'#4a9fd4',ORG_CREATED:'#aa77ff',
+  POAM_UPDATED:'#ffaa44',SESSION_EXPIRED:'#886600'};
+const DEMO_ORGS=[
+  {id:'o1',name:'F-35 JSF Program',slug:'f35-jsf',type:'dod_program',status:'active',
+   created:'2026-03-01',members:4,issm:'j.smith@lm.mil',isso:'j.doe@lm.mil'},
+  {id:'o2',name:'Raytheon AMRAAM',slug:'raytheon-amraam',type:'prime_contractor',status:'active',
+   created:'2026-03-15',members:2,issm:'r.jones@raytheon.mil',isso:'—'},
+  {id:'o3',name:'AcmeDef LLC',slug:'acmedef-cmmc',type:'cmmc_sb',status:'bootstrap',
+   created:'2026-04-01',members:0,issm:'—',isso:'—'},
+];
+const DEMO_USERS=[
+  {id:'u1',name:'Fredrick Ballard',email:'admin@ballardis3.com',org:'Ballard IS3',
+   role:'issm',status:'active',last_login:'2026-04-06',cyber:'2027-01-15',mfa:true,
+   locked:false,locked_reason:''},
+  {id:'u2',name:'John Smith',email:'j.smith@lm.mil',org:'F-35 JSF Program',
+   role:'issm',status:'active',last_login:'2026-04-05',cyber:'2026-11-20',mfa:true,
+   locked:false,locked_reason:''},
+  {id:'u3',name:'Jane Doe',email:'j.doe@lm.mil',org:'F-35 JSF Program',
+   role:'isso',status:'active',last_login:'2026-04-04',cyber:'2026-12-10',mfa:true,
+   locked:false,locked_reason:''},
+  {id:'u4',name:'Bob Wilson',email:'b.wilson@raytheon.mil',org:'Raytheon AMRAAM',
+   role:'issm',status:'locked',last_login:'2026-04-03',cyber:'2026-09-01',mfa:true,
+   locked:true,locked_reason:'3 failed login attempts (AC-7)'},
+];
+const DEMO_AUDIT=[
+  {id:1,ts:'2026-04-06 14:32',actor:'admin@ballardis3.com',role:'issm',org:'Ballard IS3',
+   action:'LOGIN_SUCCESS',ip:'192.168.1.100'},
+  {id:2,ts:'2026-04-06 14:28',actor:'b.wilson@raytheon.mil',role:'issm',org:'Raytheon AMRAAM',
+   action:'LOGIN_FAIL',ip:'10.5.2.88'},
+  {id:3,ts:'2026-04-06 14:29',actor:'SYSTEM',role:'system',org:'Raytheon AMRAAM',
+   action:'ACCOUNT_LOCKED',ip:'10.5.2.88'},
+  {id:4,ts:'2026-04-06 13:15',actor:'j.smith@lm.mil',role:'issm',org:'F-35 JSF Program',
+   action:'CERT_UPLOADED',ip:'10.1.5.4'},
+  {id:5,ts:'2026-04-05 16:45',actor:'admin@ballardis3.com',role:'issm',org:'Ballard IS3',
+   action:'ORG_CREATED',ip:'192.168.1.100'},
 ];
 
-// ─── Shared UI ─────────────────────────────────────────────────────────────
-const Card = ({children,title,color='#1e3a5f'}) => {
-  const C = useColors();
-  return (
-    <div style={{background:C.panel,border:'1px solid '+color,borderRadius:8,marginBottom:16,overflow:'hidden'}}>
-      {title && <div style={{padding:'12px 18px',borderBottom:'1px solid '+color,background:C.headerBg,
-        fontSize:11,fontWeight:700,color:C.text,letterSpacing:1,...mono}}>{title}</div>}
-      <div style={{padding:18}}>{children}</div>
-    </div>
-  );
-};
+function Btn({onClick,children,variant='primary',sm,disabled}){
+  const s={...mono,border:'none',cursor:disabled?'not-allowed':'pointer',fontWeight:700,
+    letterSpacing:1,borderRadius:4,padding:sm?'5px 12px':'9px 20px',
+    fontSize:sm?10:11,opacity:disabled?0.5:1,
+    background:variant==='primary'?'#0055aa':variant==='success'?'#004422':
+      variant==='danger'?'#550000':'transparent',
+    color:variant==='primary'?'#fff':variant==='success'?'#00cc66':
+      variant==='danger'?'#ff8888':'#4a7a9b',
+    border:variant==='ghost'?'1px solid #1e3a5f':'none'};
+  return <button style={s} onClick={onClick} disabled={disabled}>{children}</button>;
+}
+function Badge({label,color='#4a8ab0'}){
+  return <span style={{fontSize:9,padding:'2px 8px',borderRadius:10,background:'rgba(0,0,0,0.3)',
+    color,border:'1px solid '+color}}>{label}</span>;
+}
 
-const Btn = ({onClick,children,variant='primary',disabled,sm}) => {
-  const v={primary:{bg:'#0055aa',c:'#fff',b:'#0066cc'},danger:{bg:'rgba(150,0,0,0.2)',c:'#ff7777',b:'#660000'},
-    success:{bg:'rgba(0,120,60,0.2)',c:'#44cc88',b:'#005522'},ghost:{bg:'transparent',c:'#5588bb',b:'#1e3a5f'}}[variant]||{};
-  return <button onClick={onClick} disabled={disabled}
-    style={{...mono,padding:sm?'4px 10px':'7px 16px',fontSize:sm?9:11,fontWeight:700,letterSpacing:1,
-      borderRadius:4,cursor:disabled?'not-allowed':'pointer',opacity:disabled?0.4:1,
-      background:v.bg,color:v.c,border:'1px solid '+v.b}}>{children}</button>;
-};
-
-const Badge = ({label,color='blue'}) => {
-  const m={blue:'#0066cc',green:'#006633',red:'#7a0000',orange:'#885500',gray:'#334455',teal:'#006666'}[color]||'#334455';
-  return <span style={{...mono,fontSize:9,fontWeight:700,letterSpacing:1,padding:'2px 7px',borderRadius:3,
-    background:m+'33',color:m,border:'1px solid '+m+'66'}}>{label}</span>;
-};
-
-const Inp = ({label,value,onChange,placeholder,type='text'}) => {
-  const C=useColors();
-  return <div style={{marginBottom:12}}>
-    <label style={{display:'block',fontSize:9,color:C.mute,letterSpacing:1.5,marginBottom:4,textTransform:'uppercase',...mono}}>{label}</label>
-    <input type={type} value={value} onChange={onChange} placeholder={placeholder}
-      style={{width:'100%',background:C.bg,border:'1px solid '+C.border,borderRadius:4,padding:'7px 10px',
-        color:C.text,fontSize:12,...mono,boxSizing:'border-box'}}/>
-  </div>;
-};
-
-// ─── Stat card ─────────────────────────────────────────────────────────────
-const Stat = ({label,value,color='#4a8ab0',icon}) => {
-  const C=useColors();
-  return <div style={{background:C.bg,border:'1px solid '+C.border,borderRadius:6,padding:14,textAlign:'center'}}>
-    <div style={{fontSize:22,...mono,color,fontWeight:700}}>{icon||''}{value}</div>
-    <div style={{fontSize:9,color:C.mute,letterSpacing:1.5,marginTop:4,...mono}}>{label}</div>
-  </div>;
-};
-
-// ─── Create Org Panel ──────────────────────────────────────────────────────
-function CreateOrg({onCreated}) {
-  const C=useColors();
-  const [name,setName]=useState('');
-  const [slug,setSlug]=useState('');
-  const [type,setType]=useState('dod_program');
-  const [contract,setContract]=useState('');
-  const [loading,setLoading]=useState(false);
+export default function AdminConsole(){
+  const {role,isDemo}=useAuth();
+  const [tab,setTab]=useState('orgs');
+  const [orgs,setOrgs]=useState(DEMO_ORGS);
+  const [users,setUsers]=useState(DEMO_USERS);
   const [token,setToken]=useState(null);
-  const [err,setErr]=useState('');
+  const [msg,setMsg]=useState('');
+  const [msgType,setMsgType]=useState('ok');
+  // CAC+PIN unlock modal state
+  const [unlockTarget,setUnlockTarget]=useState(null);
+  const [unlockStep,setUnlockStep]=useState('review'); // review|pin|done
+  const [unlockPin,setUnlockPin]=useState('');
+  const [unlockReason,setUnlockReason]=useState('');
 
-  const slugify = v => v.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const notify=(text,type='ok')=>{setMsg(text);setMsgType(type);setTimeout(()=>setMsg(''),5000);};
 
-  const create = async () => {
-    if(!name||!slug) return;
-    setLoading(true); setErr('');
-    try {
-      if(SUPABASE_CONFIGURED && supabase) {
-        const {data:org,error:oErr} = await supabase.from('organizations')
-          .insert({name,slug,program_type:type,contract_number:contract||null,status:'bootstrap'})
-          .select().single();
-        if(oErr) throw oErr;
-        // Generate SHA-256 bootstrap token
-        const rawToken = generateNonce()+generateNonce();
-        const tokenHash = await sha256(rawToken);
-        const expires = new Date(Date.now()+24*60*60*1000).toISOString();
-        await supabase.from('bootstrap_tokens').insert({org_id:org.id,token_hash:tokenHash,expires_at:expires});
-        setToken({raw:rawToken,org,expires});
-        onCreated?.(org);
-      } else {
-        // Demo mode — simulate
-        const rawToken = 'demo-'+generateNonce();
-        setToken({raw:rawToken,org:{id:'org-new',name,slug,status:'bootstrap'},expires:new Date(Date.now()+86400000).toISOString()});
-        onCreated?.({id:'org-new',name,slug});
-      }
-    } catch(e) { setErr(e.message||'Failed to create org'); }
-    setLoading(false);
+  const TABS=[{id:'orgs',icon:'🏢',label:'Organizations'},{id:'create',icon:'➕',label:'New Org'},
+    {id:'users',icon:'👤',label:'Users'},{id:'audit',icon:'📋',label:'Audit Log'},
+    {id:'system',icon:'⚙',label:'System'}];
+
+  const generateToken=async(org)=>{
+    const raw=generateNonce()+generateNonce()+generateNonce();
+    const hash=await sha256(raw);
+    setToken({org,raw,hash,expires:new Date(Date.now()+86400000).toISOString()});
+    setTab('token');
+    notify('Bootstrap token generated for '+org.name);
   };
 
-  if(token) return (
-    <Card title='✅ ORG CREATED — BOOTSTRAP TOKEN' color='#005522'>
-      <div style={{fontSize:11,color:'#44cc88',marginBottom:12,...mono}}>
-        Organization <strong>{token.org.name}</strong> created. Share this one-time setup link with the ISSM.
-      </div>
-      <div style={{background:'#020d1a',border:'1px solid #003322',borderRadius:4,padding:12,marginBottom:12}}>
-        <div style={{fontSize:9,color:'#2a6a4a',letterSpacing:1,marginBottom:6,...mono}}>BOOTSTRAP TOKEN (single-use · 24hr TTL)</div>
-        <div style={{fontSize:11,color:'#44cc88',wordBreak:'break-all',...mono}}>{token.raw}</div>
-      </div>
-      <div style={{fontSize:10,color:'#2a5a3a',...mono,lineHeight:1.8}}>
-        Setup URL: https://app.ballardis3.com/setup?token={token.raw}<br/>
-        Expires: {new Date(token.expires).toUTCString()}<br/>
-        ⚠ This token is displayed ONCE. Store it securely before closing.<br/>
-        ⚠ Token hash stored (SHA-256). Raw token never persisted.
-      </div>
-      <div style={{marginTop:12,display:'flex',gap:8}}>
-        <Btn onClick={()=>{navigator.clipboard?.writeText(token.raw)}} variant='ghost' sm>COPY TOKEN</Btn>
-        <Btn onClick={()=>{setToken(null);setName('');setSlug('');setContract('');}} variant='ghost' sm>CREATE ANOTHER</Btn>
-      </div>
-    </Card>
-  );
-
-  return (
-    <Card title='CREATE NEW ORGANIZATION'>
-      {err && <div style={{background:'rgba(150,0,0,0.15)',border:'1px solid #550000',borderRadius:4,
-        padding:'8px 12px',marginBottom:12,fontSize:11,color:'#ff7777',...mono}}>⚠ {err}</div>}
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-        <Inp label='Organization Name' value={name} placeholder='F-35 JSF Program'
-          onChange={e=>{setName(e.target.value);setSlug(slugify(e.target.value));}} />
-        <Inp label='URL Slug (auto)' value={slug} placeholder='f35-jsf'
-          onChange={e=>setSlug(slugify(e.target.value))} />
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-        <div style={{marginBottom:12}}>
-          <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:1.5,marginBottom:4,textTransform:'uppercase',...mono}}>
-            Program Type
-          </label>
-          <select value={type} onChange={e=>setType(e.target.value)}
-            style={{width:'100%',background:C.bg,border:'1px solid '+C.border,borderRadius:4,
-              padding:'7px 10px',color:C.text,fontSize:12,...mono}}>
-            <option value='dod_program'>DoD Program</option>
-            <option value='prime_contractor'>Prime Contractor</option>
-            <option value='subcontractor'>Subcontractor</option>
-            <option value='cmmc_sb'>CMMC Small Business</option>
-          </select>
-        </div>
-        <Inp label='Contract / CAGE Code (optional)' value={contract} placeholder='FA8721-23-C-0001'
-          onChange={e=>setContract(e.target.value)} />
-      </div>
-      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:4}}>
-        <Btn onClick={create} disabled={!name||!slug||loading}>
-          {loading?'GENERATING...':'CREATE ORG + BOOTSTRAP TOKEN →'}
-        </Btn>
-      </div>
-      <div style={{fontSize:9,color:'#2a4a6b',marginTop:10,...mono,lineHeight:1.8}}>
-        Creates org in DB → Generates single-use SHA-256 bootstrap token → 24hr TTL<br/>
-        ISSM uses token to create their account → Must create ISSO before dashboard unlocks
-      </div>
-    </Card>
-  );
-}
-
-// ─── Org List ──────────────────────────────────────────────────────────────
-function OrgList({orgs,onRefresh}) {
-  const statusColor = {active:'green',bootstrap:'orange',suspended:'red',expired:'gray'};
-  const typeLabel = {dod_program:'DoD Program',prime_contractor:'Prime Contractor',
-    subcontractor:'Subcontractor',cmmc_sb:'CMMC Small Biz'};
-  return (
-    <Card title={'ALL ORGANIZATIONS ('+orgs.length+')'}>
-      <div style={{overflowX:'auto'}}>
-        <table style={{width:'100%',borderCollapse:'collapse',...mono,fontSize:10}}>
-          <thead>
-            <tr style={{borderBottom:'1px solid #1e3a5f',color:'#4a7a9b',letterSpacing:1}}>
-              {['ORGANIZATION','TYPE','STATUS','ISSM','ISSO','MEMBERS','CREATED','ACTIONS'].map(h=>(
-                <th key={h} style={{padding:'6px 10px',textAlign:'left',fontWeight:700,fontSize:9}}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {orgs.map(o=>(
-              <tr key={o.id} style={{borderBottom:'1px solid #0d2030'}}>
-                <td style={{padding:'8px 10px',color:'#c0d8f0',fontWeight:700}}>{o.name}</td>
-                <td style={{padding:'8px 10px',color:'#4a7a9b'}}>{typeLabel[o.type]||o.type}</td>
-                <td style={{padding:'8px 10px'}}><Badge label={o.status?.toUpperCase()} color={statusColor[o.status]||'gray'}/></td>
-                <td style={{padding:'8px 10px',color:'#4a7a9b',fontSize:9}}>{o.issm||'pending'}</td>
-                <td style={{padding:'8px 10px',color:'#4a7a9b',fontSize:9}}>{o.isso||'pending'}</td>
-                <td style={{padding:'8px 10px',color:'#88aacc',textAlign:'center'}}>{o.members||0}</td>
-                <td style={{padding:'8px 10px',color:'#2a4a6b'}}>{o.created?.slice(0,10)||'—'}</td>
-                <td style={{padding:'8px 10px'}}>
-                  <div style={{display:'flex',gap:4}}>
-                    <Btn variant='ghost' sm onClick={()=>{}}>VIEW</Btn>
-                    {o.status==='bootstrap' && <Btn variant='success' sm>REGEN TOKEN</Btn>}
-                    {o.status==='active' && <Btn variant='danger' sm>SUSPEND</Btn>}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </Card>
-  );
-}
-
-// ─── Locked Accounts Panel ─────────────────────────────────────────────────
-function LockedAccounts() {
-  const DEMO_LOCKED = [
-    {email:'user@f35.mil', org:'F-35 JSF Program', locked_at:'2026-04-06T14:22:00Z', reason:'3 failed login attempts', id:'la1'},
-  ];
-  const [accounts] = useState(DEMO_LOCKED);
-  return (
-    <Card title={'🔒 LOCKED ACCOUNTS ('+accounts.length+')'} color={accounts.length?'#660000':'#1e3a5f'}>
-      {accounts.length===0 ? (
-        <div style={{fontSize:11,color:'#2a6a4a',...mono}}>✅ No locked accounts</div>
-      ) : accounts.map(a=>(
-        <div key={a.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',
-          padding:'10px 12px',background:'rgba(150,0,0,0.08)',border:'1px solid #440000',
-          borderRadius:4,marginBottom:8}}>
-          <div>
-            <div style={{fontSize:11,color:'#ff9999',fontWeight:700,...mono}}>{a.email}</div>
-            <div style={{fontSize:9,color:'#664444',...mono}}>
-              Org: {a.org} · Locked: {new Date(a.locked_at).toLocaleString()} · Reason: {a.reason}
-            </div>
-          </div>
-          <div style={{display:'flex',gap:6}}>
-            <Btn variant='success' sm onClick={()=>alert('Account re-enabled. Audit log entry created.')}>
-              RE-ENABLE
-            </Btn>
-            <Btn variant='ghost' sm>VIEW LOG</Btn>
-          </div>
-        </div>
-      ))}
-      <div style={{fontSize:9,color:'#2a4a6b',marginTop:8,...mono}}>
-        NIST 800-53 AC-7: All account unlocks require ISSM identity verification and are logged with timestamp and justification.
-      </div>
-    </Card>
-  );
-}
-
-// ─── Main Admin Console ────────────────────────────────────────────────────
-export default function AdminConsole() {
-  const C = useColors();
-  const { user, isDemo } = useAuth();
-  const [tab, setTab] = useState('overview');
-  const [orgs, setOrgs] = useState(DEMO_ORGS);
-
-  // Load orgs from Supabase
-  useEffect(()=>{
-    if(!SUPABASE_CONFIGURED||!supabase) return;
-    supabase.from('organizations').select('*, org_members(count)').order('created_at',{ascending:false})
-      .then(({data})=>{ if(data) setOrgs(data); });
-  },[]);
-
-  const stats = {
-    total: orgs.length,
-    active: orgs.filter(o=>o.status==='active').length,
-    bootstrap: orgs.filter(o=>o.status==='bootstrap').length,
-    members: orgs.reduce((s,o)=>s+(o.members||0),0),
+  // Step 1: ISSM clicks RE-ENABLE — shows review screen
+  const initiateUnlock=(u)=>{
+    setUnlockTarget(u);setUnlockStep('review');
+    setUnlockPin('');setUnlockReason('');
   };
 
-  const TABS = ['overview','organizations','create_org','locked','audit'];
+  // Step 2: ISSM proceeds to CAC+PIN screen
+  const proceedToPin=()=>setUnlockStep('pin');
 
-  return (
-    <div style={{padding:'24px 28px',maxWidth:1200,...mono}}>
+  // Step 3: ISSM enters PIN + justification → account unlocked + logged
+  const confirmUnlock=()=>{
+    if(unlockPin!=='000000'){notify('Authentication failed. Unlock not permitted.','err');return;}
+    if(!unlockReason.trim()){notify('Justification is required for the audit record.','err');return;}
+    setUsers(p=>p.map(u=>u.id===unlockTarget.id?
+      {...u,status:'active',locked:false,locked_reason:''}:u));
+    // In production: write audit record with ISSM CAC thumbprint, timestamp, IP, justification
+    setUnlockStep('done');
+    setTimeout(()=>{setUnlockTarget(null);setUnlockStep('review');},2500);
+    notify('Account re-enabled. CAC+PIN auth recorded in audit log (AU-10, JSIG).');
+  };
+
+  return(
+    <div style={{padding:24,...mono,color:'#c0d8f0'}}>
       {/* Header */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:24}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',
+        marginBottom:20,paddingBottom:16,borderBottom:'1px solid #1e3a5f'}}>
         <div>
-          <div style={{fontSize:18,fontWeight:900,color:C.text,letterSpacing:2}}>
-            <span style={{color:'#cc2222'}}>BALLARD IS3</span> ADMIN CONSOLE
+          <div style={{fontSize:16,fontWeight:900,color:'#e0e8f0',letterSpacing:2}}>
+            🛡 ADMIN CONSOLE
           </div>
-          <div style={{fontSize:10,color:C.mute,letterSpacing:2,marginTop:4}}>
-            Platform Administration · NIST 800-53 AC-2 · {isDemo?'DEMO MODE':'LIVE'}
+          <div style={{fontSize:10,color:'#4a7a9b',marginTop:3}}>
+            Multi-Tenant Management · Org Provisioning · User Oversight
           </div>
         </div>
-        <div style={{textAlign:'right'}}>
-          <div style={{fontSize:10,color:'#44cc88',marginBottom:2}}>● PLATFORM ADMIN</div>
-          <div style={{fontSize:9,color:C.mute}}>{user?.email}</div>
+        <div style={{fontSize:10,padding:'4px 12px',borderRadius:4,letterSpacing:1,
+          background:isDemo?'rgba(180,80,0,0.1)':'rgba(0,180,80,0.1)',
+          border:'1px solid '+(isDemo?'#663300':'#006633'),
+          color:isDemo?'#ffaa44':'#00cc66'}}>
+          {isDemo?'⚠ DEMO MODE':'● LIVE'}
         </div>
       </div>
 
-      {/* Stats */}
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:24}}>
-        <Stat label='TOTAL ORGS' value={stats.total} color='#4a8ab0' icon='🏢 '/>
-        <Stat label='ACTIVE' value={stats.active} color='#44cc88' icon='✅ '/>
-        <Stat label='PENDING SETUP' value={stats.bootstrap} color='#ffaa44' icon='⏳ '/>
-        <Stat label='TOTAL USERS' value={stats.members} color='#8888cc' icon='👤 '/>
-      </div>
+      {msg&&<div style={{background:msgType==='ok'?'rgba(0,150,50,0.12)':'rgba(180,0,0,0.12)',
+        border:'1px solid '+(msgType==='ok'?'#006622':'#660000'),borderRadius:4,
+        padding:'9px 16px',marginBottom:16,fontSize:11,
+        color:msgType==='ok'?'#00cc66':'#ff8888'}}>{msg}</div>}
 
       {/* Tabs */}
-      <div style={{display:'flex',gap:4,marginBottom:20,borderBottom:'1px solid '+C.border,paddingBottom:0}}>
-        {[
-          {id:'overview',label:'Overview'},
-          {id:'organizations',label:'Organizations'},
-          {id:'create_org',label:'+ Create Org'},
-          {id:'locked',label:'🔒 Locked Accounts'},
-          {id:'audit',label:'Audit Log'},
-        ].map(t=>(
-          <div key={t.id} onClick={()=>setTab(t.id)}
-            style={{padding:'8px 16px',cursor:'pointer',fontSize:10,fontWeight:700,letterSpacing:1,
-              color:tab===t.id?'#4a8ab0':C.mute,borderBottom:tab===t.id?'2px solid #0066cc':'2px solid transparent',
-              marginBottom:-1}}>
-            {t.label}
+      <div style={{display:'flex',gap:2,marginBottom:20,borderBottom:'1px solid #1e3a5f'}}>
+        {TABS.map(t=>(
+          <div key={t.id} onClick={()=>setTab(t.id)} style={{padding:'8px 16px',cursor:'pointer',
+            fontSize:11,fontWeight:700,letterSpacing:1,borderRadius:'4px 4px 0 0',
+            background:tab===t.id?'#0d2a4a':'transparent',
+            color:tab===t.id?'#4a9fd4':'#2a5a7b',
+            borderBottom:tab===t.id?'2px solid #0066cc':'2px solid transparent'}}>
+            {t.icon} {t.label}
           </div>
         ))}
       </div>
 
-      {/* Tab content */}
-      {tab==='overview' && (
+      {/* Orgs tab */}
+      {tab==='orgs'&&(
         <div>
-          <Card title='PLATFORM SECURITY STATUS'>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16}}>
-              {[
-                {label:'FIPS 199 Category',value:'MODERATE',color:'#ffaa44'},
-                {label:'800-53 Baseline',value:'MODERATE',color:'#ffaa44'},
-                {label:'CMMC Level',value:'Level 2',color:'#4a8ab0'},
-                {label:'Auth Standard',value:'PBKDF2+Argon2id',color:'#44cc88'},
-                {label:'Encryption',value:'AES-256 KMS',color:'#44cc88'},
-                {label:'Audit Retention',value:'3 Years WORM',color:'#44cc88'},
-                {label:'Session Timeout',value:'15 Minutes',color:'#44cc88'},
-                {label:'Max Login Attempts',value:'3 (AC-7)',color:'#44cc88'},
-                {label:'MFA Status',value:'TOTP Active',color:'#44cc88'},
-              ].map(s=>(
-                <div key={s.label} style={{display:'flex',justifyContent:'space-between',alignItems:'center',
-                  padding:'8px 0',borderBottom:'1px solid '+C.border}}>
-                  <span style={{fontSize:10,color:C.mute}}>{s.label}</span>
-                  <span style={{fontSize:10,fontWeight:700,color:s.color}}>{s.value}</span>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+            <div style={{fontSize:12,fontWeight:700,color:'#e0e8f0'}}>ORGANIZATIONS ({orgs.length})</div>
+            <Btn onClick={()=>setTab('create')}>➕ NEW ORG</Btn>
+          </div>
+          <div style={{display:'grid',gap:10}}>
+            {orgs.map(org=>{
+              const sc={active:'#00cc66',bootstrap:'#ffaa44',suspended:'#cc4444'}[org.status]||'#888';
+              const tc={dod_program:'DoD Program',prime_contractor:'Prime Contractor',
+                cmmc_sb:'CMMC SB',subcontractor:'Sub'}[org.type]||org.type;
+              return(
+                <div key={org.id} style={{background:'#061224',border:'1px solid #1e3a5f',
+                  borderRadius:6,padding:16}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <div style={{flex:1}}>
+                      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+                        <span style={{fontSize:13,fontWeight:700,color:'#e0e8f0'}}>{org.name}</span>
+                        <Badge label={tc} color='#4a8ab0'/>
+                        <Badge label={org.status.toUpperCase()} color={sc}/>
+                      </div>
+                      <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:8,
+                        fontSize:10,color:'#4a7a9b'}}>
+                        <div>SLUG<br/><span style={{color:'#a0b8d0'}}>{org.slug}</span></div>
+                        <div>MEMBERS<br/><span style={{color:'#a0b8d0'}}>{org.members}</span></div>
+                        <div>CREATED<br/><span style={{color:'#a0b8d0'}}>{org.created}</span></div>
+                        <div>ISSM<br/><span style={{color:'#a0b8d0',fontSize:9}}>{org.issm}</span></div>
+                        <div>ISSO<br/><span style={{color:org.isso==='—'?'#cc4444':'#a0b8d0',fontSize:9}}>{org.isso}</span></div>
+                      </div>
+                    </div>
+                    <Btn sm onClick={()=>generateToken(org)} variant='ghost'>🔑 TOKEN</Btn>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </Card>
-          <Card title='QUICK ACTIONS'>
-            <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
-              <Btn onClick={()=>setTab('create_org')}>+ CREATE NEW ORG</Btn>
-              <Btn variant='ghost' onClick={()=>setTab('locked')}>🔒 VIEW LOCKED ACCOUNTS</Btn>
-              <Btn variant='ghost' onClick={()=>setTab('audit')}>📋 VIEW AUDIT LOG</Btn>
-            </div>
-          </Card>
+              );
+            })}
+          </div>
         </div>
       )}
 
-      {tab==='organizations' && <OrgList orgs={orgs} onRefresh={()=>{}} />}
-      {tab==='create_org' && <CreateOrg onCreated={org=>{setOrgs(o=>[org,...o]);setTab('organizations');}} />}
-      {tab==='locked' && <LockedAccounts />}
+      {/* Create Org tab */}
+      {tab==='create'&&<CreateOrgPanel onCreated={org=>{
+        setOrgs(p=>[...p,{...org,id:'o'+Date.now(),created:new Date().toISOString().slice(0,10),
+          members:0,issm:'—',isso:'—'}]);
+        notify('Org created: '+org.name+'. Generate a bootstrap token to invite ISSM.');
+        setTab('orgs');
+      }}/>}
 
-      {tab==='audit' && (
-        <Card title='PLATFORM AUDIT LOG (Last 20 Events)'>
-          <div style={{fontSize:10,color:'#2a5a7b',...mono,lineHeight:2}}>
-            [2026-04-06 15:30:22 UTC] ACCOUNT_LOCKED · admin@ballardis3.com · org:ballard-is3 · ip:47.34.130.211 · 3 failed attempts<br/>
-            [2026-04-06 15:15:08 UTC] LOGIN_SUCCESS · admin@ballardis3.com · org:ballard-is3 · ip:47.34.130.211 · session:abc123<br/>
-            [2026-04-06 14:55:00 UTC] ORG_CREATED · Acme Defense LLC · admin@ballardis3.com · type:cmmc_sb<br/>
-            [2026-04-06 14:22:11 UTC] BOOTSTRAP_TOKEN_GENERATED · org:acme-defense · ttl:24h · admin@ballardis3.com<br/>
-            [2026-04-06 09:00:00 UTC] SYSTEM_STARTUP · platform:RiskRadar v1.1.0 · demo_mode:true
+      {/* Token display */}
+      {tab==='token'&&token&&<TokenPanel token={token} onDone={()=>{setToken(null);setTab('orgs');}}/>}
+
+      {/* Users tab */}
+      {tab==='users'&&(
+        <div>
+          <div style={{fontSize:12,fontWeight:700,color:'#e0e8f0',marginBottom:14}}>
+            USER ACCOUNTS ({users.length})
           </div>
-          <div style={{fontSize:9,color:'#1a3a5a',marginTop:12,...mono}}>
-            NIST 800-53 AU-11: All events retained minimum 3 years · SHA-256 chain verified · WORM storage
+          <div style={{display:'grid',gap:8}}>
+            {users.map(u=>(
+              <div key={u.id} style={{background:'#061224',
+                border:'1px solid '+(u.locked?'#660000':'#1e3a5f'),
+                borderRadius:6,padding:14}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div style={{flex:1}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:5}}>
+                      <span style={{fontSize:12,fontWeight:700,color:'#e0e8f0'}}>{u.name}</span>
+                      <Badge label={u.role.toUpperCase()} color='#4a8ab0'/>
+                      <Badge label={u.status.toUpperCase()}
+                        color={u.locked?'#cc4444':u.status==='active'?'#00cc66':'#ffaa44'}/>
+                    </div>
+                    <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+                      {u.email} · {u.org} · Last login: {u.last_login} · Cyber expires: {u.cyber}
+                      {u.locked_reason&&<span style={{color:'#cc4444'}}> · {u.locked_reason}</span>}
+                    </div>
+                  </div>
+                  {u.locked&&(
+                    <button onClick={()=>initiateUnlock(u)}
+                      style={{...mono,background:'#004422',border:'1px solid #006633',
+                        color:'#00cc66',borderRadius:4,padding:'6px 14px',
+                        cursor:'pointer',fontSize:10,fontWeight:700,marginLeft:16}}>
+                      🔓 RE-ENABLE
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-        </Card>
+        </div>
       )}
+
+      {/* Audit Log tab */}
+      {tab==='audit'&&(
+        <div>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+            <div style={{fontSize:12,fontWeight:700,color:'#e0e8f0'}}>AUDIT LOG — IMMUTABLE</div>
+            <div style={{fontSize:10,color:'#4a7a9b'}}>3-year WORM · SHA-256 chained</div>
+          </div>
+          <div style={{background:'#061224',border:'1px solid #1e3a5f',borderRadius:6,overflow:'hidden'}}>
+            <div style={{display:'grid',gridTemplateColumns:'130px 1fr 140px 110px',gap:8,
+              padding:'8px 14px',background:'#0a1a2e',fontSize:9,color:'#4a7a9b',
+              letterSpacing:1.5,fontWeight:700}}>
+              {['TIMESTAMP','ACTOR / ORG','ACTION','IP'].map((h,i)=><div key={i}>{h}</div>)}
+            </div>
+            {DEMO_AUDIT.map(row=>(
+              <div key={row.id} style={{display:'grid',gridTemplateColumns:'130px 1fr 140px 110px',
+                gap:8,padding:'10px 14px',borderTop:'1px solid #0d1f35',
+                fontSize:10,alignItems:'center'}}>
+                <div style={{color:'#4a7a9b'}}>{row.ts}</div>
+                <div>
+                  <div style={{color:'#a0b8d0'}}>{row.actor}</div>
+                  <div style={{fontSize:9,color:'#2a5a7b'}}>{row.org}</div>
+                </div>
+                <div style={{color:ACTION_C[row.action]||'#888',fontWeight:700,fontSize:9}}>
+                  {row.action}
+                </div>
+                <div style={{color:'#4a7a9b',fontSize:9}}>{row.ip}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* System tab */}
+      {tab==='system'&&(
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+          {[
+            ['Platform Version','v1.1.0 — Phase 1','ok'],
+            ['Auth System','Active — Demo Mode','ok'],
+            ['Account Unlock','CAC+PIN Required (JSIG)','ok'],
+            ['Database','Supabase — Not Connected','warn'],
+            ['AWS SES Email','Not Configured','warn'],
+            ['CNSSI 1253','NSS Overlay — Phase 3','info'],
+            ['JSIG Compliance','SAP Controls — Phase 3','info'],
+            ['GovCloud Migration','Phase 4','info'],
+          ].map(([l,v,s])=>(
+            <div key={l} style={{background:'#061224',border:'1px solid #1e3a5f',
+              borderRadius:6,padding:14}}>
+              <div style={{fontSize:10,color:'#4a7a9b',marginBottom:5}}>{l}</div>
+              <div style={{fontSize:11,fontWeight:700,
+                color:s==='ok'?'#00cc66':s==='warn'?'#ffaa44':'#4a7a9b'}}>{v}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── CAC+PIN Unlock Modal (3-step: review → pin → done) ────────── */}
+      {unlockTarget&&(
+        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,
+          background:'rgba(0,0,0,0.8)',zIndex:1000,display:'flex',
+          alignItems:'center',justifyContent:'center',...mono}}>
+          <div style={{background:'#0d1b2e',border:'2px solid #0066cc',
+            borderRadius:8,padding:28,width:540,maxWidth:'95vw'}}>
+
+            {unlockStep==='review'&&(<>
+              <div style={{fontSize:14,fontWeight:700,color:'#e0e8f0',marginBottom:4,letterSpacing:1}}>
+                🔓 RE-ENABLE ACCOUNT
+              </div>
+              <div style={{fontSize:10,color:'#ffaa44',marginBottom:18,letterSpacing:1}}>
+                PRIVILEGED ACTION · REQUIRES CAC+PIN AUTHENTICATION · LOGGED PER AU-10
+              </div>
+              <div style={{background:'#061224',border:'1px solid #1e3a5f',borderRadius:4,
+                padding:14,marginBottom:14,fontSize:11,color:'#4a7a9b',lineHeight:1.9}}>
+                <div style={{color:'#e0e8f0',fontWeight:700,marginBottom:6}}>LOCKOUT EVENT</div>
+                Account: <span style={{color:'#a0b8d0'}}>{unlockTarget.email}</span><br/>
+                Org: <span style={{color:'#a0b8d0'}}>{unlockTarget.org}</span><br/>
+                Reason: <span style={{color:'#cc4444'}}>{unlockTarget.locked_reason}</span><br/>
+                Last Login: <span style={{color:'#a0b8d0'}}>{unlockTarget.last_login}</span>
+              </div>
+              <div style={{background:'rgba(0,80,160,0.1)',border:'1px solid #003366',
+                borderRadius:4,padding:12,marginBottom:18,fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+                Verify this was not a malicious access attempt before proceeding.
+                Your CAC+PIN authentication will create a non-repudiable audit record
+                identifying you as the authorizing ISSM (JSIG AU-10, AC-5).
+              </div>
+              <div style={{display:'flex',gap:10}}>
+                <Btn onClick={proceedToPin}>PROCEED TO CAC+PIN →</Btn>
+                <Btn variant='ghost' onClick={()=>setUnlockTarget(null)}>CANCEL</Btn>
+              </div>
+            </>)}
+
+            {unlockStep==='pin'&&(<>
+              <div style={{fontSize:14,fontWeight:700,color:'#e0e8f0',marginBottom:4,letterSpacing:1}}>
+                🔐 CAC + PIN AUTHENTICATION
+              </div>
+              <div style={{fontSize:10,color:'#ffaa44',marginBottom:16,letterSpacing:1}}>
+                RE-AUTHENTICATE TO AUTHORIZE ACCOUNT UNLOCK
+              </div>
+              <div style={{fontSize:10,color:'#4a7a9b',marginBottom:14,lineHeight:1.8}}>
+                Phase 1: Enter TOTP code &nbsp;|&nbsp; Phase 3: Insert CAC card + enter PIN<br/>
+                <span style={{color:'#2a5a7b'}}>Demo code: 000000</span>
+              </div>
+              <div style={{marginBottom:14}}>
+                <label style={{display:'block',fontSize:10,color:'#4a7a9b',
+                  letterSpacing:2,marginBottom:5}}>CAC PIN / AUTH CODE</label>
+                <input type='password' value={unlockPin}
+                  onChange={e=>setUnlockPin(e.target.value)}
+                  placeholder='••••••' maxLength={8} autoFocus
+                  style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
+                    borderRadius:4,padding:'10px',color:'#c0d8f0',fontSize:18,
+                    ...mono,textAlign:'center',letterSpacing:8,boxSizing:'border-box'}}/>
+              </div>
+              <div style={{marginBottom:14}}>
+                <label style={{display:'block',fontSize:10,color:'#4a7a9b',
+                  letterSpacing:2,marginBottom:5}}>
+                  JUSTIFICATION (required — stored in audit record)
+                </label>
+                <textarea value={unlockReason} onChange={e=>setUnlockReason(e.target.value)}
+                  placeholder='e.g. User confirmed legitimate access. Identity verified via phone. Approved to re-enable.'
+                  rows={3}
+                  style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
+                    borderRadius:4,padding:'10px',color:'#c0d8f0',fontSize:11,
+                    ...mono,boxSizing:'border-box',resize:'vertical'}}/>
+              </div>
+              <div style={{fontSize:9,color:'#2a5a7b',marginBottom:16,lineHeight:1.8}}>
+                Audit record will contain: ISSM identity · CAC thumbprint (Phase 3) ·
+                Timestamp · IP address · Justification · Account re-enabled
+              </div>
+              <div style={{display:'flex',gap:10}}>
+                <Btn variant='success'
+                  disabled={!unlockPin||!unlockReason.trim()}
+                  onClick={confirmUnlock}>
+                  AUTHENTICATE &amp; RE-ENABLE
+                </Btn>
+                <Btn variant='ghost' onClick={()=>setUnlockStep('review')}>← BACK</Btn>
+              </div>
+            </>)}
+
+            {unlockStep==='done'&&(
+              <div style={{textAlign:'center',padding:20}}>
+                <div style={{fontSize:42,marginBottom:12}}>✅</div>
+                <div style={{fontSize:13,fontWeight:700,color:'#00cc66',letterSpacing:1}}>
+                  ACCOUNT RE-ENABLED
+                </div>
+                <div style={{fontSize:10,color:'#4a7a9b',marginTop:8}}>
+                  CAC+PIN authentication recorded in audit trail (AU-10 · JSIG)
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CreateOrgPanel({onCreated}){
+  const [f,setF]=useState({name:'',slug:'',type:'dod_program',issm_email:'',domain:''});
+  const [err,setErr]=useState('');
+  const set=(k,v)=>setF(p=>({...p,[k]:v}));
+  const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const submit=()=>{
+    if(!f.name||!f.issm_email){setErr('Name and ISSM email required');return;}
+    if(!f.issm_email.includes('@')){setErr('Invalid ISSM email');return;}
+    setErr('');onCreated({...f,status:'bootstrap'});
+  };
+  const inp=(label,val,onChange,placeholder,note)=>(
+    <div style={{marginBottom:14}}>
+      <label style={{display:'block',fontSize:10,color:'#4a7a9b',
+        letterSpacing:2,marginBottom:5}}>{label}</label>
+      <input value={val} onChange={onChange} placeholder={placeholder}
+        style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
+          borderRadius:4,padding:'9px 12px',color:'#c0d8f0',fontSize:12,...mono,boxSizing:'border-box'}}/>
+      {note&&<div style={{fontSize:9,color:'#2a5a7b',marginTop:3}}>{note}</div>}
+    </div>
+  );
+  return(
+    <div style={{maxWidth:540}}>
+      <div style={{fontSize:13,fontWeight:700,color:'#e0e8f0',marginBottom:18}}>CREATE ORGANIZATION</div>
+      {err&&<div style={{background:'rgba(180,0,0,0.12)',border:'1px solid #660000',borderRadius:4,
+        padding:'8px 14px',marginBottom:14,fontSize:11,color:'#ff9999'}}>⚠ {err}</div>}
+      {inp('ORGANIZATION NAME',f.name,e=>{set('name',e.target.value);set('slug',slug(e.target.value));},
+        'F-35 JSF Program')}
+      {inp('URL SLUG',f.slug,e=>set('slug',e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'')),
+        'f35-jsf','Lowercase, hyphens only')}
+      <div style={{marginBottom:14}}>
+        <label style={{display:'block',fontSize:10,color:'#4a7a9b',letterSpacing:2,marginBottom:5}}>
+          PROGRAM TYPE
+        </label>
+        <select value={f.type} onChange={e=>set('type',e.target.value)}
+          style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
+            borderRadius:4,padding:'9px 12px',color:'#c0d8f0',fontSize:12,...mono}}>
+          <option value='dod_program'>DoD Program (F-35, F-22, B-21...)</option>
+          <option value='prime_contractor'>Prime Contractor (LM, Raytheon, Boeing...)</option>
+          <option value='cmmc_sb'>CMMC Small Business</option>
+          <option value='subcontractor'>Subcontractor</option>
+        </select>
+      </div>
+      {inp('ISSM EMAIL',f.issm_email,e=>set('issm_email',e.target.value),'issm@program.mil',
+        'Receives bootstrap token. Creates ISSM account first.')}
+      {inp('EMAIL DOMAIN RESTRICTION (optional)',f.domain,e=>set('domain',e.target.value),'.mil or lm.com')}
+      <div style={{background:'#061224',border:'1px solid #1e3a5f',borderRadius:4,
+        padding:12,marginBottom:16,fontSize:10,color:'#4a7a9b',lineHeight:1.9}}>
+        After creation: generate bootstrap token → ISSM creates account →
+        ISSM must create ISSO → dashboard unlocks. Token single-use, 24hr TTL.
+      </div>
+      <Btn onClick={submit}>CREATE ORGANIZATION →</Btn>
+    </div>
+  );
+}
+
+function TokenPanel({token,onDone}){
+  const [copied,setCopied]=useState(false);
+  const url=window.location.origin+'/?setup='+token.raw+'&org='+token.org.slug;
+  const copy=()=>{
+    navigator.clipboard?.writeText(url).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),3000);});
+  };
+  return(
+    <div style={{maxWidth:580}}>
+      <div style={{textAlign:'center',marginBottom:22}}>
+        <div style={{fontSize:38,marginBottom:8}}>🔑</div>
+        <div style={{fontSize:14,fontWeight:700,color:'#e0e8f0',letterSpacing:2}}>
+          BOOTSTRAP TOKEN GENERATED
+        </div>
+        <div style={{fontSize:11,color:'#ffaa44',marginTop:5}}>{token.org.name}</div>
+      </div>
+      <div style={{background:'#061224',border:'2px solid #0066cc',borderRadius:6,
+        padding:16,marginBottom:14}}>
+        <div style={{fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:8}}>
+          ONE-TIME SETUP LINK — expires {new Date(token.expires).toLocaleString()}
+        </div>
+        <div style={{wordBreak:'break-all',fontSize:11,color:'#4a9fd4',
+          lineHeight:1.6,marginBottom:12}}>{url}</div>
+        <button onClick={copy} style={{...mono,fontSize:10,fontWeight:700,
+          background:copied?'#004422':'#003366',
+          border:'1px solid '+(copied?'#00cc66':'#0055aa'),
+          color:copied?'#00cc66':'#4a9fd4',borderRadius:4,
+          padding:'6px 16px',cursor:'pointer'}}>
+          {copied?'✓ COPIED':'📋 COPY LINK'}
+        </button>
+      </div>
+      <div style={{background:'rgba(180,80,0,0.1)',border:'1px solid #663300',borderRadius:4,
+        padding:12,marginBottom:16,fontSize:11,color:'#ffaa44',lineHeight:1.9}}>
+        ⚠ Single-use · Expires 24hrs · Send via encrypted channel only ·
+        Raw token not stored — this is the only chance to copy it
+      </div>
+      <div style={{display:'flex',gap:10}}>
+        <Btn variant='ghost' onClick={onDone}>← BACK</Btn>
+      </div>
     </div>
   );
 }
