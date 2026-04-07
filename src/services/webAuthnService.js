@@ -63,7 +63,7 @@ export async function enrollYubiKey(user) {
     ],
     authenticatorSelection: {
       authenticatorAttachment: 'cross-platform', // external key (not Touch ID / Windows Hello)
-      userVerification: 'required',              // PIN required on YubiKey
+      userVerification: 'preferred',             // Use PIN if set, work without if not
       residentKey: 'preferred',
     },
     attestation: 'none',  // 'direct' for AAGUID verification in production
@@ -72,6 +72,7 @@ export async function enrollYubiKey(user) {
 
   const credential = await navigator.credentials.create({ publicKey: options });
   if (!credential) throw new Error('YubiKey enrollment cancelled');
+  // Note: if key outputs a string of random chars (OTP mode), touch it ONLY when browser prompts
 
   const credId = b64url(credential.rawId);
 
@@ -120,7 +121,7 @@ export async function authenticateYubiKey(userId) {
   const options = {
     challenge,
     rpId: RP_ID,
-    userVerification: 'required', // enforce PIN
+    userVerification: 'preferred', // use PIN if set
     allowCredentials,
     timeout: 60000,
   };
