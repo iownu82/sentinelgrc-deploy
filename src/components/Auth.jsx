@@ -46,12 +46,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const bannerOk = sessionStorage.getItem(S.BANNER);
     if (!bannerOk) { setPhase('banner'); return; }
-    if (!SUPABASE_CONFIGURED) { setPhase('login'); return; }
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        loadMember(session.user.id).then(ok => setPhase(ok ? 'active' : 'login'));
-      } else { setPhase('login'); }
+    if (!SUPABASE_CONFIGURED) {
+      if (email.toLowerCase() === DEMO.email && password === DEMO.pass) {
+        success = true; setTmpEmail(email); setPhase('mfa');
+      }
+    } else { setPhase('login'); }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
       if (!s) { setPhase('login'); setUser(null); setMember(null); setOrg(null); }
@@ -282,33 +281,10 @@ function LoginBanner({ onAccept }) {
           <div style={{ background:'#061224', borderRadius:4, padding:20, fontSize:12,
             lineHeight:1.9, color:'#a0b8d0', marginBottom:24 }}>
             <p><strong style={{ color:'#e0e8f0' }}>WARNING:</strong> This is a U.S. Government information system. Unauthorized access or use of this system constitutes a federal crime and may subject violators to criminal prosecution under 18 U.S.C. §§ 1030 and 2511, and civil penalties.</p>
-            <p style={{ marginTop:12 }}>This system processes <strong style={{ color:'#ffaa44' }}>Controlled Unclassified Information (CUI)</strong> in accordance with DFARS 252.204-7012 and NIST SP 800-171. All information is subject to applicable federal laws and regulations.</p>
+            <p style={{ marginTop:12 }}>This system processes <strong style={{ color:'#ffaa44' }}>Controlled Unclassified Information (CUI)</strong> in accordance with DoD policy guidelines. All information is subject to applicable federal laws and regulations.</p>
             <p style={{ marginTop:12 }}>By accessing this system, you <strong style={{ color:'#e0e8f0' }}>explicitly consent</strong> to monitoring, recording, auditing, and inspection of all activity. There is no expectation of privacy.</p>
             <p style={{ marginTop:12 }}>Access is restricted to <strong style={{ color:'#e0e8f0' }}>authorized personnel only</strong>. All authentication events, user actions, and data access are logged and retained for a minimum of <strong style={{ color:'#e0e8f0' }}>3 years</strong> per NIST 800-53 AU-11.</p>
             <p style={{ marginTop:12 }}>Unauthorized disclosure of CUI may result in criminal prosecution, loss of security clearance, and civil liability.</p>
-          </div>
-          <div style={{ background:'#0a1520', border:'1px solid #1e3a5f', borderRadius:4,
-            padding:16, marginBottom:24, fontSize:11, color:'#4a7a9b' }}>
-            <strong style={{ color:'#6a9ab0', display:'block', marginBottom:8 }}>
-              RULES OF BEHAVIOR
-            </strong>
-            • You are only authorized to access data within your assigned organization<br/>
-            • Sharing credentials or access with unauthorized personnel is prohibited<br/>
-            • CUI must not be transmitted via unencrypted channels<br/>
-            • Report security incidents to your ISSM immediately<br/>
-            • Annual Cyber Awareness training is mandatory — accounts expire upon cert expiry<br/>
-            • Session inactivity timeout applies — re-authentication may be required
-          </div>
-          <label style={{ display:'flex', alignItems:'flex-start', gap:12, cursor:'pointer',
-            marginBottom:24, fontSize:12, color:'#a0b8d0' }}>
-            <input type='checkbox' checked={checked} onChange={e => setChecked(e.target.checked)}
-              style={{ marginTop:2, accentColor:'#0066cc' }} />
-            <span>I have read, understand, and agree to the above conditions. I acknowledge that my use of this system is monitored and that unauthorized use may result in criminal prosecution.</span>
-          </label>
-          <div style={{ display:'flex', justifyContent:'center' }}>
-            <Btn onClick={onAccept} disabled={!checked} fullWidth>
-              I ACKNOWLEDGE AND ACCEPT — PROCEED TO LOGIN
-            </Btn>
           </div>
         </div>
 
@@ -347,12 +323,14 @@ function LoginForm({ onLogin, err, sessionExpired }) {
         )}
         {isDemo && (
           <div style={{ background:'rgba(0,100,180,0.1)', border:'1px solid #003366',
-            borderRadius:4, padding:10, marginBottom:16, fontSize:10, color:'#4a7a9b',
-            textAlign:'center' }}>
-            DEMO MODE — Supabase not configured<br/>
-            <span style={{ color:'#2a5a7b' }}>
-              {DEMO.email} / {DEMO.pass} · MFA: {DEMO.mfa}
-            </span>
+            borderRadius:4, padding:12, marginBottom:16, textAlign:'center' }}>
+            <div style={{ fontSize:10, color:'#4a7a9b', marginBottom:8 }}>DEMO MODE</div>
+            <button onClick={()=>onLogin(DEMO.email, DEMO.pass)}
+              style={{ fontFamily:"'Courier New',monospace", background:'#0044aa',
+                border:'none', color:'#fff', borderRadius:4, padding:'8px 20px',
+                cursor:'pointer', fontSize:11, fontWeight:700, width:'100%' }}>
+              ⚡ QUICK DEMO LOGIN
+            </button>
           </div>
         )}
         <ErrBox msg={err} />
