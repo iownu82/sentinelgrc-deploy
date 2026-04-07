@@ -71,7 +71,9 @@ function Dashboard() {
                        auditor:'AUDITOR', readonly:'READ-ONLY' }[role] || role?.toUpperCase();
 
   return (
-    <ThemeContext.Provider value={theme}>
+    <>
+      {showROB && <RulesOfBehaviorModal onAccept={()=>setShowROB(false)} />}
+      <ThemeContext.Provider value={theme}>
       <div style={{ display:"flex", minHeight:"100vh", background:t.bg, color:t.text }}>
         <style>{`::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:${t.bg}}::-webkit-scrollbar-thumb{background:${t.scroll};border-radius:2px}*{box-sizing:border-box;margin:0;padding:0;transition:background-color 0.2s,border-color 0.2s,color 0.2s}`}</style>
 
@@ -107,9 +109,7 @@ function Dashboard() {
             {NAV.map(n => {
               const isActive = active === n.id;
               return (
-    <>
-      {showROB && <RulesOfBehaviorModal onAccept={()=>setShowROB(false)} />}
-                    <div key={n.id} onClick={() => setActive(n.id)}
+                <div key={n.id} onClick={() => setActive(n.id)}
                   title={!sidebarOpen ? n.label : ""}
                   style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 10px", borderRadius:7, marginBottom:3, cursor:"pointer", background:isActive?`${A.teal}14`:"transparent", border:isActive?`1px solid ${A.teal}30`:"1px solid transparent", overflow:"hidden" }}>
                   <span style={{ fontSize:16, flexShrink:0 }}>{n.icon}</span>
@@ -179,6 +179,7 @@ function Dashboard() {
         </div>
       </div>
     </ThemeContext.Provider>
+    </>
   );
 }
 
