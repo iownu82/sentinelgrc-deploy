@@ -63,7 +63,7 @@ export async function enrollYubiKey(user) {
     ],
     authenticatorSelection: {
       authenticatorAttachment: 'cross-platform', // external key (not Touch ID / Windows Hello)
-      userVerification: 'preferred',             // Use PIN if set, work without if not
+      userVerification: 'required',              // PIN required — NIST IA-2(1) full compliance
       residentKey: 'preferred',
     },
     attestation: 'none',  // 'direct' for AAGUID verification in production
@@ -121,7 +121,7 @@ export async function authenticateYubiKey(userId) {
   const options = {
     challenge,
     rpId: RP_ID,
-    userVerification: 'preferred', // use PIN if set
+    userVerification: 'required',  // PIN required — NIST IA-2(1)
     allowCredentials,
     timeout: 60000,
   };
