@@ -93,7 +93,8 @@ export function AuthProvider({ children }) {
     const lk = S.LCK + btoa(email).slice(0,12);
     if (localStorage.getItem(lk)) { setLock(email); setPhase('locked'); return; }
     const atm = parseInt(localStorage.getItem(ak) || '0');
-    const ok = email.toLowerCase() === DEMO.email && password === DEMO.pass;
+    const demoUser = (email.toLowerCase() === DEMO_SA.email && password === DEMO_SA.pass) ? DEMO_SA : DEMO;
+    const ok = (email.toLowerCase() === DEMO.email && password === DEMO.pass) || (email.toLowerCase() === DEMO_SA.email && password === DEMO_SA.pass);
     if (ok) {
       localStorage.removeItem(ak);
       setTmp(email); setPhase('mfa');
@@ -113,8 +114,8 @@ export function AuthProvider({ children }) {
   const doMFA = (code) => {
     setErr('');
     if (code === DEMO.mfa) {
-      auditLog(EVENTS.MFA_SUCCESS, { actorId: DEMO.email, actorRole: DEMO.role, orgId: DEMO.slug });
-      setUser({ id:'demo', email: DEMO.email });
+      auditLog(EVENTS.MFA_SUCCESS, { actorId: demoUser.email, actorRole: demoUser.role, orgId: demoUser.slug });
+      setUser({ id:'demo', email: demoUser.email });
       setMember({ id:'dm', role:DEMO.role, status:'active', display_name:DEMO.name, cyber_awareness_date:DEMO.cyber });
       setOrg({ id:'do', name:DEMO.org, slug:DEMO.slug, status:'active' });
       setTmp(''); setPhase('active');
