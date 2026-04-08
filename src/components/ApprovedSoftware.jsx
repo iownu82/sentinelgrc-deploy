@@ -108,11 +108,11 @@ export default function ApprovedList({ readOnly = false }) {
           <option value='all'>All statuses</option>
           {statuses.map(s=><option key={s} value={s}>{s}</option>)}
         </select>
-        <button onClick={()=>setShowAdd(!showAdd)}
+        {!readOnly && <button onClick={()=>setShowAdd(!showAdd)}
           style={{...mono,background:showAdd?'#333':'#0055cc',border:'none',
             borderRadius:3,padding:'5px 14px',cursor:'pointer',
             color:showAdd?'#888':'#fff',fontSize:11,fontWeight:700}}>
-          {showAdd?'✕ CANCEL':'+ ADD ITEM'}
+          {!readOnly && (showAdd?'✕ CANCEL':'+ ADD ITEM')}
         </button>
       </div>
 
