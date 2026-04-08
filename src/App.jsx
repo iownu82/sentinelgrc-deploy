@@ -21,6 +21,8 @@ import ISSOInviteAcceptance from "./components/ISSOInviteAcceptance.jsx";
 import YubiKeyTest from "./components/YubiKeyTest.jsx";
 import CyberNewsFeed from "./components/CyberNewsFeed.jsx";
 import FeedManager from "./components/FeedManager.jsx";
+import ApprovedHardware from "./components/ApprovedHardware.jsx";
+import ApprovedSoftware from "./components/ApprovedSoftware.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
 
@@ -44,6 +46,8 @@ const NAV = [
   { id:"yubikey",   label:"YubiKey / MFA Test",   icon:"🔐", desc:"FIDO2 enrollment · WebAuthn test · Hardware MFA" },
   { id:"cyber_news", label:"Cyber Intelligence",     icon:"📡", desc:"CISA · SANS · Krebs · Dark Reading · Microsoft · CrowdStrike" },
   { id:"feed_mgr",   label:"Feed Manager",           icon:"⚙️",  desc:"Add · remove · toggle feeds · ITR vendor tracking" },
+  { id:"approved_hw",label:"Approved Hardware",       icon:"🖥️",  desc:"ITR-approved hardware · STIG status · read-only for admins" },
+  { id:"approved_sw",label:"Approved Software",       icon:"💿",  desc:"ITR-approved software · version policy · STIG benchmark" },
 ];
 
 // ─── Dashboard (shown after auth) ────────────────────────────────────────────
@@ -76,6 +80,8 @@ function Dashboard() {
       case "yubikey":   return <YubiKeyTest />;
       case "cyber_news": return <CyberNewsFeed />;
       case "feed_mgr":   return <FeedManager />;
+      case "approved_hw": return <ApprovedHardware />;
+      case "approved_sw": return <ApprovedSoftware />;
       default:          return <MultiFramework />;
     }
   };
