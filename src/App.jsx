@@ -60,7 +60,7 @@ function Dashboard() {
   // Role-based nav filtering
   // sysadmin: Approved HW, Approved SW, POAM (read-only), Security Updates
   // readonly: same as sysadmin
-  const SYSADMIN_TABS = new Set(['approved_hw','approved_sw','poam','security_updates']);
+  const SYSADMIN_TABS = new Set(['approved_hw','approved_sw','poam','updates']);
   const filteredNav = (role==='sysadmin'||role==='readonly')
     ? NAV.filter(n => SYSADMIN_TABS.has(n.id))
     : NAV;
