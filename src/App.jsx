@@ -56,6 +56,15 @@ function Dashboard() {
   const [active, setActive] = useState("multi");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { member, org, role, isDemo } = useAuth();
+
+  // Role-based nav filtering
+  // sysadmin: Approved HW, Approved SW, POAM (read-only), Security Updates
+  // readonly: same as sysadmin
+  const SYSADMIN_TABS = new Set(['approved_hw','approved_sw','poam','security_updates']);
+  const filteredNav = (role==='sysadmin'||role==='readonly')
+    ? NAV.filter(n => SYSADMIN_TABS.has(n.id))
+    : NAV;
+  const isReadOnly = role === 'sysadmin' || role === 'readonly';
   const robAccepted = useROBAccepted(member?.id);
   const [showROB, setShowROB] = useState(!robAccepted);
 
@@ -80,8 +89,8 @@ function Dashboard() {
       case "yubikey":   return <YubiKeyTest />;
       case "cyber_news": return <CyberNewsFeed />;
       case "feed_mgr":   return <FeedManager />;
-      case "approved_hw": return <ApprovedHardware />;
-      case "approved_sw": return <ApprovedSoftware />;
+      case "approved_hw": return <ApprovedHardware readOnly={isReadOnly} />;
+      case "approved_sw": return <ApprovedSoftware readOnly={isReadOnly} />;
       default:          return <MultiFramework />;
     }
   };
