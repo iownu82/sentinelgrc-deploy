@@ -26,7 +26,7 @@ function sanitize(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;')
-    .replace(/\/g, '&#x5C;')
+    .replace(/[\\]/g, '&#x5C;')
     .trim()
     .slice(0, 2000); // max field length
 }
