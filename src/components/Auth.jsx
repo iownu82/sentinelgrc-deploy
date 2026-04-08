@@ -116,7 +116,7 @@ export function AuthProvider({ children }) {
     if (code === DEMO.mfa) {
       auditLog(EVENTS.MFA_SUCCESS, { actorId: demoUser.email, actorRole: demoUser.role, orgId: demoUser.slug });
       setUser({ id:'demo', email: demoUser.email });
-      setMember({ id:'dm', role:DEMO.role, status:'active', display_name:DEMO.name, cyber_awareness_date:DEMO.cyber });
+      setMember({ id:'dm', role:demoUser.role, status:'active', display_name:demoUser.name, cyber_awareness_date:demoUser.cyber });
       setOrg({ id:'do', name:DEMO.org, slug:DEMO.slug, status:'active' });
       setTmp(''); setPhase('active');
     } else {
