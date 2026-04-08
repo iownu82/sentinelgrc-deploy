@@ -20,6 +20,7 @@ import ISSODesignation from "./components/ISSODesignation.jsx";
 import ISSOInviteAcceptance from "./components/ISSOInviteAcceptance.jsx";
 import YubiKeyTest from "./components/YubiKeyTest.jsx";
 import CyberNewsFeed from "./components/CyberNewsFeed.jsx";
+import FeedManager from "./components/FeedManager.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
 
@@ -42,6 +43,7 @@ const NAV = [
   { id:"admin",     label:"Admin Console",       icon:"🛡",  desc:"Org management · Bootstrap tokens · User oversight" },
   { id:"yubikey",   label:"YubiKey / MFA Test",   icon:"🔐", desc:"FIDO2 enrollment · WebAuthn test · Hardware MFA" },
   { id:"cyber_news", label:"Cyber Intelligence",     icon:"📡", desc:"CISA · SANS · Krebs · Dark Reading · Microsoft · CrowdStrike" },
+  { id:"feed_mgr",   label:"Feed Manager",           icon:"⚙️",  desc:"Add · remove · toggle feeds · ITR vendor tracking" },
 ];
 
 // ─── Dashboard (shown after auth) ────────────────────────────────────────────
@@ -73,6 +75,7 @@ function Dashboard() {
       case "admin":     return <AdminConsole />;
       case "yubikey":   return <YubiKeyTest />;
       case "cyber_news": return <CyberNewsFeed />;
+      case "feed_mgr":   return <FeedManager />;
       default:          return <MultiFramework />;
     }
   };
