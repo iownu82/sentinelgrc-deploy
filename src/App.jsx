@@ -135,7 +135,7 @@ function Dashboard() {
 
           {/* Nav */}
           <nav style={{ flex:1, padding:"8px 8px", overflowY:"auto" }}>
-            {NAV.map(n => {
+            {filteredNav.map(n => {
               const isActive = active === n.id;
               return (
                 <div key={n.id} onClick={() => setActive(n.id)}
