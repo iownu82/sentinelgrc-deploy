@@ -97,6 +97,7 @@ export function AuthProvider({ children }) {
     const ok = (email.toLowerCase() === DEMO.email && password === DEMO.pass) || (email.toLowerCase() === DEMO_SA.email && password === DEMO_SA.pass);
     if (ok) {
       localStorage.removeItem(ak);
+      setActiveDemo(demoUser);
       setTmp(email); setPhase('mfa');
     } else {
       const next = atm + 1;
@@ -113,10 +114,10 @@ export function AuthProvider({ children }) {
 
   const doMFA = (code) => {
     setErr('');
-    if (code === DEMO.mfa) {
-      auditLog(EVENTS.MFA_SUCCESS, { actorId: demoUser.email, actorRole: demoUser.role, orgId: demoUser.slug });
-      setUser({ id:'demo', email: demoUser.email });
-      setMember({ id:'dm', role:demoUser.role, status:'active', display_name:demoUser.name, cyber_awareness_date:demoUser.cyber });
+    if (code === DEMO.mfa || code === DEMO_SA.mfa) {
+      auditLog(EVENTS.MFA_SUCCESS, { actorId: activeDemo.email, actorRole: activeDemo.role, orgId: activeDemo.slug });
+      setUser({ id:'demo', email: activeDemo.email });
+      setMember({ id:'dm', role:activeDemo.role, status:'active', display_name:activeDemo.name, cyber_awareness_date:activeDemo.cyber });
       setOrg({ id:'do', name:DEMO.org, slug:DEMO.slug, status:'active' });
       setTmp(''); setPhase('active');
     } else {
