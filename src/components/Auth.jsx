@@ -47,6 +47,7 @@ export function AuthProvider({ children }) {
   const [tmpEmail,setTmp]   = useState('');
   const [lockEmail,setLock] = useState('');
   const [err, setErr]       = useState('');
+  const [activeDemo, setActiveDemo] = useState(DEMO);
   const timer = useRef(null);
   const sid   = useRef(generateSessionId());
 
