@@ -24,7 +24,7 @@ function loadItems() {
   try { const s=JSON.parse(localStorage.getItem(STORE_KEY)||'null'); return s||null; } catch { return null; }
 }
 
-export default function ApprovedList() {
+export default function ApprovedList({ readOnly = false }) {
   const [search,    setSearch]    = useState('');
   const [catFilter, setCatFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
