@@ -18,6 +18,16 @@ const DEMO = {
   slug:  'ballard-is3',
   cyber: '2027-01-15',
 };
+const DEMO_SA = {
+  email: 'sysadmin@ballardis3.com',
+  pass:  'DemoAdmin2026',
+  mfa:   '000000',
+  role:  'sysadmin',
+  name:  'Demo SysAdmin',
+  org:   'Ballard IS3',
+  slug:  'ballard-is3',
+  cyber: '2027-01-15',
+};
 const SUPABASE_CONFIGURED = !!(
   typeof import.meta !== 'undefined' &&
   import.meta.env?.VITE_SUPABASE_URL &&
@@ -266,8 +276,13 @@ function LoginForm({ onLogin, err }) {
           borderRadius:4, padding:12, marginBottom:16, textAlign:'center' }}>
           <div style={{ fontSize:10, color:'#4a7a9b', marginBottom:8 }}>DEMO MODE</div>
           <PrimaryBtn onClick={()=>onLogin(DEMO.email, DEMO.pass)} fullWidth>
-            ⚡ QUICK DEMO LOGIN
+            ⚡ QUICK DEMO LOGIN (ISSM)
           </PrimaryBtn>
+          <div style={{marginTop:6}}>
+            <PrimaryBtn onClick={()=>onLogin(DEMO_SA.email, DEMO_SA.pass)} fullWidth style={{background:'#1a3a6b',borderColor:'#2a5a9b'}}>
+              🔒 DEMO LOGIN — SYSTEM ADMIN
+            </PrimaryBtn>
+          </div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
           <div style={{ flex:1, height:1, background:'#1e3a5f' }}/>
