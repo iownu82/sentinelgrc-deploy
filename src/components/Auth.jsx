@@ -279,9 +279,13 @@ function LoginForm({ onLogin, err }) {
             ⚡ QUICK DEMO LOGIN (ISSM)
           </PrimaryBtn>
           <div style={{marginTop:6}}>
-            <PrimaryBtn onClick={()=>onLogin(DEMO_SA.email, DEMO_SA.pass)} fullWidth style={{background:'#1a3a6b',borderColor:'#2a5a9b'}}>
+            <button
+              onClick={()=>onLogin(DEMO_SA.email, DEMO_SA.pass)}
+              style={{width:'100%',background:'#1a3a6b',border:'1px solid #2a5a9b',borderRadius:4,
+                padding:'10px 0',cursor:'pointer',color:'#a0c8f0',fontSize:13,fontWeight:700,
+                fontFamily:"'Courier New',monospace",letterSpacing:1}}>
               🔒 DEMO LOGIN — SYSTEM ADMIN
-            </PrimaryBtn>
+            </button>
           </div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
