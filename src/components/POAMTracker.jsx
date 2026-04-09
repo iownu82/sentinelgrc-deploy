@@ -69,7 +69,7 @@ const Sel = ({value,onChange,children,disabled}) => (
   </select>
 );
 const Btn = ({children,onClick,disabled,variant}) => {
-  const bg = variant==='danger'?'#440000':variant==='success'?'#004422':variant==='primary'?'#0055cc':'transparent';
+  const bg = variant==='danger'?'var(--rr-tint-red)':variant==='success'?'var(--rr-tint-green)':variant==='primary'?'#0055cc':'transparent';
   const col = variant==='danger'?'#ff8888':variant==='success'?'#00cc66':variant==='primary'?'#fff':'var(--rr-mute)';
   const bdr = variant?'none':'1px solid #1e3a5f';
   return <button style={{...mono,background:bg,border:bdr,borderRadius:3,padding:'5px 14px',cursor:disabled?'not-allowed':'pointer',color:col,fontSize:10,fontWeight:700,opacity:disabled?0.5:1}} onClick={onClick} disabled={disabled}>{children}</button>;
@@ -84,7 +84,7 @@ function POAMCard({item,onEdit,onDelete,onAddMs,onStatusChange}) {
   const over=isOverdue(item.scheduledDate)&&item.status==='Ongoing';
   const pct=item.milestones&&item.milestones.length?Math.round(item.milestones.filter(m=>m.status==='Completed').length/item.milestones.length*100):0;
   return (
-    <div style={{background:'var(--rr-panel)',border:'1px solid '+(open?'#1e3a8f':over?'#440000':'var(--rr-panel-alt)'),borderLeft:'4px solid '+(CAT_COLOR[item.cat]||'var(--rr-mute)'),borderRadius:6,marginBottom:8}}>
+    <div style={{background:'var(--rr-panel)',border:'1px solid '+(open?'#1e3a8f':over?'var(--rr-tint-red)':'var(--rr-panel-alt)'),borderLeft:'4px solid '+(CAT_COLOR[item.cat]||'var(--rr-mute)'),borderRadius:6,marginBottom:8}}>
       <div onClick={()=>setOpen(!open)} style={{padding:'12px 16px',cursor:'pointer',display:'flex',alignItems:'flex-start',gap:10,flexWrap:'wrap'}}>
         <span style={{fontSize:9,fontWeight:700,color:CAT_COLOR[item.cat],border:'1px solid '+(CAT_COLOR[item.cat]||'')+'44',borderRadius:2,padding:'2px 7px',flexShrink:0,marginTop:1}}>{item.cat}</span>
         <span style={{...mono,fontSize:10,color:'var(--rr-mute)',flexShrink:0,marginTop:1}}>{item.poamNumber}</span>
@@ -123,11 +123,11 @@ function POAMCard({item,onEdit,onDelete,onAddMs,onStatusChange}) {
               <div style={{fontSize:10,fontWeight:700,color:'#6a9ab0',letterSpacing:1,marginBottom:6}}>MILESTONES</div>
               {(!item.milestones||item.milestones.length===0)&&<div style={{fontSize:11,color:'var(--rr-mute)',marginBottom:6}}>No milestones</div>}
               {(item.milestones||[]).map(ms=>(
-                <div key={ms.id} style={{display:'flex',alignItems:'center',gap:10,marginBottom:5,fontSize:11,padding:'6px 10px',background:'#040e18',borderRadius:4,border:'1px solid '+(ms.status==='Completed'?'#004422':'var(--rr-panel-alt)')}}>
+                <div key={ms.id} style={{display:'flex',alignItems:'center',gap:10,marginBottom:5,fontSize:11,padding:'6px 10px',background:'#040e18',borderRadius:4,border:'1px solid '+(ms.status==='Completed'?'var(--rr-tint-green)':'var(--rr-panel-alt)')}}>
                   <span>{ms.status==='Completed'?'✅':'⏳'}</span>
                   <span style={{flex:1,color:'var(--rr-text-dim)'}}>{ms.description}</span>
                   <span style={{color:'var(--rr-mute)',whiteSpace:'nowrap'}}>{fmtDate(ms.scheduledDate)}</span>
-                  <span style={{fontSize:9,color:ms.status==='Completed'?'#00aa44':'#cc8800',border:'1px solid '+(ms.status==='Completed'?'#006622':'#cc880044'),borderRadius:2,padding:'1px 6px'}}>{ms.status}</span>
+                  <span style={{fontSize:9,color:ms.status==='Completed'?'#00aa44':'#cc8800',border:'1px solid '+(ms.status==='Completed'?'var(--rr-tint-green)':'#cc880044'),borderRadius:2,padding:'1px 6px'}}>{ms.status}</span>
                 </div>
               ))}
               {addingMs?(
@@ -324,7 +324,7 @@ export default function POAMTracker() {
 
       {/* ── New Finding Form ── */}
       {showForm&&activeTab==='sc_poam'&&(
-        <div style={{background:'var(--rr-panel-alt)',border:'1px solid '+(errors.length?'#660000':'var(--rr-border-md)'),borderRadius:6,padding:20,marginBottom:14}}>
+        <div style={{background:'var(--rr-panel-alt)',border:'1px solid '+(errors.length?'var(--rr-tint-red)':'var(--rr-border-md)'),borderRadius:6,padding:20,marginBottom:14}}>
           <div style={{fontSize:13,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:12}}>{editItem?'✎ EDIT FINDING':'+ NEW POAM FINDING'}</div>
           {errors.length>0&&<div style={{background:'rgba(160,0,0,0.15)',border:'1px solid #660000',borderRadius:4,padding:'10px 14px',marginBottom:12}}>{errors.map((e,i)=><div key={i} style={{fontSize:11,color:'#ff9999',marginBottom:i<errors.length-1?4:0}}>⚠ {e}</div>)}</div>}
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 16px'}}>
