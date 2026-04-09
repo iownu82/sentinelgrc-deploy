@@ -135,7 +135,7 @@ function Dashboard() {
               <div style={{ background:t.panel, border:`1px solid ${t.border}`, borderRadius:20, padding:"3px 4px", display:"flex", gap:2 }}>
                 {["dark","light"].map(m => (
                   <button key={m} onClick={() => setTheme(m)}
-                    style={{ flex:1, background:theme===m?A.teal:"transparent", border:"none", borderRadius:16, padding:"5px 0", cursor:"pointer", ...mono, fontSize:11, fontWeight:700, color:theme===m?"#020A10":t.mute }}>
+                    style={{ flex:1, background:theme===m?A.teal:"transparent", border:"none", borderRadius:16, padding:"5px 0", cursor:"pointer", ...mono, fontSize:11, fontWeight:700, color:theme===m?"var(--rr-header)":t.mute }}>
                     {m === "dark" ? "🌙 DARK" : "☀ LIGHT"}
                   </button>
                 ))}
@@ -159,8 +159,8 @@ function Dashboard() {
                   <span style={{ fontSize:16, flexShrink:0 }}>{n.icon}</span>
                   {sidebarOpen && (
                     <div>
-                      <div style={{ fontSize:12, fontWeight:700, color:isActive?A.teal:(theme==="light"?"#111111":t.dim), whiteSpace:"nowrap" }}>{n.label}</div>
-                      <div style={{ ...mono, fontSize:10, color:theme==="light"?"#444444":t.mute, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{n.desc}</div>
+                      <div style={{ fontSize:12, fontWeight:700, color:isActive?A.teal:(theme==="light"?"var(--rr-text)":t.dim), whiteSpace:"nowrap" }}>{n.label}</div>
+                      <div style={{ ...mono, fontSize:10, color:theme==="light"?"var(--rr-mute)":t.mute, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{n.desc}</div>
                     </div>
                   )}
                 </div>
