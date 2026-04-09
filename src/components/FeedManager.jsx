@@ -125,7 +125,7 @@ export default function FeedManager() {
         <button onClick={()=>{if(confirm('Reset all feeds to defaults?')){resetFeeds();reload();}}}
           style={{...mono,background:'transparent',border:'1px solid #3a1a1a',
             borderRadius:3,padding:'5px 10px',cursor:'pointer',
-            color:'#664444',fontSize:10}}>
+            color:'var(--rr-tint-red)',fontSize:10}}>
           RESET
         </button>
       </div>
@@ -260,7 +260,7 @@ export default function FeedManager() {
               <div style={{display:'flex',gap:6,marginLeft:'auto'}}>
                 <button onClick={()=>handleToggle(feed.id)}
                   style={{...mono,background:'transparent',
-                    border:'1px solid '+(feed.enabled===false?'#006622':'#662200'),
+                    border:'1px solid '+(feed.enabled===false?'var(--rr-tint-green)':'var(--rr-tint-orange)'),
                     borderRadius:3,padding:'2px 8px',cursor:'pointer',
                     color:feed.enabled===false?'#00aa44':'#cc4444',fontSize:9,fontWeight:700}}>
                   {feed.enabled===false?'ENABLE':'DISABLE'}
