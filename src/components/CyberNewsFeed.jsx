@@ -174,13 +174,13 @@ export default function CyberNewsFeed() {
   };
 
   return (
-    <div style={{padding:'20px 24px',maxWidth:860,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:'20px 24px',maxWidth:860,...mono,color:'var(--rr-text)'}}>
       {/* Header */}
       <div style={{marginBottom:16}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:2}}>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:2}}>
           📡 CYBER INTELLIGENCE FEED
         </div>
-        <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           {SOURCES.length} sources · CISA · NIST · DISA · SANS · Krebs · Dark Reading · CSO · The Hacker News · ISACA · Cisco Talos · Microsoft · CrowdStrike
         </div>
       </div>
@@ -188,18 +188,18 @@ export default function CyberNewsFeed() {
       {/* AI Brief */}
       <div style={{background:'rgba(0,60,120,0.12)',border:'1px solid #1e3a5f',
         borderRadius:6,padding:'12px 16px',marginBottom:16,minHeight:54}}>
-        <div style={{fontSize:10,color:'#4a7a9b',letterSpacing:2,marginBottom:6,fontWeight:700}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',letterSpacing:2,marginBottom:6,fontWeight:700}}>
           🤖 AI THREAT BRIEF — TODAY
         </div>
-        {aiLoading && <div style={{fontSize:11,color:'#4a7a9b'}}>Analyzing {items.length} headlines with Claude AI...</div>}
+        {aiLoading && <div style={{fontSize:11,color:'var(--rr-mute)'}}>Analyzing {items.length} headlines with Claude AI...</div>}
         {!aiLoading && aiInsight?.brief && (
-          <div style={{fontSize:12,color:'#a0c8e8',lineHeight:1.8}}>{aiInsight.brief}</div>
+          <div style={{fontSize:12,color:'var(--rr-text-dim)',lineHeight:1.8}}>{aiInsight.brief}</div>
         )}
         {!aiLoading && !aiInsight?.brief && !loading && items.length > 0 && (
-          <div style={{fontSize:11,color:'#2a5a7b'}}>AI analysis not available — API key required</div>
+          <div style={{fontSize:11,color:'var(--rr-mute)'}}>AI analysis not available — API key required</div>
         )}
         {!aiLoading && !aiInsight?.brief && loading && (
-          <div style={{fontSize:11,color:'#2a5a7b'}}>Loading feeds...</div>
+          <div style={{fontSize:11,color:'var(--rr-mute)'}}>Loading feeds...</div>
         )}
       </div>
 
@@ -210,27 +210,27 @@ export default function CyberNewsFeed() {
           {CATS.map(c=>(
             <button key={c.id} onClick={()=>setCat(c.id)} style={{
               ...mono,background:cat===c.id?'#0055cc':'transparent',
-              border:'1px solid '+(cat===c.id?'#0055cc':'#1e3a5f'),
+              border:'1px solid '+(cat===c.id?'#0055cc':'var(--rr-border-md)'),
               borderRadius:3,padding:'4px 10px',cursor:'pointer',
-              color:cat===c.id?'#fff':'#4a7a9b',fontSize:10,fontWeight:700
+              color:cat===c.id?'#fff':'var(--rr-mute)',fontSize:10,fontWeight:700
             }}>{c.label}</button>
           ))}
         </div>
         {/* Search */}
         <input value={search} onChange={e=>setSearch(e.target.value)}
           placeholder="Search headlines..."
-          style={{...mono,flex:1,minWidth:160,background:'#061224',
+          style={{...mono,flex:1,minWidth:160,background:'var(--rr-panel)',
             border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 10px',
-            color:'#c0d8f0',fontSize:11,outline:'none'}}/>
+            color:'var(--rr-text)',fontSize:11,outline:'none'}}/>
         {/* Refresh */}
         <button onClick={fetchAll} disabled={loading} style={{
           ...mono,background:'transparent',border:'1px solid #1e3a5f',
           borderRadius:3,padding:'4px 12px',cursor:'pointer',
-          color:'#4a7a9b',fontSize:10,fontWeight:700,
+          color:'var(--rr-mute)',fontSize:10,fontWeight:700,
           opacity:loading?0.5:1
         }}>{loading?'⏳ LOADING...':'🔄 REFRESH'}</button>
         {lastFetch && (
-          <span style={{fontSize:9,color:'#2a5a7b'}}>
+          <span style={{fontSize:9,color:'var(--rr-mute)'}}>
             Updated {timeSince(lastFetch)}
           </span>
         )}
@@ -249,7 +249,7 @@ export default function CyberNewsFeed() {
               </div>
             );
           })}
-          <div style={{fontSize:10,color:'#4a7a9b',background:'rgba(0,0,0,0.2)',
+          <div style={{fontSize:10,color:'var(--rr-mute)',background:'rgba(0,0,0,0.2)',
             border:'1px solid #1e3a5f',borderRadius:3,padding:'3px 10px'}}>
             TOTAL: {filtered.length} articles
           </div>
@@ -264,7 +264,7 @@ export default function CyberNewsFeed() {
 
       {/* Loading state */}
       {loading && (
-        <div style={{textAlign:'center',padding:40,color:'#4a7a9b',fontSize:12}}>
+        <div style={{textAlign:'center',padding:40,color:'var(--rr-mute)',fontSize:12}}>
           <div style={{fontSize:24,marginBottom:12}}>📡</div>
           Fetching {SOURCES.length} intelligence sources...
         </div>
@@ -272,7 +272,7 @@ export default function CyberNewsFeed() {
 
       {/* News items */}
       {!loading && filtered.length === 0 && (
-        <div style={{textAlign:'center',padding:40,color:'#2a4a6b',fontSize:12}}>
+        <div style={{textAlign:'center',padding:40,color:'var(--rr-mute)',fontSize:12}}>
           {items.length===0 ? 'No articles loaded — click Refresh to fetch feeds' : 'No articles match your filter'}
         </div>
       )}
@@ -284,8 +284,8 @@ export default function CyberNewsFeed() {
           return (
             <div key={item.id}
               style={{
-                background: isCrit?'rgba(180,0,0,0.08)':'#061224',
-                border:'1px solid '+(isCrit?'#660000':isOpen?'#1e3a8f':'#0d2040'),
+                background: isCrit?'rgba(180,0,0,0.08)':'var(--rr-panel)',
+                border:'1px solid '+(isCrit?'#660000':isOpen?'#1e3a8f':'var(--rr-panel-alt)'),
                 borderLeft:'3px solid '+item.color,
                 borderRadius:5,padding:'10px 14px',
                 cursor:'pointer',transition:'border-color 0.15s',
@@ -306,15 +306,15 @@ export default function CyberNewsFeed() {
                         ⚠ CRITICAL
                       </span>
                     )}
-                    <span style={{fontSize:9,color:'#2a5a7b',marginLeft:'auto'}}>
+                    <span style={{fontSize:9,color:'var(--rr-mute)',marginLeft:'auto'}}>
                       {timeSince(item.pubDate)}
                     </span>
                   </div>
-                  <div style={{fontSize:12,fontWeight:700,color:'#d0e8f8',lineHeight:1.5,marginBottom:4}}>
+                  <div style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',lineHeight:1.5,marginBottom:4}}>
                     {item.title}
                   </div>
                   {isOpen && item.summary && (
-                    <div style={{fontSize:11,color:'#7a9ab8',lineHeight:1.7,
+                    <div style={{fontSize:11,color:'var(--rr-text-dim)',lineHeight:1.7,
                       marginBottom:8,borderTop:'1px solid #0d2040',paddingTop:8}}>
                       {item.summary}
                     </div>
@@ -327,7 +327,7 @@ export default function CyberNewsFeed() {
                     </a>
                   )}
                 </div>
-                <span style={{fontSize:10,color:'#2a4a6b',flexShrink:0,marginTop:2}}>
+                <span style={{fontSize:10,color:'var(--rr-mute)',flexShrink:0,marginTop:2}}>
                   {isOpen?'▲':'▼'}
                 </span>
               </div>
@@ -338,10 +338,10 @@ export default function CyberNewsFeed() {
 
       {/* Failed sources detail */}
       {failedSrcs.length > 0 && !loading && (
-        <div style={{marginTop:16,fontSize:10,color:'#2a4a6b',
+        <div style={{marginTop:16,fontSize:10,color:'var(--rr-mute)',
           background:'rgba(0,0,0,0.2)',border:'1px solid #0d2040',
           borderRadius:4,padding:'8px 14px',lineHeight:1.8}}>
-          <strong style={{color:'#4a7a9b'}}>Sources with CORS restrictions (normal for .gov/.mil):</strong><br/>
+          <strong style={{color:'var(--rr-mute)'}}>Sources with CORS restrictions (normal for .gov/.mil):</strong><br/>
           {failedSrcs.join(' · ')}<br/>
           These sources are fetched via the Updates tab's direct API integration.
         </div>
