@@ -2,14 +2,43 @@
 :root { font-size: 14px; }
 body  { font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
-/* RADAR PULSE */
+/* ── DARK THEME (default) ─────────────────────────────────────────────────── */
+:root, :root[data-theme="dark"] {
+  --rr-bg:        #03080E; --rr-panel:     #060D16; --rr-panel-alt: #08111C;
+  --rr-border:    #0D1E2E; --rr-border-md: #152840;
+  --rr-text:      #C8D8E8; --rr-text-dim:  #7A9AB8; --rr-mute:      #3A5570;
+  --rr-white:     #F0F8FF; --rr-input:     #040C16; --rr-input-bdr: #1A3A5C;
+  --rr-row-a:     #050C14; --rr-row-b:     #040A12; --rr-scroll:    #1A3A5C;
+  --rr-header:    #02060C;
+  --rr-teal:      #00D4AA; --rr-blue:      #1A7AFF; --rr-red:       #FF4444;
+  --rr-orange:    #FF8C00; --rr-gold:      #FFD700; --rr-green:     #00CC88;
+  --rr-purple:    #AA66FF;
+}
+
+/* ── LIGHT THEME ──────────────────────────────────────────────────────────── */
+:root[data-theme="light"] {
+  --rr-bg:        #F4F7FB; --rr-panel:     #FFFFFF; --rr-panel-alt: #EEF3F8;
+  --rr-border:    #C0CDD8; --rr-border-md: #A0B4C4;
+  --rr-text:      #0D1B2A; --rr-text-dim:  #1E3448; --rr-mute:      #374F66;
+  --rr-white:     #0A1525; --rr-input:     #FFFFFF; --rr-input-bdr: #98B8D0;
+  --rr-row-a:     #FFFFFF; --rr-row-b:     #F4F8FC; --rr-scroll:    #98B8D0;
+  --rr-header:    #FFFFFF;
+  --rr-teal:      #007A5E; --rr-blue:      #1A5FCC; --rr-red:       #C0181E;
+  --rr-orange:    #B05000; --rr-gold:      #8A6A00; --rr-green:     #006B3C;
+  --rr-purple:    #6A2FBB;
+}
+
+/* ── GLOBAL THEME SYNC ────────────────────────────────────────────────────── */
+body, html { background: var(--rr-bg) !important; color: var(--rr-text); transition: background 0.2s, color 0.2s; }
+
+/* ── RADAR PULSE ──────────────────────────────────────────────────────────── */
 @keyframes rr-radar-expand {
   0%   { transform: scale(1);    opacity: 0.65; }
   75%  { transform: scale(1.85); opacity: 0; }
   100% { transform: scale(1.85); opacity: 0; }
 }
 
-/* SCROLLBAR */
+/* ── SCROLLBAR ────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #010a14; }
-::-webkit-scrollbar-thumb { background: #1a3a54; border-radius: 2px; }
+::-webkit-scrollbar-track { background: var(--rr-bg); }
+::-webkit-scrollbar-thumb { background: var(--rr-scroll); border-radius: 2px; }
