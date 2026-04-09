@@ -13,6 +13,8 @@ import EvidenceTracker from "./components/EvidenceTracker.jsx";
 import NetworkScanner from "./components/NetworkScanner.jsx";
 import SPRSCalculator from "./components/SPRSCalculator.jsx";
 import NessusImporter from "./components/NessusImporter.jsx";
+import SelfInspection  from "./components/SelfInspection.jsx";
+import ITRSubmission   from "./components/ITRSubmission.jsx";
 import { AuthProvider, UserMenu, useAuth } from "./components/Auth.jsx";
 import RulesOfBehaviorModal, { useROBAccepted } from "./components/RulesOfBehavior.jsx";
 import SetupPage from "./components/SetupPage.jsx";
@@ -48,6 +50,8 @@ const NAV = [
   { id:"feed_mgr",   label:"Feed Manager",           icon:"⚙️",  desc:"Add · remove · toggle feeds · ITR vendor tracking" },
   { id:"approved_hw",label:"Approved Hardware",       icon:"🖥️",  desc:"ITR-approved hardware · STIG status · read-only for admins" },
   { id:"approved_sw",label:"Approved Software",       icon:"💿",  desc:"ITR-approved software · version policy · STIG benchmark" },
+  { id:"inspection",  label:"Self-Inspection",         icon:"🔎",  desc:"Quarterly checklist · control families · role-scoped" },
+  { id:"itr_submit",  label:"ITR Submission",           icon:"📋",  desc:"Submit IT requests · SysAdmin workflow · ISSO/ISSM review" },
 ];
 
 // ─── Dashboard (shown after auth) ────────────────────────────────────────────
@@ -60,10 +64,13 @@ function Dashboard() {
   // Role-based nav filtering
   // sysadmin: Approved HW, Approved SW, POAM (read-only), Security Updates
   // readonly: same as sysadmin
-  const SYSADMIN_TABS = new Set(['approved_hw','approved_sw','poam','updates']);
+  const SYSADMIN_TABS = new Set(['approved_hw','approved_sw','poam','updates','inspection','itr_submit']);
+  const ISSO_HIDDEN = new Set(['admin']);
   const filteredNav = (role==='sysadmin'||role==='readonly')
     ? NAV.filter(n => SYSADMIN_TABS.has(n.id))
-    : NAV;
+    : (role==='isso')
+      ? NAV.filter(n => !ISSO_HIDDEN.has(n.id))
+      : NAV;
   const isReadOnly = role === 'sysadmin' || role === 'readonly';
   const robAccepted = useROBAccepted(member?.id);
   const [showROB, setShowROB] = useState(!robAccepted);
@@ -90,7 +97,9 @@ function Dashboard() {
       case "cyber_news": return <CyberNewsFeed />;
       case "feed_mgr":   return <FeedManager />;
       case "approved_hw": return <ApprovedHardware readOnly={isReadOnly} />;
-      case "approved_sw": return <ApprovedSoftware readOnly={isReadOnly} />;
+      case "approved_sw":  return <ApprovedSoftware readOnly={isReadOnly} />;
+      case "inspection":   return <SelfInspection />;
+      case "itr_submit":   return <ITRSubmission />;
       default:          return <MultiFramework />;
     }
   };
