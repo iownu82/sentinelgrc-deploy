@@ -28,6 +28,8 @@ import ApprovedSoftware from "./components/ApprovedSoftware.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
 import RiskRadarAI from './components/RiskRadarAI.jsx';
+import STIGEvidence from './components/STIGEvidence.jsx';
+import STIGAlerts from './components/STIGAlerts.jsx';
 
 const mono = { fontFamily:"'Courier New',monospace" };
 
