@@ -61,12 +61,12 @@ export default function ApprovedList({ readOnly = false }) {
   const thirdField = IS_HW ? 'Model' : 'Approved Version(s)';
 
   return (
-    <div style={{padding:'20px 24px',maxWidth:860,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:'20px 24px',maxWidth:860,...mono,color:'var(--rr-text)'}}>
       <div style={{marginBottom:16}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:2}}>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:2}}>
           {IS_HW ? '🖥️ APPROVED HARDWARE LIST' : '💿 APPROVED SOFTWARE LIST'}
         </div>
-        <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           {IS_HW
             ? 'ISSM/ISSO maintained · Read-only for System/Network Admins · All items ITR-approved'
             : 'ISSM/ISSO maintained · Minor upgrades noted · Major version changes require ITR'}
@@ -76,16 +76,16 @@ export default function ApprovedList({ readOnly = false }) {
       {/* Stats */}
       <div style={{display:'flex',gap:10,marginBottom:14,flexWrap:'wrap'}}>
         {[
-          ['Total', items.length, '#4a7a9b'],
+          ['Total', items.length, 'var(--rr-mute)'],
           ['Approved', items.filter(i=>i.status==='Approved').length, '#00aa44'],
           ['Conditional', items.filter(i=>i.status==='Approved with Conditions').length, '#cc8800'],
           ['Pending', items.filter(i=>i.status==='Pending Review').length, '#cc6600'],
           ['Deprecated', items.filter(i=>i.status==='Deprecated').length, '#555'],
         ].map(([label,val,color])=>(
-          <div key={label} style={{background:'#061224',border:'1px solid #1e3a5f',
+          <div key={label} style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',
             borderRadius:4,padding:'6px 12px',textAlign:'center',minWidth:70}}>
             <div style={{fontSize:18,fontWeight:700,color}}>{val}</div>
-            <div style={{fontSize:9,color:'#4a7a9b'}}>{label}</div>
+            <div style={{fontSize:9,color:'var(--rr-mute)'}}>{label}</div>
           </div>
         ))}
       </div>
@@ -94,17 +94,17 @@ export default function ApprovedList({ readOnly = false }) {
       <div style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap',alignItems:'center'}}>
         <input value={search} onChange={e=>setSearch(e.target.value)}
           placeholder={`Search ${IS_HW?'hardware':'software'}...`}
-          style={{...mono,flex:1,minWidth:160,background:'#061224',border:'1px solid #1e3a5f',
-            borderRadius:3,padding:'5px 10px',color:'#c0d8f0',fontSize:11,outline:'none'}}/>
+          style={{...mono,flex:1,minWidth:160,background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+            borderRadius:3,padding:'5px 10px',color:'var(--rr-text)',fontSize:11,outline:'none'}}/>
         <select value={catFilter} onChange={e=>setCatFilter(e.target.value)}
-          style={{...mono,background:'#061224',border:'1px solid #1e3a5f',
-            borderRadius:3,padding:'5px 8px',color:'#c0d8f0',fontSize:11}}>
+          style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+            borderRadius:3,padding:'5px 8px',color:'var(--rr-text)',fontSize:11}}>
           <option value='all'>All categories</option>
           {cats.map(c=><option key={c} value={c}>{c}</option>)}
         </select>
         <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}
-          style={{...mono,background:'#061224',border:'1px solid #1e3a5f',
-            borderRadius:3,padding:'5px 8px',color:'#c0d8f0',fontSize:11}}>
+          style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+            borderRadius:3,padding:'5px 8px',color:'var(--rr-text)',fontSize:11}}>
           <option value='all'>All statuses</option>
           {statuses.map(s=><option key={s} value={s}>{s}</option>)}
         </select>
@@ -120,7 +120,7 @@ export default function ApprovedList({ readOnly = false }) {
 
       {/* Add form */}
       {showAdd && (
-        <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',borderRadius:6,padding:16,marginBottom:14}}>
+        <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,padding:16,marginBottom:14}}>
           <div style={{fontSize:11,fontWeight:700,color:'#a0b8d0',marginBottom:12,letterSpacing:1}}>
             ADD {IS_HW?'HARDWARE':'SOFTWARE'} ITEM
           </div>
@@ -134,26 +134,26 @@ export default function ApprovedList({ readOnly = false }) {
               ['Category','cat',''],
             ].map(([label,key,ph])=>(
               <div key={key}>
-                <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>{label.toUpperCase()}</label>
+                <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>{label.toUpperCase()}</label>
                 {key==='status'?(
                   <select value={form[key]||''} onChange={e=>setF(key,e.target.value)}
-                    style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                      borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box'}}>
+                    style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                      borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box'}}>
                     <option value=''>Select status</option>
                     {Object.keys(STATUS_COLOR).map(s=><option key={s} value={s}>{s}</option>)}
                   </select>
                 ):key==='cat'?(
                   <select value={form[key]||''} onChange={e=>setF(key,e.target.value)}
-                    style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                      borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box'}}>
+                    style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                      borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box'}}>
                     <option value=''>Select category</option>
                     {Object.keys(CAT_COLORS).map(c=><option key={c} value={c}>{c}</option>)}
                   </select>
                 ):(
                   <input value={form[key]||''} onChange={e=>setF(key,e.target.value)}
                     placeholder={ph}
-                    style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                      borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                    style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                      borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                       boxSizing:'border-box',outline:'none'}}/>
                 )}
               </div>
@@ -161,13 +161,13 @@ export default function ApprovedList({ readOnly = false }) {
           </div>
           <input value={form.notes||''} onChange={e=>setF('notes',e.target.value)}
             placeholder='Notes / conditions...'
-            style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-              borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+            style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+              borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
               boxSizing:'border-box',outline:'none',marginBottom:12}}/>
           <button onClick={addItem} disabled={!form.name}
             style={{...mono,background:form.name?'#0055cc':'#1a2a3a',border:'none',
               borderRadius:3,padding:'8px 20px',cursor:form.name?'pointer':'not-allowed',
-              color:form.name?'#fff':'#2a4a6b',fontSize:11,fontWeight:700}}>
+              color:form.name?'#fff':'var(--rr-mute)',fontSize:11,fontWeight:700}}>
             ADD ITEM →
           </button>
         </div>
@@ -177,11 +177,11 @@ export default function ApprovedList({ readOnly = false }) {
       <div style={{display:'flex',flexDirection:'column',gap:6}}>
         {filtered.map(item=>{
           const isOpen = expanded===item.id;
-          const statusColor = STATUS_COLOR[item.status]||'#4a7a9b';
-          const catColor    = CAT_COLORS[item.cat]||'#4a7a9b';
+          const statusColor = STATUS_COLOR[item.status]||'var(--rr-mute)';
+          const catColor    = CAT_COLORS[item.cat]||'var(--rr-mute)';
           return (
             <div key={item.id} onClick={()=>setExpanded(isOpen?null:item.id)}
-              style={{background:'#061224',border:'1px solid '+(isOpen?'#1e3a8f':'#0d2040'),
+              style={{background:'var(--rr-panel)',border:'1px solid '+(isOpen?'#1e3a8f':'var(--rr-panel-alt)'),
                 borderLeft:'3px solid '+statusColor,borderRadius:5,padding:'10px 14px',
                 cursor:'pointer',transition:'border-color 0.15s'}}>
               <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
@@ -189,7 +189,7 @@ export default function ApprovedList({ readOnly = false }) {
                   border:'1px solid '+catColor+'44',borderRadius:2,padding:'1px 6px',whiteSpace:'nowrap'}}>
                   {item.cat}
                 </span>
-                <span style={{fontSize:12,fontWeight:700,color:'#d0e8f8',flex:1}}>{item.name}</span>
+                <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',flex:1}}>{item.name}</span>
                 <span style={{fontSize:9,fontWeight:700,color:statusColor,
                   border:'1px solid '+statusColor+'44',borderRadius:2,padding:'1px 8px',whiteSpace:'nowrap'}}>
                   {item.status}
@@ -201,9 +201,9 @@ export default function ApprovedList({ readOnly = false }) {
                     STIG: {item.stigAvail}
                   </span>
                 )}
-                <span style={{fontSize:10,color:'#2a4a6b',flexShrink:0}}>{isOpen?'▲':'▼'}</span>
+                <span style={{fontSize:10,color:'var(--rr-mute)',flexShrink:0}}>{isOpen?'▲':'▼'}</span>
               </div>
-              <div style={{fontSize:10,color:'#2a5a7b',marginTop:3}}>
+              <div style={{fontSize:10,color:'var(--rr-mute)',marginTop:3}}>
                 {IS_HW
                   ? (item.mfg||'') + (item.model?' · '+item.model:'') + (item.itr?' · '+item.itr:'')
                   : (item.vendor||'') + (item.version?' · v'+item.version:'') + (item.latestPatch?' · Patch: '+item.latestPatch:'') + (item.itr&&item.itr!=='N/A'?' · '+item.itr:'')
@@ -213,31 +213,31 @@ export default function ApprovedList({ readOnly = false }) {
                 <div style={{borderTop:'1px solid #0d2040',marginTop:10,paddingTop:10,
                   display:'grid',gridTemplateColumns:'1fr 1fr',gap:6,fontSize:11}}>
                   {IS_HW ? <>
-                    {item.classification&&<div><span style={{color:'#4a7a9b'}}>Classification: </span><span style={{color:'#a0c8e8'}}>{item.classification}</span></div>}
-                    {item.approvedBy&&<div><span style={{color:'#4a7a9b'}}>Approved by: </span><span style={{color:'#a0c8e8'}}>{item.approvedBy}</span></div>}
-                    {item.conditions&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>⚠ Conditions: </span><span style={{color:'#a0c8e8'}}>{item.conditions}</span></div>}
+                    {item.classification&&<div><span style={{color:'var(--rr-mute)'}}>Classification: </span><span style={{color:'var(--rr-text-dim)'}}>{item.classification}</span></div>}
+                    {item.approvedBy&&<div><span style={{color:'var(--rr-mute)'}}>Approved by: </span><span style={{color:'var(--rr-text-dim)'}}>{item.approvedBy}</span></div>}
+                    {item.conditions&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>⚠ Conditions: </span><span style={{color:'var(--rr-text-dim)'}}>{item.conditions}</span></div>}
                   </> : <>
-                    {item.license&&<div><span style={{color:'#4a7a9b'}}>License: </span><span style={{color:'#a0c8e8'}}>{item.license}</span></div>}
-                    {item.classification&&<div><span style={{color:'#4a7a9b'}}>Classification: </span><span style={{color:'#a0c8e8'}}>{item.classification}</span></div>}
-                    {item.minorUpgrade&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#4a7a9b'}}>Minor upgrades: </span><span style={{color:item.minorUpgrade.includes('auto')?'#00aa44':'#cc8800'}}>{item.minorUpgrade}</span></div>}
-                    {item.stigBench&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#4a7a9b'}}>STIG: </span><span style={{color:'#a0c8e8'}}>{item.stigBench}</span></div>}
-                    {item.conditions&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>⚠ Conditions: </span><span style={{color:'#a0c8e8'}}>{item.conditions}</span></div>}
+                    {item.license&&<div><span style={{color:'var(--rr-mute)'}}>License: </span><span style={{color:'var(--rr-text-dim)'}}>{item.license}</span></div>}
+                    {item.classification&&<div><span style={{color:'var(--rr-mute)'}}>Classification: </span><span style={{color:'var(--rr-text-dim)'}}>{item.classification}</span></div>}
+                    {item.minorUpgrade&&<div style={{gridColumn:'1/-1'}}><span style={{color:'var(--rr-mute)'}}>Minor upgrades: </span><span style={{color:item.minorUpgrade.includes('auto')?'#00aa44':'#cc8800'}}>{item.minorUpgrade}</span></div>}
+                    {item.stigBench&&<div style={{gridColumn:'1/-1'}}><span style={{color:'var(--rr-mute)'}}>STIG: </span><span style={{color:'var(--rr-text-dim)'}}>{item.stigBench}</span></div>}
+                    {item.conditions&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>⚠ Conditions: </span><span style={{color:'var(--rr-text-dim)'}}>{item.conditions}</span></div>}
                   </>}
-                  {item.notes&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#4a7a9b'}}>Notes: </span><span style={{color:'#7a9ab8'}}>{item.notes}</span></div>}
-                  {item.approvedBy&&!IS_HW&&<div><span style={{color:'#4a7a9b'}}>Approved by: </span><span style={{color:'#a0c8e8'}}>{item.approvedBy}</span></div>}
+                  {item.notes&&<div style={{gridColumn:'1/-1'}}><span style={{color:'var(--rr-mute)'}}>Notes: </span><span style={{color:'var(--rr-text-dim)'}}>{item.notes}</span></div>}
+                  {item.approvedBy&&!IS_HW&&<div><span style={{color:'var(--rr-mute)'}}>Approved by: </span><span style={{color:'var(--rr-text-dim)'}}>{item.approvedBy}</span></div>}
                 </div>
               )}
             </div>
           );
         })}
         {filtered.length===0&&(
-          <div style={{textAlign:'center',padding:30,color:'#2a4a6b',fontSize:12}}>
+          <div style={{textAlign:'center',padding:30,color:'var(--rr-mute)',fontSize:12}}>
             No items match your search
           </div>
         )}
       </div>
 
-      <div style={{marginTop:16,fontSize:10,color:'#2a4a6b',lineHeight:1.8,
+      <div style={{marginTop:16,fontSize:10,color:'var(--rr-mute)',lineHeight:1.8,
         background:'rgba(0,0,0,0.2)',border:'1px solid #0d2040',borderRadius:4,padding:'8px 14px'}}>
         Read-only access for System Admins, Network Admins, Security Admins · ISSM/ISSO can add/edit items · All items require ITR approval · Phase 4: synced to GovCloud RDS
       </div>
