@@ -151,7 +151,7 @@ const STATUS_OPTS = [
   { id:"met",        label:"Met",         color:"#00CC88", icon:"✓" },
   { id:"partial",    label:"Partial",     color:"#FF8C00", icon:"◑" },
   { id:"not_met",    label:"Not Met",     color:"#FF4444", icon:"✗" },
-  { id:"na",         label:"N/A",         color:"#7A9AB8", icon:"—" },
+  { id:"na",         label:"N/A",         color:"var(--rr-text-dim)", icon:"—" },
   { id:"not_assessed",label:"Not Assessed",color:"#4A6080",icon:"?" },
 ];
 // ── CMMC Level 3 — 24 enhanced practices from NIST SP 800-172 ─────────────
@@ -540,15 +540,15 @@ export default function SPRSCalculator() {
             {/* Formatted submission text */}
             <div style={{ ...mono, fontSize:10, color:C.textMute, letterSpacing:0.8, marginBottom:8 }}>SPRS ENTRY FIELDS (copy-paste to SPRS portal)</div>
             <div style={{ background:C.bg, border:`1px solid #0D2030`, borderRadius:8, padding:16, fontFamily:"'Courier New',monospace", fontSize:11, color:"#7AB8D8", lineHeight:2 }}>
-              <div><span style={{ color:"#3A5570" }}>Assessment Type:</span>         <span style={{ color:"#C8D8E8" }}>NIST SP 800-171 DoD Assessment</span></div>
-              <div><span style={{ color:"#3A5570" }}>Organization:</span>            <span style={{ color:"#C8D8E8" }}>{orgName}</span></div>
-              <div><span style={{ color:"#3A5570" }}>System / Enclave:</span>        <span style={{ color:"#C8D8E8" }}>{systemName}</span></div>
-              <div><span style={{ color:"#3A5570" }}>Assessment Date:</span>         <span style={{ color:"#C8D8E8" }}>{assessDate}</span></div>
-              <div><span style={{ color:"#3A5570" }}>Total Score:</span>             <span style={{ color:sc, fontWeight:900, fontSize:14 }}>{score.total}</span></div>
-              <div><span style={{ color:"#3A5570" }}>Practices Met:</span>           <span style={{ color:"#00CC88" }}>{score.metCount}</span></div>
-              <div><span style={{ color:"#3A5570" }}>Practices Not Met:</span>       <span style={{ color:"#FF4444" }}>{score.notMetCount}</span></div>
-              <div><span style={{ color:"#3A5570" }}>Practices Partial:</span>       <span style={{ color:"#FF8C00" }}>{score.partialCount}</span></div>
-              <div><span style={{ color:"#3A5570" }}>Plan of Action Exists:</span>   <span style={{ color:"#C8D8E8" }}>{score.notMetCount + score.partialCount > 0 ? "Yes" : "No"}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Assessment Type:</span>         <span style={{ color:"var(--rr-text)" }}>NIST SP 800-171 DoD Assessment</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Organization:</span>            <span style={{ color:"var(--rr-text)" }}>{orgName}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>System / Enclave:</span>        <span style={{ color:"var(--rr-text)" }}>{systemName}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Assessment Date:</span>         <span style={{ color:"var(--rr-text)" }}>{assessDate}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Total Score:</span>             <span style={{ color:sc, fontWeight:900, fontSize:14 }}>{score.total}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Practices Met:</span>           <span style={{ color:"#00CC88" }}>{score.metCount}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Practices Not Met:</span>       <span style={{ color:"#FF4444" }}>{score.notMetCount}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Practices Partial:</span>       <span style={{ color:"#FF8C00" }}>{score.partialCount}</span></div>
+              <div><span style={{ color:"var(--rr-mute)" }}>Plan of Action Exists:</span>   <span style={{ color:"var(--rr-text)" }}>{score.notMetCount + score.partialCount > 0 ? "Yes" : "No"}</span></div>
             </div>
           </div>
           {/* Guidance */}
