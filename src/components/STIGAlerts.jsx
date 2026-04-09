@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { loadSubmissions, updateSubmission } from '../utils/stigStore.js';
 
 const C = {
   bg:"var(--rr-bg)", panel:"var(--rr-panel)", border:"var(--rr-border)",
@@ -46,23 +47,31 @@ const DEMO_ALERTS = [
 ];
 
 export default function STIGAlerts({ role }) {
-  const [alerts, setAlerts] = useState(DEMO_ALERTS);
+  const [alerts, setAlerts] = useState(() => loadSubmissions());
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [filter, setFilter] = useState('all');
 
   const canApprove = role === 'issm' || role === 'isso';
+
+  useEffect(() => {
+    const onStorage = () => setAlerts(loadSubmissions());
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
   const pending = alerts.filter(a=>a.status==='pending').length;
 
   const approve = (id) => {
-    setAlerts(prev=>prev.map(a=>a.id===id?{...a,status:'approved',approvedBy:role.toUpperCase(),approvedAt:new Date().toISOString().slice(0,16).replace('T',' ')}:a));
+    const updated = updateSubmission(id, {status:'approved',approvedBy:role.toUpperCase(),approvedAt:new Date().toISOString().slice(0,16).replace('T',' ')});
+    setAlerts(updated);
     setSelected(null);
     setFeedback('');
   };
 
   const reject = (id) => {
     if(!feedback.trim()){alert('Please provide rejection reason before rejecting.');return;}
-    setAlerts(prev=>prev.map(a=>a.id===id?{...a,status:'rejected',rejectedBy:role.toUpperCase(),rejectedAt:new Date().toISOString().slice(0,16).replace('T',' '),rejectionReason:feedback}:a));
+    const updated = updateSubmission(id, {status:'rejected',rejectedBy:role.toUpperCase(),rejectedAt:new Date().toISOString().slice(0,16).replace('T',' '),rejectionReason:feedback});
+    setAlerts(updated);
     setSelected(null);
     setFeedback('');
   };
