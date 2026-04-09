@@ -5,7 +5,7 @@ import { useAuth } from './Auth.jsx';
 const mono={fontFamily:"'Courier New',monospace"};
 const ACTION_C={LOGIN_SUCCESS:'#00cc66',LOGIN_FAIL:'#cc4444',ACCOUNT_LOCKED:'#cc2222',
   ACCOUNT_UNLOCKED:'#00aa44',CERT_UPLOADED:'#4a9fd4',ORG_CREATED:'#aa77ff',
-  POAM_UPDATED:'#ffaa44',SESSION_EXPIRED:'#886600'};
+  POAM_UPDATED:'#ffaa44',SESSION_EXPIRED:'var(--rr-tint-orange)'};
 const DEMO_ORGS=[
   {id:'o1',name:'F-35 JSF Program',slug:'f35-jsf',type:'dod_program',status:'active',
    created:'2026-03-01',members:4,issm:'j.smith@lm.mil',isso:'j.doe@lm.mil'},
@@ -45,8 +45,8 @@ function Btn({onClick,children,variant='primary',sm,disabled}){
   const s={...mono,border:'none',cursor:disabled?'not-allowed':'pointer',fontWeight:700,
     letterSpacing:1,borderRadius:4,padding:sm?'5px 12px':'9px 20px',
     fontSize:sm?10:11,opacity:disabled?0.5:1,
-    background:variant==='primary'?'#0055aa':variant==='success'?'#004422':
-      variant==='danger'?'#550000':'transparent',
+    background:variant==='primary'?'#0055aa':variant==='success'?'var(--rr-tint-green)':
+      variant==='danger'?'var(--rr-tint-red)':'transparent',
     color:variant==='primary'?'#fff':variant==='success'?'#00cc66':
       variant==='danger'?'#ff8888':'var(--rr-mute)',
     border:variant==='ghost'?'1px solid var(--rr-border-md)':'none'};
@@ -121,14 +121,14 @@ export default function AdminConsole(){
         </div>
         <div style={{fontSize:10,padding:'4px 12px',borderRadius:4,letterSpacing:1,
           background:isDemo?'rgba(180,80,0,0.1)':'rgba(0,180,80,0.1)',
-          border:'1px solid '+(isDemo?'#663300':'#006633'),
+          border:'1px solid '+(isDemo?'var(--rr-tint-orange)':'var(--rr-tint-green)'),
           color:isDemo?'#ffaa44':'#00cc66'}}>
           {isDemo?'⚠ DEMO MODE':'● LIVE'}
         </div>
       </div>
 
       {msg&&<div style={{background:msgType==='ok'?'rgba(0,150,50,0.12)':'rgba(180,0,0,0.12)',
-        border:'1px solid '+(msgType==='ok'?'#006622':'#660000'),borderRadius:4,
+        border:'1px solid '+(msgType==='ok'?'var(--rr-tint-green)':'var(--rr-tint-red)'),borderRadius:4,
         padding:'9px 16px',marginBottom:16,fontSize:11,
         color:msgType==='ok'?'#00cc66':'#ff8888'}}>{msg}</div>}
 
@@ -205,7 +205,7 @@ export default function AdminConsole(){
           <div style={{display:'grid',gap:8}}>
             {users.map(u=>(
               <div key={u.id} style={{background:'var(--rr-panel)',
-                border:'1px solid '+(u.locked?'#660000':'var(--rr-border-md)'),
+                border:'1px solid '+(u.locked?'var(--rr-tint-red)':'var(--rr-border-md)'),
                 borderRadius:6,padding:14}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div style={{flex:1}}>
@@ -222,7 +222,7 @@ export default function AdminConsole(){
                   </div>
                   {u.locked&&(
                     <button onClick={()=>initiateUnlock(u)}
-                      style={{...mono,background:'#004422',border:'1px solid #006633',
+                      style={{...mono,background:'var(--rr-tint-green)',border:'1px solid #006633',
                         color:'#00cc66',borderRadius:4,padding:'6px 14px',
                         cursor:'pointer',fontSize:10,fontWeight:700,marginLeft:16}}>
                       🔓 RE-ENABLE
@@ -468,7 +468,7 @@ function TokenPanel({token,onDone}){
         <div style={{wordBreak:'break-all',fontSize:11,color:'#4a9fd4',
           lineHeight:1.6,marginBottom:12}}>{url}</div>
         <button onClick={copy} style={{...mono,fontSize:10,fontWeight:700,
-          background:copied?'#004422':'#003366',
+          background:copied?'var(--rr-tint-green)':'var(--rr-tint-blue)',
           border:'1px solid '+(copied?'#00cc66':'#0055aa'),
           color:copied?'#00cc66':'#4a9fd4',borderRadius:4,
           padding:'6px 16px',cursor:'pointer'}}>
