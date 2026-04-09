@@ -121,7 +121,7 @@ export default function ApprovedList({ readOnly = false }) {
       {/* Add form */}
       {showAdd && (
         <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,padding:16,marginBottom:14}}>
-          <div style={{fontSize:11,fontWeight:700,color:'#a0b8d0',marginBottom:12,letterSpacing:1}}>
+          <div style={{fontSize:11,fontWeight:700,color:'var(--rr-text-dim)',marginBottom:12,letterSpacing:1}}>
             ADD {IS_HW?'HARDWARE':'SOFTWARE'} ITEM
           </div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:12}}>
