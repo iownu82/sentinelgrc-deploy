@@ -28,6 +28,16 @@ const DEMO_SA = {
   slug:  'ballard-is3',
   cyber: '2027-01-15',
 };
+const DEMO_ISSO = {
+  email: 'isso@ballardis3.com',
+  pass:  'DemoAdmin2026',
+  mfa:   '000000',
+  role:  'isso',
+  name:  'Demo ISSO',
+  org:   'Ballard IS3',
+  slug:  'ballard-is3',
+  cyber: '2027-01-15',
+};
 const SUPABASE_CONFIGURED = !!(
   typeof import.meta !== 'undefined' &&
   import.meta.env?.VITE_SUPABASE_URL &&
@@ -94,8 +104,8 @@ export function AuthProvider({ children }) {
     const lk = S.LCK + btoa(email).slice(0,12);
     if (localStorage.getItem(lk)) { setLock(email); setPhase('locked'); return; }
     const atm = parseInt(localStorage.getItem(ak) || '0');
-    const demoUser = (email.toLowerCase() === DEMO_SA.email && password === DEMO_SA.pass) ? DEMO_SA : DEMO;
-    const ok = (email.toLowerCase() === DEMO.email && password === DEMO.pass) || (email.toLowerCase() === DEMO_SA.email && password === DEMO_SA.pass);
+    const demoUser = (email.toLowerCase() === DEMO_SA.email && password === DEMO_SA.pass) ? DEMO_SA : (email.toLowerCase() === DEMO_ISSO.email && password === DEMO_ISSO.pass) ? DEMO_ISSO : DEMO;
+    const ok = (email.toLowerCase() === DEMO.email && password === DEMO.pass) || (email.toLowerCase() === DEMO_SA.email && password === DEMO_SA.pass) || (email.toLowerCase() === DEMO_ISSO.email && password === DEMO_ISSO.pass);
     if (ok) {
       localStorage.removeItem(ak);
       setActiveDemo(demoUser);
@@ -288,6 +298,15 @@ function LoginForm({ onLogin, err }) {
                 padding:'10px 0',cursor:'pointer',color:'#a0c8f0',fontSize:13,fontWeight:700,
                 fontFamily:"'Courier New',monospace",letterSpacing:1}}>
               🔒 DEMO LOGIN — SYSTEM ADMIN
+            </button>
+          </div>
+          <div style={{marginTop:6}}>
+            <button
+              onClick={()=>onLogin(DEMO_ISSO.email, DEMO_ISSO.pass)}
+              style={{width:'100%',background:'#1a4a2a',border:'1px solid #2a7a4a',borderRadius:4,
+                padding:'10px 0',cursor:'pointer',color:'#a0f0c0',fontSize:13,fontWeight:700,
+                fontFamily:"'Courier New',monospace",letterSpacing:1}}>
+              🛡 DEMO LOGIN — ISSO
             </button>
           </div>
         </div>
