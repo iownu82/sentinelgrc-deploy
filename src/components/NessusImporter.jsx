@@ -192,7 +192,7 @@ export default function NessusImporter() {
           {!done&&(
             <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,
               padding:'14px 16px',marginBottom:14}}>
-              <div style={{fontSize:11,fontWeight:700,color:'#a0b8d0',letterSpacing:1,marginBottom:10}}>
+              <div style={{fontSize:11,fontWeight:700,color:'var(--rr-text-dim)',letterSpacing:1,marginBottom:10}}>
                 IMPORT SETTINGS — applied to all findings
               </div>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 16px'}}>
