@@ -134,7 +134,7 @@ export default function FeedManager() {
       {adding && (
         <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',
           borderRadius:6,padding:16,marginBottom:14}}>
-          <div style={{fontSize:11,fontWeight:700,color:'#a0b8d0',
+          <div style={{fontSize:11,fontWeight:700,color:'var(--rr-text-dim)',
             marginBottom:12,letterSpacing:1}}>ADD NEW FEED</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
             {/* Vendor search with autocomplete */}
