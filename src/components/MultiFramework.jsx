@@ -134,7 +134,7 @@ const GaugeArc = ({ score, color, size=90 }) => {
   return (
     <div style={{ position:"relative", width:size, height:size }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#0E2030" strokeWidth="7" />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--rr-panel-alt)" strokeWidth="7" />
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="7"
           strokeDasharray={circ} strokeDashoffset={circ - (score/100)*circ}
           strokeLinecap="round" transform={`rotate(-90 ${size/2} ${size/2})`}
@@ -323,7 +323,7 @@ export default function MultiFramework() {
                     </div>
                     <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
                       {c.cmmc_l1.map(p => <span key={p} style={{ ...mono, fontSize:10, color:C.green }}>{p}</span>)}
-                      {!c.cmmc_l1.length && <span style={{ ...mono, fontSize:10, color:"#2A3A4A" }}>—</span>}
+                      {!c.cmmc_l1.length && <span style={{ ...mono, fontSize:10, color:"var(--rr-border)" }}>—</span>}
                     </div>
                     <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
                       {c.cmmc_l2.slice(0,2).map(p => <span key={p} style={{ ...mono, fontSize:10, color:C.gold }}>{p}</span>)}
@@ -332,7 +332,7 @@ export default function MultiFramework() {
                     <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
                       {c.csrmc_phases.map(p => <span key={p} style={{ ...mono, fontSize:10, color:"#AA66FF" }}>{p.split(":")[0]}</span>)}
                     </div>
-                    <div style={{ ...mono, fontSize:10, color:c.dfars_critical?C.red:c.dfars?C.orange:"#2A3A4A", fontWeight:c.dfars?700:400 }}>
+                    <div style={{ ...mono, fontSize:10, color:c.dfars_critical?C.red:c.dfars?C.orange:"var(--rr-border)", fontWeight:c.dfars?700:400 }}>
                       {c.dfars ? (c.dfars_critical ? "⚠ CRITICAL" : "✓ DFARS") : "—"}
                     </div>
                   </div>
