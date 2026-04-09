@@ -99,8 +99,8 @@ export default function SelfInspection() {
     return(
       <div style={{display:'flex',gap:4,flexShrink:0}}>
         {[
-          ['complete','✅','#006622','#00cc44'],
-          ['finding','⚠','#662200','#ff8800'],
+          ['complete','✅','var(--rr-tint-green)','#00cc44'],
+          ['finding','⚠','var(--rr-tint-orange)','#ff8800'],
           ['na','➖','#333','#888'],
         ].map(([val,icon,bg,col])=>(
           <button key={val} onClick={e=>{e.stopPropagation();setStatus(id,s===val?null:val);}}
@@ -176,7 +176,7 @@ export default function SelfInspection() {
         </select>
         <button onClick={()=>{save({});setStatuses({});}}
           style={{...mono,background:'transparent',border:'1px solid #3a1a1a',borderRadius:3,
-            padding:'5px 10px',cursor:'pointer',color:'#664444',fontSize:9,marginLeft:'auto'}}>
+            padding:'5px 10px',cursor:'pointer',color:'var(--rr-tint-red)',fontSize:9,marginLeft:'auto'}}>
           RESET QUARTER
         </button>
       </div>
@@ -197,7 +197,7 @@ export default function SelfInspection() {
             {famItems.map(item=>{
               const s = statuses[item.id];
               const rowBg = s==='complete'?'rgba(0,80,30,0.1)':s==='finding'?'rgba(140,40,0,0.1)':s==='na'?'rgba(30,30,30,0.2)':'var(--rr-panel)';
-              const borderCol = s==='complete'?'#004422':s==='finding'?'#662200':s==='na'?'#333':'var(--rr-panel-alt)';
+              const borderCol = s==='complete'?'var(--rr-tint-green)':s==='finding'?'var(--rr-tint-orange)':s==='na'?'#333':'var(--rr-panel-alt)';
               return(
                 <div key={item.id} style={{background:rowBg,border:'1px solid '+borderCol,
                   borderLeft:'3px solid '+(CAT_COLOR[item.cat]||'var(--rr-mute)'),
