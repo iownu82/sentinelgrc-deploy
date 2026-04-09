@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BallardLogo } from './components/BallardLogo';
 import MultiFramework from "./components/MultiFramework.jsx";
 import SelfAssessment from "./components/SelfAssessment.jsx";
@@ -76,6 +76,12 @@ function Dashboard() {
   const [showROB, setShowROB] = useState(!robAccepted);
 
   const t = THEMES[theme];
+
+  // Sync data-theme attribute so CSS vars + body bg stay in sync
+  useEffect(()=>{
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.style.background='';  // let CSS var handle it
+  }, [theme]);
 
   const renderView = () => {
     switch(active) {
