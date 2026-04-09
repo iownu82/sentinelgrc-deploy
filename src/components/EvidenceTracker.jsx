@@ -14,7 +14,7 @@ const EVIDENCE_TYPES = [
   { id:"interview", label:"Interview Notes",        icon:"🗣",  color:"#FF6688", desc:"SCA interview documentation, meeting notes" },
   { id:"test",      label:"Test Result",            icon:"🧪", color:"#FF8C00", desc:"Penetration test results, functional test evidence" },
   { id:"cert",      label:"Certificate/Training",   icon:"🎓", color:"#AA66FF", desc:"Training completion, certifications, sign-offs" },
-  { id:"other",     label:"Other",                  icon:"📄", color:"#7A9AB8", desc:"Miscellaneous supporting documentation" },
+  { id:"other",     label:"Other",                  icon:"📄", color:"var(--rr-text-dim)", desc:"Miscellaneous supporting documentation" },
 ];
 // ── NIST control families for mapping ──────────────────────────────────────
 const CONTROL_FAMILIES = [
@@ -23,7 +23,7 @@ const CONTROL_FAMILIES = [
 ];
 // ── CUI markings ───────────────────────────────────────────────────────────
 const CUI_MARKINGS = [
-  { id:"none",        label:"Not CUI",                color:"#7A9AB8" },
+  { id:"none",        label:"Not CUI",                color:"var(--rr-text-dim)" },
   { id:"cui",         label:"CUI",                    color:"#E8B800" },
   { id:"cui_sp",      label:"CUI//SP-CTI",            color:"#FF8C00" },
   { id:"cui_itar",    label:"CUI//ITAR",              color:"#FF8C00" },
