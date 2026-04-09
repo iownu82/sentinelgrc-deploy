@@ -169,7 +169,7 @@ export default function AdminConsole(){
                       </div>
                       <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:8,
                         fontSize:10,color:'var(--rr-mute)'}}>
-                        <div>SLUG<br/><span style={{color:'#a0b8d0'}}>{org.slug}</span></div>
+                        <div>SLUG<br/><span style={{color:'var(--rr-text-dim)'}}>{org.slug}</span></div>
                         <div>MEMBERS<br/><span style={{color:'#a0b8d0'}}>{org.members}</span></div>
                         <div>CREATED<br/><span style={{color:'#a0b8d0'}}>{org.created}</span></div>
                         <div>ISSM<br/><span style={{color:'#a0b8d0',fontSize:9}}>{org.issm}</span></div>
@@ -244,13 +244,13 @@ export default function AdminConsole(){
           </div>
           <div style={{background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',borderRadius:6,overflow:'hidden'}}>
             <div style={{display:'grid',gridTemplateColumns:'130px 1fr 140px 110px',gap:8,
-              padding:'8px 14px',background:'#0a1a2e',fontSize:9,color:'var(--rr-mute)',
+              padding:'8px 14px',background:'var(--rr-panel-alt)',fontSize:9,color:'var(--rr-mute)',
               letterSpacing:1.5,fontWeight:700}}>
               {['TIMESTAMP','ACTOR / ORG','ACTION','IP'].map((h,i)=><div key={i}>{h}</div>)}
             </div>
             {DEMO_AUDIT.map(row=>(
               <div key={row.id} style={{display:'grid',gridTemplateColumns:'130px 1fr 140px 110px',
-                gap:8,padding:'10px 14px',borderTop:'1px solid #0d1f35',
+                gap:8,padding:'10px 14px',borderTop:'1px solid var(--rr-border)',
                 fontSize:10,alignItems:'center'}}>
                 <div style={{color:'var(--rr-mute)'}}>{row.ts}</div>
                 <div>
