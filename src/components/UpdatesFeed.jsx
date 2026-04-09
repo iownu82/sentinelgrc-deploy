@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { sha256 } from '../auth/crypto.js';
 
 const mono={fontFamily:"'Courier New',monospace"};
-const SEV_C={CRITICAL:'#cc2222',HIGH:'#cc6600',MEDIUM:'#aaaa00',LOW:'#4a7a9b',INFO:'#2a5a7b'};
+const SEV_C={CRITICAL:'#cc2222',HIGH:'#cc6600',MEDIUM:'#aaaa00',LOW:'var(--rr-mute)',INFO:'var(--rr-mute)'};
 const CAT_L={CVE:'CVE',IAVA:'IAVA/IAVB',KEV:'CISA KEV',STIG_UPDATE:'STIG',POLICY:'POLICY',CNSSI:'CNSSI 1253',JSIG:'JSIG'};
 const DEMO=[
   {id:'CVE-2026-1234',source:'NIST NVD',cat:'CVE',sev:'CRITICAL',cvss:9.8,date:'2026-04-05',transferred:false,
@@ -73,11 +73,11 @@ export default function UpdatesFeed(){
   const FILTERS=['ALL','PENDING','CRITICAL','HIGH','CVE','IAVA','KEV','STIG_UPDATE','POLICY','CNSSI','JSIG'];
 
   return(
-    <div style={{padding:24,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:24,...mono,color:'var(--rr-text)'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:18}}>
         <div>
-          <div style={{fontSize:16,fontWeight:900,color:'#e0e8f0',letterSpacing:2}}>🔄 SECURITY UPDATES</div>
-          <div style={{fontSize:10,color:'#4a7a9b',marginTop:3}}>
+          <div style={{fontSize:16,fontWeight:900,color:'var(--rr-white)',letterSpacing:2}}>🔄 SECURITY UPDATES</div>
+          <div style={{fontSize:10,color:'var(--rr-mute)',marginTop:3}}>
             Sources: NIST NVD · CISA KEV · DISA STIG/IAVA · CMMC AB · DoD CIO · CNSSI 1253 · JSIG · Last polled: 2026-04-06 08:00 UTC
           </div>
         </div>
@@ -99,14 +99,14 @@ export default function UpdatesFeed(){
             <div style={{fontSize:13,fontWeight:700,color:'#00cc66',marginBottom:6}}>
               💿 PACKAGE READY — {pkg.manifest.version}
             </div>
-            <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+            <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
               {pkg.manifest.count} items · {pkg.manifest.critical} critical ·
               SHA-256: <span style={{color:'#00aa44'}}>{pkg.hash.slice(0,24)}...</span><br/>
               Burn to DVD · Verify hash on classified side before import
             </div>
           </div>
           <button onClick={()=>setPkg(null)} style={{...mono,fontSize:10,background:'transparent',
-            border:'1px solid #1e3a5f',color:'#4a7a9b',borderRadius:4,padding:'4px 10px',cursor:'pointer'}}>
+            border:'1px solid #1e3a5f',color:'var(--rr-mute)',borderRadius:4,padding:'4px 10px',cursor:'pointer'}}>
             DISMISS
           </button>
         </div>
@@ -116,8 +116,8 @@ export default function UpdatesFeed(){
         {FILTERS.map(f=>(
           <button key={f} onClick={()=>setFilter(f)} style={{...mono,fontSize:9,fontWeight:700,
             background:filter===f?'#0d2a4a':'transparent',
-            border:'1px solid '+(filter===f?'#0066cc':'#1e3a5f'),
-            color:filter===f?'#4a9fd4':'#2a5a7b',borderRadius:4,padding:'4px 10px',cursor:'pointer'}}>
+            border:'1px solid '+(filter===f?'#0066cc':'var(--rr-border-md)'),
+            color:filter===f?'#4a9fd4':'var(--rr-mute)',borderRadius:4,padding:'4px 10px',cursor:'pointer'}}>
             {f.replace('_',' ')}
           </button>
         ))}
@@ -126,7 +126,7 @@ export default function UpdatesFeed(){
       <div style={{display:'flex',gap:8,marginBottom:16,alignItems:'center',
         paddingBottom:12,borderBottom:'1px solid #1e3a5f'}}>
         <button onClick={selAll} style={{...mono,fontSize:10,fontWeight:700,background:'transparent',
-          border:'1px solid #1e3a5f',color:'#4a7a9b',borderRadius:4,padding:'6px 12px',cursor:'pointer'}}>
+          border:'1px solid #1e3a5f',color:'var(--rr-mute)',borderRadius:4,padding:'6px 12px',cursor:'pointer'}}>
           SELECT ALL PENDING ({shown.filter(u=>!u.transferred).length})
         </button>
         <button onClick={selCrit} style={{...mono,fontSize:10,fontWeight:700,
@@ -135,20 +135,20 @@ export default function UpdatesFeed(){
           CRITICAL ONLY
         </button>
         <div style={{flex:1}}/>
-        <span style={{fontSize:10,color:'#4a7a9b'}}>{sel.size} selected</span>
+        <span style={{fontSize:10,color:'var(--rr-mute)'}}>{sel.size} selected</span>
         <button onClick={genISO} disabled={!sel.size||busy}
           style={{...mono,fontSize:10,fontWeight:700,
-            background:sel.size?'#003366':'#0a1520',
-            border:'1px solid '+(sel.size?'#0055aa':'#1e3a5f'),
-            color:sel.size?'#4a9fd4':'#2a5a7b',
+            background:sel.size?'#003366':'var(--rr-panel-alt)',
+            border:'1px solid '+(sel.size?'#0055aa':'var(--rr-border-md)'),
+            color:sel.size?'#4a9fd4':'var(--rr-mute)',
             borderRadius:4,padding:'7px 14px',cursor:sel.size?'pointer':'not-allowed'}}>
           {busy?'⏳ GENERATING…':'💿 GENERATE DVD ISO'}
         </button>
         <button onClick={()=>alert('DoD SAFE requires AO approval. Submit transfer request.')}
           disabled={!sel.size} style={{...mono,fontSize:10,fontWeight:700,
-            background:sel.size?'#002244':'#0a1520',
-            border:'1px solid '+(sel.size?'#004488':'#1e3a5f'),
-            color:sel.size?'#4a8ab0':'#2a5a7b',
+            background:sel.size?'#002244':'var(--rr-panel-alt)',
+            border:'1px solid '+(sel.size?'#004488':'var(--rr-border-md)'),
+            color:sel.size?'#4a8ab0':'var(--rr-mute)',
             borderRadius:4,padding:'7px 14px',cursor:sel.size?'pointer':'not-allowed'}}>
           📁 DoD SAFE
         </button>
@@ -157,14 +157,14 @@ export default function UpdatesFeed(){
       <div style={{display:'grid',gap:8}}>
         {shown.map(u=>(
           <div key={u.id} onClick={()=>!u.transferred&&toggle(u.id)}
-            style={{background:sel.has(u.id)?'#0d2a4a':'#061224',
-              border:'1px solid '+(sel.has(u.id)?'#0066cc':u.transferred?'#0d2a1a':'#1e3a5f'),
+            style={{background:sel.has(u.id)?'#0d2a4a':'var(--rr-panel)',
+              border:'1px solid '+(sel.has(u.id)?'#0066cc':u.transferred?'#0d2a1a':'var(--rr-border-md)'),
               borderRadius:6,padding:14,cursor:u.transferred?'default':'pointer',opacity:u.transferred?0.6:1}}>
             <div style={{display:'flex',alignItems:'flex-start',gap:12}}>
               <div style={{width:18,flexShrink:0,marginTop:2}}>
                 {u.transferred
                   ?<span style={{color:'#00aa44',fontSize:14}}>✓</span>
-                  :<div style={{width:16,height:16,border:'2px solid '+(sel.has(u.id)?'#0066cc':'#2a5a7b'),
+                  :<div style={{width:16,height:16,border:'2px solid '+(sel.has(u.id)?'#0066cc':'var(--rr-mute)'),
                     borderRadius:3,background:sel.has(u.id)?'#0066cc':'transparent',
                     display:'flex',alignItems:'center',justifyContent:'center'}}>
                     {sel.has(u.id)&&<span style={{color:'#fff',fontSize:11}}>✓</span>}
@@ -174,12 +174,12 @@ export default function UpdatesFeed(){
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:5,flexWrap:'wrap'}}>
                   <Chip label={u.sev} color={SEV_C[u.sev]||'#888'}/>
                   <Chip label={CAT_L[u.cat]||u.cat} color='#4a8ab0'/>
-                  <span style={{fontSize:9,color:'#4a7a9b'}}>{u.source}</span>
-                  <span style={{fontSize:9,color:'#2a4a6b'}}>· {u.date}</span>
+                  <span style={{fontSize:9,color:'var(--rr-mute)'}}>{u.source}</span>
+                  <span style={{fontSize:9,color:'var(--rr-mute)'}}>· {u.date}</span>
                   {u.cvss&&<span style={{fontSize:9,color:'#ffaa44'}}>CVSS {u.cvss}</span>}
                   {u.transferred&&<span style={{fontSize:9,color:'#00aa44'}}>✓ TRANSFERRED</span>}
                 </div>
-                <div style={{fontSize:12,fontWeight:700,color:'#e0e8f0',marginBottom:4}}>{u.title}</div>
+                <div style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',marginBottom:4}}>{u.title}</div>
                 <div style={{fontSize:10,color:'#6a8aaa',lineHeight:1.7}}>{u.desc}</div>
               </div>
             </div>
