@@ -3,7 +3,7 @@ import { loadSprsAssessment, saveSprsAssessment } from "../supabase.js";
 import { useAuth } from "./Auth.jsx";
 import { useColors, useTheme } from "../theme.js";
 
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:"var(--rr-bg)", panel:"var(--rr-panel)", panelAlt:"var(--rr-panel-alt)", panel2:"var(--rr-panel-alt)", border:"var(--rr-border)", borderMd:"var(--rr-border-md)", text:"var(--rr-text)", textDim:"var(--rr-text-dim)", dim:"var(--rr-text-dim)", textMute:"var(--rr-mute)", mute:"var(--rr-mute)", white:"var(--rr-white)", input:"var(--rr-input)", inputBorder:"var(--rr-input-bdr)", rowA:"var(--rr-row-a)", rowB:"var(--rr-row-b)", scroll:"var(--rr-scroll)", headerBg:"var(--rr-header)", teal:"var(--rr-teal)", blue:"var(--rr-blue)", red:"var(--rr-red)", orange:"var(--rr-orange)", gold:"var(--rr-gold)", green:"var(--rr-green)", purple:"var(--rr-purple)" };
 
 // ── NIST SP 800-171 Rev 2 — 110 practices with SPRS point values ──────────
 // DoD Assessment Methodology v1.2.1 — total = 110 practices, max deduction = 203 points
@@ -212,7 +212,6 @@ const CSRMC_TENETS = [
   { id:10, name:"Threat-Informed Assessments",    desc:"Validate security through active testing against realistic adversary techniques",aligned:true, impl:"Network Scanner STIG checks + pentest finding integration in POAM",        phase:"Phase 3: Test" },
 ];
 export default function SPRSCalculator() {
-  const C = useColors();
   const theme = useTheme();
   const mono = { fontFamily:"'Courier New',monospace" };
   // Each practice status
