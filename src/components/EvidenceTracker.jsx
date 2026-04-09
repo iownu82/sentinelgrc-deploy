@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo } from "react";
 import { useColors, useTheme } from "../theme.js";
 
-const C = { bg:"#03080E", panel:"#060D16", panelAlt:"#08111C", panel2:"#08111C", border:"#0D1E2E", borderMd:"#152840", text:"#C8D8E8", textDim:"#7A9AB8", dim:"#7A9AB8", textMute:"#3A5570", mute:"#3A5570", white:"#F0F8FF", input:"#040C16", inputBorder:"#1A3A5C", rowA:"#050C14", rowB:"#040A12", scroll:"#1A3A5C", headerBg:"#02060C", teal:"#00D4AA", blue:"#1A7AFF", red:"#FF4444", orange:"#FF8C00", gold:"#FFD700", green:"#00CC88", purple:"#AA66FF" };
+const C = { bg:"var(--rr-bg)", panel:"var(--rr-panel)", panelAlt:"var(--rr-panel-alt)", panel2:"var(--rr-panel-alt)", border:"var(--rr-border)", borderMd:"var(--rr-border-md)", text:"var(--rr-text)", textDim:"var(--rr-text-dim)", dim:"var(--rr-text-dim)", textMute:"var(--rr-mute)", mute:"var(--rr-mute)", white:"var(--rr-white)", input:"var(--rr-input)", inputBorder:"var(--rr-input-bdr)", rowA:"var(--rr-row-a)", rowB:"var(--rr-row-b)", scroll:"var(--rr-scroll)", headerBg:"var(--rr-header)", teal:"var(--rr-teal)", blue:"var(--rr-blue)", red:"var(--rr-red)", orange:"var(--rr-orange)", gold:"var(--rr-gold)", green:"var(--rr-green)", purple:"var(--rr-purple)" };
 
 // ── Evidence types ─────────────────────────────────────────────────────────
 const EVIDENCE_TYPES = [
@@ -69,7 +69,6 @@ const MOCK_EVIDENCE = [
 const ROLES = ["ISSO","SA","NA","ISSM","SCA","PM"];
 // ── Sub-components ─────────────────────────────────────────────────────────
 function StatusBadge({ status, color }) {
-  const C = useColors();
   return (
     <span style={{ fontFamily:"monospace", fontSize:11, fontWeight:700, color, background:`${color}18`, border:`1px solid ${color}40`, borderRadius:3, padding:"2px 7px", whiteSpace:"nowrap" }}>
       {status}
@@ -77,7 +76,6 @@ function StatusBadge({ status, color }) {
   );
 }
 function TypeBadge({ type }) {
-  const C = useColors();
   const t = EVIDENCE_TYPES.find(e => e.id === type) || EVIDENCE_TYPES[EVIDENCE_TYPES.length-1];
   return (
     <span style={{ display:"inline-flex", alignItems:"center", gap:4, fontFamily:"monospace", fontSize:11, fontWeight:600, color:t.color, background:`${t.color}14`, border:`1px solid ${t.color}30`, borderRadius:3, padding:"2px 7px", whiteSpace:"nowrap" }}>
@@ -345,7 +343,6 @@ function EvidenceDetail({ ev, onClose, C }) {
 }
 // ── Main component ─────────────────────────────────────────────────────────
 export default function EvidenceTracker() {
-  const C = useColors();
   const theme = useTheme();
   const mono = { fontFamily:"'Courier New',monospace" };
   const [evidence, setEvidence] = useState(MOCK_EVIDENCE);
