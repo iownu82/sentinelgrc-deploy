@@ -43,7 +43,7 @@ const CHECKLIST = [
 ];
 
 const CAT_COLOR = {'CAT I':'#cc2222','CAT II':'#cc7700','CAT III':'#aaaa00'};
-const FAM_COLOR = {AC:'#0055cc',AU:'#cc8800',CM:'#00aa66',IA:'#cc2222',SC:'#7700cc',SI:'#cc4400',AT:'#4a7a9b',MA:'#2a7a9b'};
+const FAM_COLOR = {AC:'#0055cc',AU:'#cc8800',CM:'#00aa66',IA:'#cc2222',SC:'#7700cc',SI:'#cc4400',AT:'var(--rr-mute)',MA:'#2a7a9b'};
 
 function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)||'{}'); } catch { return {}; } }
 function save(d) { try { localStorage.setItem(STORE_KEY,JSON.stringify(d)); } catch {} }
@@ -105,9 +105,9 @@ export default function SelfInspection() {
         ].map(([val,icon,bg,col])=>(
           <button key={val} onClick={e=>{e.stopPropagation();setStatus(id,s===val?null:val);}}
             style={{...mono,background:s===val?bg:'transparent',
-              border:'1px solid '+(s===val?col:'#1e3a5f'),
+              border:'1px solid '+(s===val?col:'var(--rr-border-md)'),
               borderRadius:3,padding:'3px 8px',cursor:'pointer',
-              color:s===val?col:'#2a4a6b',fontSize:10,transition:'all 0.15s'}}>
+              color:s===val?col:'var(--rr-mute)',fontSize:10,transition:'all 0.15s'}}>
             {icon}
           </button>
         ))}
@@ -116,37 +116,37 @@ export default function SelfInspection() {
   };
 
   return(
-    <div style={{padding:'20px 24px',maxWidth:880,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:'20px 24px',maxWidth:880,...mono,color:'var(--rr-text)'}}>
       {/* Header */}
       <div style={{marginBottom:14}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:2}}>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:2}}>
           🔎 SELF-INSPECTION CHECKLIST
         </div>
-        <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           Quarterly inspection · NIST 800-53 controls · All actions audit-logged<br/>
           {isLimited?'Showing your assigned items only':'Full inspection — all control families'}
-          {' · Quarter: '}<span style={{color:'#a0c8e8',fontWeight:700}}>{quarter}</span>
+          {' · Quarter: '}<span style={{color:'var(--rr-text-dim)',fontWeight:700}}>{quarter}</span>
         </div>
       </div>
 
       {/* Progress */}
       <div style={{marginBottom:16}}>
-        <div style={{display:'flex',justifyContent:'space-between',marginBottom:6,fontSize:10,color:'#4a7a9b'}}>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:6,fontSize:10,color:'var(--rr-mute)'}}>
           <span>INSPECTION PROGRESS — {pct}% complete</span>
           <span>{counts.complete+counts.na} / {counts.total} items</span>
         </div>
-        <div style={{height:8,background:'#0a1520',borderRadius:4}}>
+        <div style={{height:8,background:'var(--rr-panel-alt)',borderRadius:4}}>
           <div style={{width:pct+'%',height:'100%',
             background:pct===100?'#00aa44':pct>50?'#0055cc':'#cc7700',
             borderRadius:4,transition:'width 0.4s'}}/>
         </div>
         <div style={{display:'flex',gap:8,marginTop:10,flexWrap:'wrap'}}>
           {[['Complete',counts.complete,'#00aa44'],['Finding',counts.finding,'#cc4400'],
-            ['N/A',counts.na,'#555'],['Open',counts.open,'#4a7a9b']].map(([l,v,c])=>(
-            <div key={l} style={{background:'#061224',border:'1px solid #0d2040',borderRadius:4,
+            ['N/A',counts.na,'#555'],['Open',counts.open,'var(--rr-mute)']].map(([l,v,c])=>(
+            <div key={l} style={{background:'var(--rr-panel)',border:'1px solid #0d2040',borderRadius:4,
               padding:'5px 12px',textAlign:'center'}}>
               <span style={{fontSize:16,fontWeight:700,color:c,...mono}}>{v}</span>
-              <span style={{fontSize:9,color:'#4a7a9b',marginLeft:6}}>{l}</span>
+              <span style={{fontSize:9,color:'var(--rr-mute)',marginLeft:6}}>{l}</span>
             </div>
           ))}
         </div>
@@ -155,19 +155,19 @@ export default function SelfInspection() {
       {/* Filters */}
       <div style={{display:'flex',gap:6,marginBottom:12,flexWrap:'wrap',alignItems:'center'}}>
         <select value={filterFam} onChange={e=>setFilterFam(e.target.value)}
-          style={{...mono,background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 8px',color:'#c0d8f0',fontSize:11}}>
+          style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 8px',color:'var(--rr-text)',fontSize:11}}>
           <option value='all'>All families</option>
           {families.map(f=><option key={f} value={f}>{f}</option>)}
         </select>
         <select value={filterCat} onChange={e=>setFilterCat(e.target.value)}
-          style={{...mono,background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 8px',color:'#c0d8f0',fontSize:11}}>
+          style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 8px',color:'var(--rr-text)',fontSize:11}}>
           <option value='all'>All CAT</option>
           <option value='CAT I'>CAT I</option>
           <option value='CAT II'>CAT II</option>
           <option value='CAT III'>CAT III</option>
         </select>
         <select value={filterStat} onChange={e=>setFilterStat(e.target.value)}
-          style={{...mono,background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 8px',color:'#c0d8f0',fontSize:11}}>
+          style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 8px',color:'var(--rr-text)',fontSize:11}}>
           <option value='all'>All statuses</option>
           <option value='open'>Open</option>
           <option value='complete'>Complete</option>
@@ -187,7 +187,7 @@ export default function SelfInspection() {
         if(famItems.length===0) return null;
         return(
           <div key={fam} style={{marginBottom:16}}>
-            <div style={{fontSize:11,fontWeight:700,color:FAM_COLOR[fam]||'#4a7a9b',
+            <div style={{fontSize:11,fontWeight:700,color:FAM_COLOR[fam]||'var(--rr-mute)',
               letterSpacing:2,marginBottom:8,paddingBottom:4,
               borderBottom:'1px solid #0d2040'}}>
               {fam} — {{'AC':'ACCESS CONTROL','AU':'AUDIT & ACCOUNTABILITY','CM':'CONFIGURATION MGMT',
@@ -196,16 +196,16 @@ export default function SelfInspection() {
             </div>
             {famItems.map(item=>{
               const s = statuses[item.id];
-              const rowBg = s==='complete'?'rgba(0,80,30,0.1)':s==='finding'?'rgba(140,40,0,0.1)':s==='na'?'rgba(30,30,30,0.2)':'#061224';
-              const borderCol = s==='complete'?'#004422':s==='finding'?'#662200':s==='na'?'#333':'#0d2040';
+              const rowBg = s==='complete'?'rgba(0,80,30,0.1)':s==='finding'?'rgba(140,40,0,0.1)':s==='na'?'rgba(30,30,30,0.2)':'var(--rr-panel)';
+              const borderCol = s==='complete'?'#004422':s==='finding'?'#662200':s==='na'?'#333':'var(--rr-panel-alt)';
               return(
                 <div key={item.id} style={{background:rowBg,border:'1px solid '+borderCol,
-                  borderLeft:'3px solid '+(CAT_COLOR[item.cat]||'#4a7a9b'),
+                  borderLeft:'3px solid '+(CAT_COLOR[item.cat]||'var(--rr-mute)'),
                   borderRadius:5,padding:'10px 14px',marginBottom:6}}>
                   <div style={{display:'flex',alignItems:'flex-start',gap:10}}>
                     <div style={{flex:1}}>
                       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3,flexWrap:'wrap'}}>
-                        <span style={{fontSize:9,fontWeight:700,color:'#4a7a9b',
+                        <span style={{fontSize:9,fontWeight:700,color:'var(--rr-mute)',
                           border:'1px solid #1e3a5f',borderRadius:2,padding:'1px 6px'}}>
                           {item.control}
                         </span>
@@ -213,7 +213,7 @@ export default function SelfInspection() {
                           border:'1px solid '+(CAT_COLOR[item.cat]||'')+'44',borderRadius:2,padding:'1px 6px'}}>
                           {item.cat}
                         </span>
-                        <span style={{fontSize:12,fontWeight:700,color:'#d0e8f8'}}>{item.title}</span>
+                        <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)'}}>{item.title}</span>
                         {s&&(
                           <span style={{fontSize:9,marginLeft:'auto',
                             color:s==='complete'?'#00aa44':s==='finding'?'#ff8800':'#555',
@@ -222,7 +222,7 @@ export default function SelfInspection() {
                           </span>
                         )}
                       </div>
-                      <div style={{fontSize:11,color:'#7a9ab8',lineHeight:1.7}}>{item.desc}</div>
+                      <div style={{fontSize:11,color:'var(--rr-text-dim)',lineHeight:1.7}}>{item.desc}</div>
                     </div>
                     {STATUS_BTN(item.id)}
                   </div>
@@ -234,12 +234,12 @@ export default function SelfInspection() {
       })}
 
       {filtered.length===0&&(
-        <div style={{textAlign:'center',padding:30,color:'#2a4a6b',fontSize:12}}>
+        <div style={{textAlign:'center',padding:30,color:'var(--rr-mute)',fontSize:12}}>
           No items match your filter
         </div>
       )}
 
-      <div style={{marginTop:14,fontSize:10,color:'#2a4a6b',lineHeight:1.8,
+      <div style={{marginTop:14,fontSize:10,color:'var(--rr-mute)',lineHeight:1.8,
         background:'rgba(0,0,0,0.2)',border:'1px solid #0d2040',borderRadius:4,padding:'8px 14px'}}>
         Quarterly inspection · All status changes audit-logged (AU-2) ·
         System Admins see only their assigned items · ISSM/ISSO see full checklist ·
