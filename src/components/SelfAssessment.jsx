@@ -106,7 +106,7 @@ const IMPL_STATUS = {
   "Not Applicable":    { label:"Not Applicable",        color:"#778899", bg:"rgba(119,136,153,0.10)",score:1.0  },
   Inherited:           { label:"Inherited",             color:"#1A7AFF", bg:"rgba(26,122,255,0.10)", score:1.0  },
   Planned:             { label:"Planned",               color:"#FF8C00", bg:"rgba(255,140,0,0.10)",  score:0.0  },
-  "Not Assessed":      { label:"Not Assessed",          color:"#3A5570", bg:"rgba(58,85,112,0.10)",  score:0.0  },
+  "Not Assessed":      { label:"Not Assessed",          color:"var(--rr-mute)", bg:"rgba(58,85,112,0.10)",  score:0.0  },
 };
 const CAT_COLOR = { "I":"#FF4444", "II":"#FF8C00", "III":"#FFD700" };
 // Statement templates
@@ -171,11 +171,11 @@ const FamilyProgress = ({ family, assessments, isSelected, onClick }) => {
         </div>
         <span style={{ ...mono, fontSize:11, fontWeight:700, color }}>{pct}%</span>
       </div>
-      <div style={{ fontSize:10, color:"#7A9AB8", marginBottom:6, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{family.name}</div>
+      <div style={{ fontSize:10, color:"var(--rr-text-dim)", marginBottom:6, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{family.name}</div>
       <div style={{ height:4, background:C.input, borderRadius:2, overflow:"hidden" }}>
         <div style={{ width:`${pct}%`, height:"100%", background:color, borderRadius:2, transition:"width 0.6s ease" }} />
       </div>
-      <div style={{ ...mono, fontSize:10, color:"#3A5570", marginTop:4 }}>{assessed.length}/{controls.length} assessed · {implemented.length} compliant</div>
+      <div style={{ ...mono, fontSize:10, color:"var(--rr-mute)", marginTop:4 }}>{assessed.length}/{controls.length} assessed · {implemented.length} compliant</div>
     </div>
   );
 };
