@@ -98,12 +98,12 @@ export default function ITRSubmission() {
   };
 
   return(
-    <div style={{padding:'20px 24px',maxWidth:880,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:'20px 24px',maxWidth:880,...mono,color:'var(--rr-text)'}}>
       <div style={{marginBottom:14}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:2}}>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:2}}>
           📋 IT REQUEST (ITR) — SUBMISSION
         </div>
-        <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           Submit hardware or software requests for ISSO/ISSM review · All submissions audit-logged<br/>
           {isISSM?'ISSM/ISSO view — can review and update status':'System Admin view — submit and track your requests'}
         </div>
@@ -112,15 +112,15 @@ export default function ITRSubmission() {
       {/* Stats */}
       <div style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap'}}>
         {[
-          ['Total',submissions.length,'#4a7a9b'],
+          ['Total',submissions.length,'var(--rr-mute)'],
           ['Pending',submissions.filter(s=>s.stage==='Submitted'||s.stage==='Under Review').length,'#cc7700'],
           ['Approved',submissions.filter(s=>s.stage==='ISSM Approved — Signed').length,'#00aa44'],
           ['Rejected',submissions.filter(s=>s.stage==='Rejected').length,'#cc2222'],
         ].map(([l,v,c])=>(
-          <div key={l} style={{background:'#061224',border:'1px solid #0d2040',borderRadius:5,
+          <div key={l} style={{background:'var(--rr-panel)',border:'1px solid #0d2040',borderRadius:5,
             padding:'8px 14px',textAlign:'center',minWidth:80}}>
             <div style={{fontSize:20,fontWeight:700,color:c,...mono}}>{v}</div>
-            <div style={{fontSize:9,color:'#4a7a9b'}}>{l}</div>
+            <div style={{fontSize:9,color:'var(--rr-mute)'}}>{l}</div>
           </div>
         ))}
         {saved&&(
@@ -135,9 +135,9 @@ export default function ITRSubmission() {
       <div style={{display:'flex',gap:2,borderBottom:'1px solid #1e3a5f',marginBottom:14}}>
         {[['all','All ITRs'],['mine','My Submissions'],['pending','Pending Review'],['approved','Approved']].map(([id,lbl])=>(
           <button key={id} onClick={()=>setActiveTab(id)}
-            style={{...mono,background:activeTab===id?'#0d2040':'transparent',
+            style={{...mono,background:activeTab===id?'var(--rr-panel-alt)':'transparent',
               border:'none',borderBottom:activeTab===id?'2px solid #4a9fd4':'2px solid transparent',
-              padding:'6px 12px',cursor:'pointer',color:activeTab===id?'#e0e8f0':'#4a7a9b',
+              padding:'6px 12px',cursor:'pointer',color:activeTab===id?'var(--rr-white)':'var(--rr-mute)',
               fontSize:10,fontWeight:activeTab===id?700:400}}>
             {lbl}
           </button>
@@ -152,8 +152,8 @@ export default function ITRSubmission() {
 
       {/* Submission form */}
       {showForm&&(
-        <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',borderRadius:6,padding:20,marginBottom:16}}>
-          <div style={{fontSize:13,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:14}}>
+        <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,padding:20,marginBottom:16}}>
+          <div style={{fontSize:13,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:14}}>
             NEW IT REQUEST
           </div>
           {errors.length>0&&(
@@ -170,61 +170,61 @@ export default function ITRSubmission() {
               ['TYPE','type',null],
             ].map(([label,key,ph])=>(
               <div key={key} style={{marginBottom:12}}>
-                <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+                <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
                   {label}
                 </label>
                 {key==='type'?(
                   <select value={form[key]} onChange={e=>setF(key,e.target.value)}
-                    style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                      borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box'}}>
+                    style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                      borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box'}}>
                     {['Software','Hardware','Firmware','Service'].map(o=><option key={o}>{o}</option>)}
                   </select>
                 ):(
                   <input value={form[key]} onChange={e=>setF(key,e.target.value)} placeholder={ph}
-                    style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                      borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                    style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                      borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                       boxSizing:'border-box',outline:'none'}}/>
                 )}
               </div>
             ))}
             <div style={{gridColumn:'1/-1',marginBottom:12}}>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
                 BUSINESS JUSTIFICATION *
               </label>
               <textarea value={form.justification} onChange={e=>setF('justification',e.target.value)}
                 rows={3} placeholder='Why is this hardware/software needed? What problem does it solve?'
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                   boxSizing:'border-box',outline:'none',resize:'vertical'}}/>
             </div>
             <div style={{gridColumn:'1/-1',marginBottom:12}}>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
                 BUSINESS NEED / USE CASE *
               </label>
               <textarea value={form.businessNeed} onChange={e=>setF('businessNeed',e.target.value)}
                 rows={2} placeholder='Specific business need this resource fulfills'
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                   boxSizing:'border-box',outline:'none',resize:'vertical'}}/>
             </div>
             <div style={{marginBottom:12}}>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
                 ALREADY IN ENVIRONMENT?
               </label>
               <select value={form.inEnv} onChange={e=>setF('inEnv',e.target.value)}
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box'}}>
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box'}}>
                 {['No','Yes','Partial'].map(o=><option key={o}>{o}</option>)}
               </select>
             </div>
             <div style={{marginBottom:12}}>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
                 REQUIRED DRIVERS / DEPENDENCIES
               </label>
               <input value={form.drivers} onChange={e=>setF('drivers',e.target.value)}
                 placeholder='e.g. Java 17, .NET 6.0'
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                   boxSizing:'border-box',outline:'none'}}/>
             </div>
           </div>
@@ -236,11 +236,11 @@ export default function ITRSubmission() {
             </button>
             <button onClick={()=>{setShowForm(false);setErrors([]);}}
               style={{...mono,background:'transparent',border:'1px solid #1e3a5f',borderRadius:4,
-                padding:'9px 16px',cursor:'pointer',color:'#4a7a9b',fontSize:12}}>
+                padding:'9px 16px',cursor:'pointer',color:'var(--rr-mute)',fontSize:12}}>
               CANCEL
             </button>
           </div>
-          <div style={{fontSize:9,color:'#2a4a6b',marginTop:8}}>
+          <div style={{fontSize:9,color:'var(--rr-mute)',marginTop:8}}>
             Submitted ITRs go to ISSO for SIA review, then SCA recommendation, then ISSM signature
           </div>
         </div>
@@ -248,30 +248,30 @@ export default function ITRSubmission() {
 
       {/* ITR list */}
       {filtered.length===0&&(
-        <div style={{textAlign:'center',padding:30,color:'#2a4a6b',fontSize:12}}>
+        <div style={{textAlign:'center',padding:30,color:'var(--rr-mute)',fontSize:12}}>
           {submissions.length===0?'No ITRs submitted yet — click "+ SUBMIT ITR" to create your first request':'No ITRs match this filter'}
         </div>
       )}
       {filtered.map(itr=>{
         const isOpen=expanded===itr.id;
-        const sc = STATUS_COLOR[itr.stage]||'#4a7a9b';
+        const sc = STATUS_COLOR[itr.stage]||'var(--rr-mute)';
         return(
           <div key={itr.id}
-            style={{background:'#061224',border:'1px solid '+(isOpen?'#1e3a8f':'#0d2040'),
+            style={{background:'var(--rr-panel)',border:'1px solid '+(isOpen?'#1e3a8f':'var(--rr-panel-alt)'),
               borderLeft:'4px solid '+sc,borderRadius:6,marginBottom:8}}>
             <div onClick={()=>setExpanded(isOpen?null:itr.id)}
               style={{padding:'12px 16px',cursor:'pointer',display:'flex',alignItems:'center',gap:10,flexWrap:'wrap'}}>
               <span style={{...mono,fontSize:10,color:'#4a9fd4',fontWeight:700,flexShrink:0}}>{itr.itrNumber}</span>
-              <span style={{fontSize:12,fontWeight:700,color:'#d0e8f8',flex:1}}>{itr.title}</span>
+              <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',flex:1}}>{itr.title}</span>
               <span style={{fontSize:9,color:itr.type==='Hardware'?'#4a9fd4':'#9a6aff',
                 border:'1px solid '+(itr.type==='Hardware'?'#4a9fd4':'#9a6aff')+'44',
                 borderRadius:2,padding:'1px 6px'}}>{itr.type}</span>
               <span style={{fontSize:9,fontWeight:700,color:sc,
                 border:'1px solid '+sc+'44',borderRadius:2,padding:'2px 8px',whiteSpace:'nowrap'}}>{itr.stage}</span>
-              <span style={{fontSize:10,color:'#2a4a6b',flexShrink:0}}>{isOpen?'▲':'▼'}</span>
+              <span style={{fontSize:10,color:'var(--rr-mute)',flexShrink:0}}>{isOpen?'▲':'▼'}</span>
             </div>
-            <div style={{paddingLeft:16,paddingBottom:8,fontSize:10,color:'#4a7a9b'}}>
-              Vendor: <span style={{color:'#7a9ab8'}}>{itr.vendor}</span>
+            <div style={{paddingLeft:16,paddingBottom:8,fontSize:10,color:'var(--rr-mute)'}}>
+              Vendor: <span style={{color:'var(--rr-text-dim)'}}>{itr.vendor}</span>
               {itr.version&&' · v'+itr.version}
               {' · Submitted by '+itr.submittedBy}
               {' · '+new Date(itr.submittedAt).toLocaleDateString()}
@@ -279,22 +279,22 @@ export default function ITRSubmission() {
             {isOpen&&(
               <div style={{borderTop:'1px solid #0d2040',padding:'14px 16px'}}>
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px 20px',marginBottom:12,fontSize:11}}>
-                  <div><span style={{color:'#4a7a9b'}}>Already in env: </span><span style={{color:'#a0c8e8'}}>{itr.inEnv}</span></div>
-                  {itr.drivers&&<div><span style={{color:'#4a7a9b'}}>Dependencies: </span><span style={{color:'#a0c8e8'}}>{itr.drivers}</span></div>}
-                  <div style={{gridColumn:'1/-1'}}><span style={{color:'#4a7a9b'}}>Justification: </span><span style={{color:'#9ab0c8'}}>{itr.justification}</span></div>
-                  <div style={{gridColumn:'1/-1'}}><span style={{color:'#4a7a9b'}}>Business need: </span><span style={{color:'#9ab0c8'}}>{itr.businessNeed}</span></div>
-                  {itr.issoNotes&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>ISSO notes: </span><span style={{color:'#a0c8e8'}}>{itr.issoNotes}</span></div>}
+                  <div><span style={{color:'var(--rr-mute)'}}>Already in env: </span><span style={{color:'var(--rr-text-dim)'}}>{itr.inEnv}</span></div>
+                  {itr.drivers&&<div><span style={{color:'var(--rr-mute)'}}>Dependencies: </span><span style={{color:'var(--rr-text-dim)'}}>{itr.drivers}</span></div>}
+                  <div style={{gridColumn:'1/-1'}}><span style={{color:'var(--rr-mute)'}}>Justification: </span><span style={{color:'var(--rr-text-dim)'}}>{itr.justification}</span></div>
+                  <div style={{gridColumn:'1/-1'}}><span style={{color:'var(--rr-mute)'}}>Business need: </span><span style={{color:'var(--rr-text-dim)'}}>{itr.businessNeed}</span></div>
+                  {itr.issoNotes&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>ISSO notes: </span><span style={{color:'var(--rr-text-dim)'}}>{itr.issoNotes}</span></div>}
                 </div>
                 {isISSM&&(
                   <div>
-                    <div style={{fontSize:10,color:'#4a7a9b',letterSpacing:1,marginBottom:8,fontWeight:700}}>ISSM/ISSO REVIEW ACTIONS</div>
+                    <div style={{fontSize:10,color:'var(--rr-mute)',letterSpacing:1,marginBottom:8,fontWeight:700}}>ISSM/ISSO REVIEW ACTIONS</div>
                     <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
                       {['Under Review','SCA Approved','ISSM Approved — Signed','Rejected'].map(stage=>(
                         <button key={stage} onClick={()=>updateStage(itr.id,stage,'')}
                           style={{...mono,background:itr.stage===stage?'#1a3a1a':'transparent',
-                            border:'1px solid '+(STATUS_COLOR[stage]||'#1e3a5f')+'88',
+                            border:'1px solid '+(STATUS_COLOR[stage]||'var(--rr-border-md)')+'88',
                             borderRadius:3,padding:'4px 10px',cursor:'pointer',
-                            color:STATUS_COLOR[stage]||'#4a7a9b',fontSize:9,fontWeight:700}}>
+                            color:STATUS_COLOR[stage]||'var(--rr-mute)',fontSize:9,fontWeight:700}}>
                           {stage}
                         </button>
                       ))}
@@ -307,7 +307,7 @@ export default function ITRSubmission() {
         );
       })}
 
-      <div style={{marginTop:14,fontSize:10,color:'#2a4a6b',lineHeight:1.8,
+      <div style={{marginTop:14,fontSize:10,color:'var(--rr-mute)',lineHeight:1.8,
         background:'rgba(0,0,0,0.2)',border:'1px solid #0d2040',borderRadius:4,padding:'8px 14px'}}>
         ITR naming: ITR - [Product] ([Version]) · All submissions audit-logged · ISSM can update stage ·
         Phase 4: Notion/RDS sync, pre/post ACAS scan upload, SCA portal
