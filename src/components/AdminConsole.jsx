@@ -48,7 +48,7 @@ function Btn({onClick,children,variant='primary',sm,disabled}){
     background:variant==='primary'?'#0055aa':variant==='success'?'#004422':
       variant==='danger'?'#550000':'transparent',
     color:variant==='primary'?'#fff':variant==='success'?'#00cc66':
-      variant==='danger'?'#ff8888':'#4a7a9b',
+      variant==='danger'?'#ff8888':'var(--rr-mute)',
     border:variant==='ghost'?'1px solid #1e3a5f':'none'};
   return <button style={s} onClick={onClick} disabled={disabled}>{children}</button>;
 }
@@ -107,15 +107,15 @@ export default function AdminConsole(){
   };
 
   return(
-    <div style={{padding:24,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:24,...mono,color:'var(--rr-text)'}}>
       {/* Header */}
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',
         marginBottom:20,paddingBottom:16,borderBottom:'1px solid #1e3a5f'}}>
         <div>
-          <div style={{fontSize:16,fontWeight:900,color:'#e0e8f0',letterSpacing:2}}>
+          <div style={{fontSize:16,fontWeight:900,color:'var(--rr-white)',letterSpacing:2}}>
             🛡 ADMIN CONSOLE
           </div>
-          <div style={{fontSize:10,color:'#4a7a9b',marginTop:3}}>
+          <div style={{fontSize:10,color:'var(--rr-mute)',marginTop:3}}>
             Multi-Tenant Management · Org Provisioning · User Oversight
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function AdminConsole(){
           <div key={t.id} onClick={()=>setTab(t.id)} style={{padding:'8px 16px',cursor:'pointer',
             fontSize:11,fontWeight:700,letterSpacing:1,borderRadius:'4px 4px 0 0',
             background:tab===t.id?'#0d2a4a':'transparent',
-            color:tab===t.id?'#4a9fd4':'#2a5a7b',
+            color:tab===t.id?'#4a9fd4':'var(--rr-mute)',
             borderBottom:tab===t.id?'2px solid #0066cc':'2px solid transparent'}}>
             {t.icon} {t.label}
           </div>
@@ -149,7 +149,7 @@ export default function AdminConsole(){
       {tab==='orgs'&&(
         <div>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
-            <div style={{fontSize:12,fontWeight:700,color:'#e0e8f0'}}>ORGANIZATIONS ({orgs.length})</div>
+            <div style={{fontSize:12,fontWeight:700,color:'var(--rr-white)'}}>ORGANIZATIONS ({orgs.length})</div>
             <Btn onClick={()=>setTab('create')}>➕ NEW ORG</Btn>
           </div>
           <div style={{display:'grid',gap:10}}>
@@ -158,17 +158,17 @@ export default function AdminConsole(){
               const tc={dod_program:'DoD Program',prime_contractor:'Prime Contractor',
                 cmmc_sb:'CMMC SB',subcontractor:'Sub'}[org.type]||org.type;
               return(
-                <div key={org.id} style={{background:'#061224',border:'1px solid #1e3a5f',
+                <div key={org.id} style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',
                   borderRadius:6,padding:16}}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                     <div style={{flex:1}}>
                       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
-                        <span style={{fontSize:13,fontWeight:700,color:'#e0e8f0'}}>{org.name}</span>
+                        <span style={{fontSize:13,fontWeight:700,color:'var(--rr-white)'}}>{org.name}</span>
                         <Badge label={tc} color='#4a8ab0'/>
                         <Badge label={org.status.toUpperCase()} color={sc}/>
                       </div>
                       <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:8,
-                        fontSize:10,color:'#4a7a9b'}}>
+                        fontSize:10,color:'var(--rr-mute)'}}>
                         <div>SLUG<br/><span style={{color:'#a0b8d0'}}>{org.slug}</span></div>
                         <div>MEMBERS<br/><span style={{color:'#a0b8d0'}}>{org.members}</span></div>
                         <div>CREATED<br/><span style={{color:'#a0b8d0'}}>{org.created}</span></div>
@@ -199,23 +199,23 @@ export default function AdminConsole(){
       {/* Users tab */}
       {tab==='users'&&(
         <div>
-          <div style={{fontSize:12,fontWeight:700,color:'#e0e8f0',marginBottom:14}}>
+          <div style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',marginBottom:14}}>
             USER ACCOUNTS ({users.length})
           </div>
           <div style={{display:'grid',gap:8}}>
             {users.map(u=>(
-              <div key={u.id} style={{background:'#061224',
-                border:'1px solid '+(u.locked?'#660000':'#1e3a5f'),
+              <div key={u.id} style={{background:'var(--rr-panel)',
+                border:'1px solid '+(u.locked?'#660000':'var(--rr-border-md)'),
                 borderRadius:6,padding:14}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div style={{flex:1}}>
                     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:5}}>
-                      <span style={{fontSize:12,fontWeight:700,color:'#e0e8f0'}}>{u.name}</span>
+                      <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)'}}>{u.name}</span>
                       <Badge label={u.role.toUpperCase()} color='#4a8ab0'/>
                       <Badge label={u.status.toUpperCase()}
                         color={u.locked?'#cc4444':u.status==='active'?'#00cc66':'#ffaa44'}/>
                     </div>
-                    <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+                    <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
                       {u.email} · {u.org} · Last login: {u.last_login} · Cyber expires: {u.cyber}
                       {u.locked_reason&&<span style={{color:'#cc4444'}}> · {u.locked_reason}</span>}
                     </div>
@@ -239,12 +239,12 @@ export default function AdminConsole(){
       {tab==='audit'&&(
         <div>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
-            <div style={{fontSize:12,fontWeight:700,color:'#e0e8f0'}}>AUDIT LOG — IMMUTABLE</div>
-            <div style={{fontSize:10,color:'#4a7a9b'}}>3-year WORM · SHA-256 chained</div>
+            <div style={{fontSize:12,fontWeight:700,color:'var(--rr-white)'}}>AUDIT LOG — IMMUTABLE</div>
+            <div style={{fontSize:10,color:'var(--rr-mute)'}}>3-year WORM · SHA-256 chained</div>
           </div>
-          <div style={{background:'#061224',border:'1px solid #1e3a5f',borderRadius:6,overflow:'hidden'}}>
+          <div style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:6,overflow:'hidden'}}>
             <div style={{display:'grid',gridTemplateColumns:'130px 1fr 140px 110px',gap:8,
-              padding:'8px 14px',background:'#0a1a2e',fontSize:9,color:'#4a7a9b',
+              padding:'8px 14px',background:'#0a1a2e',fontSize:9,color:'var(--rr-mute)',
               letterSpacing:1.5,fontWeight:700}}>
               {['TIMESTAMP','ACTOR / ORG','ACTION','IP'].map((h,i)=><div key={i}>{h}</div>)}
             </div>
@@ -252,15 +252,15 @@ export default function AdminConsole(){
               <div key={row.id} style={{display:'grid',gridTemplateColumns:'130px 1fr 140px 110px',
                 gap:8,padding:'10px 14px',borderTop:'1px solid #0d1f35',
                 fontSize:10,alignItems:'center'}}>
-                <div style={{color:'#4a7a9b'}}>{row.ts}</div>
+                <div style={{color:'var(--rr-mute)'}}>{row.ts}</div>
                 <div>
                   <div style={{color:'#a0b8d0'}}>{row.actor}</div>
-                  <div style={{fontSize:9,color:'#2a5a7b'}}>{row.org}</div>
+                  <div style={{fontSize:9,color:'var(--rr-mute)'}}>{row.org}</div>
                 </div>
                 <div style={{color:ACTION_C[row.action]||'#888',fontWeight:700,fontSize:9}}>
                   {row.action}
                 </div>
-                <div style={{color:'#4a7a9b',fontSize:9}}>{row.ip}</div>
+                <div style={{color:'var(--rr-mute)',fontSize:9}}>{row.ip}</div>
               </div>
             ))}
           </div>
@@ -280,11 +280,11 @@ export default function AdminConsole(){
             ['JSIG Compliance','SAP Controls — Phase 3','info'],
             ['GovCloud Migration','Phase 4','info'],
           ].map(([l,v,s])=>(
-            <div key={l} style={{background:'#061224',border:'1px solid #1e3a5f',
+            <div key={l} style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',
               borderRadius:6,padding:14}}>
-              <div style={{fontSize:10,color:'#4a7a9b',marginBottom:5}}>{l}</div>
+              <div style={{fontSize:10,color:'var(--rr-mute)',marginBottom:5}}>{l}</div>
               <div style={{fontSize:11,fontWeight:700,
-                color:s==='ok'?'#00cc66':s==='warn'?'#ffaa44':'#4a7a9b'}}>{v}</div>
+                color:s==='ok'?'#00cc66':s==='warn'?'#ffaa44':'var(--rr-mute)'}}>{v}</div>
             </div>
           ))}
         </div>
@@ -299,22 +299,22 @@ export default function AdminConsole(){
             borderRadius:8,padding:28,width:540,maxWidth:'95vw'}}>
 
             {unlockStep==='review'&&(<>
-              <div style={{fontSize:14,fontWeight:700,color:'#e0e8f0',marginBottom:4,letterSpacing:1}}>
+              <div style={{fontSize:14,fontWeight:700,color:'var(--rr-white)',marginBottom:4,letterSpacing:1}}>
                 🔓 RE-ENABLE ACCOUNT
               </div>
               <div style={{fontSize:10,color:'#ffaa44',marginBottom:18,letterSpacing:1}}>
                 PRIVILEGED ACTION · REQUIRES CAC+PIN AUTHENTICATION · LOGGED PER AU-10
               </div>
-              <div style={{background:'#061224',border:'1px solid #1e3a5f',borderRadius:4,
-                padding:14,marginBottom:14,fontSize:11,color:'#4a7a9b',lineHeight:1.9}}>
-                <div style={{color:'#e0e8f0',fontWeight:700,marginBottom:6}}>LOCKOUT EVENT</div>
+              <div style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:4,
+                padding:14,marginBottom:14,fontSize:11,color:'var(--rr-mute)',lineHeight:1.9}}>
+                <div style={{color:'var(--rr-white)',fontWeight:700,marginBottom:6}}>LOCKOUT EVENT</div>
                 Account: <span style={{color:'#a0b8d0'}}>{unlockTarget.email}</span><br/>
                 Org: <span style={{color:'#a0b8d0'}}>{unlockTarget.org}</span><br/>
                 Reason: <span style={{color:'#cc4444'}}>{unlockTarget.locked_reason}</span><br/>
                 Last Login: <span style={{color:'#a0b8d0'}}>{unlockTarget.last_login}</span>
               </div>
               <div style={{background:'rgba(0,80,160,0.1)',border:'1px solid #003366',
-                borderRadius:4,padding:12,marginBottom:18,fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+                borderRadius:4,padding:12,marginBottom:18,fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
                 Verify this was not a malicious access attempt before proceeding.
                 Your CAC+PIN authentication will create a non-repudiable audit record
                 identifying you as the authorizing ISSM (JSIG AU-10, AC-5).
@@ -326,39 +326,39 @@ export default function AdminConsole(){
             </>)}
 
             {unlockStep==='pin'&&(<>
-              <div style={{fontSize:14,fontWeight:700,color:'#e0e8f0',marginBottom:4,letterSpacing:1}}>
+              <div style={{fontSize:14,fontWeight:700,color:'var(--rr-white)',marginBottom:4,letterSpacing:1}}>
                 🔐 CAC + PIN AUTHENTICATION
               </div>
               <div style={{fontSize:10,color:'#ffaa44',marginBottom:16,letterSpacing:1}}>
                 RE-AUTHENTICATE TO AUTHORIZE ACCOUNT UNLOCK
               </div>
-              <div style={{fontSize:10,color:'#4a7a9b',marginBottom:14,lineHeight:1.8}}>
+              <div style={{fontSize:10,color:'var(--rr-mute)',marginBottom:14,lineHeight:1.8}}>
                 Phase 1: Enter TOTP code &nbsp;|&nbsp; Phase 3: Insert CAC card + enter PIN<br/>
-                <span style={{color:'#2a5a7b'}}>Demo code: 000000</span>
+                <span style={{color:'var(--rr-mute)'}}>Demo code: 000000</span>
               </div>
               <div style={{marginBottom:14}}>
-                <label style={{display:'block',fontSize:10,color:'#4a7a9b',
+                <label style={{display:'block',fontSize:10,color:'var(--rr-mute)',
                   letterSpacing:2,marginBottom:5}}>CAC PIN / AUTH CODE</label>
                 <input type='password' value={unlockPin}
                   onChange={e=>setUnlockPin(e.target.value)}
                   placeholder='••••••' maxLength={8} autoFocus
-                  style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                    borderRadius:4,padding:'10px',color:'#c0d8f0',fontSize:18,
+                  style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                    borderRadius:4,padding:'10px',color:'var(--rr-text)',fontSize:18,
                     ...mono,textAlign:'center',letterSpacing:8,boxSizing:'border-box'}}/>
               </div>
               <div style={{marginBottom:14}}>
-                <label style={{display:'block',fontSize:10,color:'#4a7a9b',
+                <label style={{display:'block',fontSize:10,color:'var(--rr-mute)',
                   letterSpacing:2,marginBottom:5}}>
                   JUSTIFICATION (required — stored in audit record)
                 </label>
                 <textarea value={unlockReason} onChange={e=>setUnlockReason(e.target.value)}
                   placeholder='e.g. User confirmed legitimate access. Identity verified via phone. Approved to re-enable.'
                   rows={3}
-                  style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                    borderRadius:4,padding:'10px',color:'#c0d8f0',fontSize:11,
+                  style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                    borderRadius:4,padding:'10px',color:'var(--rr-text)',fontSize:11,
                     ...mono,boxSizing:'border-box',resize:'vertical'}}/>
               </div>
-              <div style={{fontSize:9,color:'#2a5a7b',marginBottom:16,lineHeight:1.8}}>
+              <div style={{fontSize:9,color:'var(--rr-mute)',marginBottom:16,lineHeight:1.8}}>
                 Audit record will contain: ISSM identity · CAC thumbprint (Phase 3) ·
                 Timestamp · IP address · Justification · Account re-enabled
               </div>
@@ -378,7 +378,7 @@ export default function AdminConsole(){
                 <div style={{fontSize:13,fontWeight:700,color:'#00cc66',letterSpacing:1}}>
                   ACCOUNT RE-ENABLED
                 </div>
-                <div style={{fontSize:10,color:'#4a7a9b',marginTop:8}}>
+                <div style={{fontSize:10,color:'var(--rr-mute)',marginTop:8}}>
                   CAC+PIN authentication recorded in audit trail (AU-10 · JSIG)
                 </div>
               </div>
@@ -402,17 +402,17 @@ function CreateOrgPanel({onCreated}){
   };
   const inp=(label,val,onChange,placeholder,note)=>(
     <div style={{marginBottom:14}}>
-      <label style={{display:'block',fontSize:10,color:'#4a7a9b',
+      <label style={{display:'block',fontSize:10,color:'var(--rr-mute)',
         letterSpacing:2,marginBottom:5}}>{label}</label>
       <input value={val} onChange={onChange} placeholder={placeholder}
-        style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-          borderRadius:4,padding:'9px 12px',color:'#c0d8f0',fontSize:12,...mono,boxSizing:'border-box'}}/>
-      {note&&<div style={{fontSize:9,color:'#2a5a7b',marginTop:3}}>{note}</div>}
+        style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+          borderRadius:4,padding:'9px 12px',color:'var(--rr-text)',fontSize:12,...mono,boxSizing:'border-box'}}/>
+      {note&&<div style={{fontSize:9,color:'var(--rr-mute)',marginTop:3}}>{note}</div>}
     </div>
   );
   return(
     <div style={{maxWidth:540}}>
-      <div style={{fontSize:13,fontWeight:700,color:'#e0e8f0',marginBottom:18}}>CREATE ORGANIZATION</div>
+      <div style={{fontSize:13,fontWeight:700,color:'var(--rr-white)',marginBottom:18}}>CREATE ORGANIZATION</div>
       {err&&<div style={{background:'rgba(180,0,0,0.12)',border:'1px solid #660000',borderRadius:4,
         padding:'8px 14px',marginBottom:14,fontSize:11,color:'#ff9999'}}>⚠ {err}</div>}
       {inp('ORGANIZATION NAME',f.name,e=>{set('name',e.target.value);set('slug',slug(e.target.value));},
@@ -420,12 +420,12 @@ function CreateOrgPanel({onCreated}){
       {inp('URL SLUG',f.slug,e=>set('slug',e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'')),
         'f35-jsf','Lowercase, hyphens only')}
       <div style={{marginBottom:14}}>
-        <label style={{display:'block',fontSize:10,color:'#4a7a9b',letterSpacing:2,marginBottom:5}}>
+        <label style={{display:'block',fontSize:10,color:'var(--rr-mute)',letterSpacing:2,marginBottom:5}}>
           PROGRAM TYPE
         </label>
         <select value={f.type} onChange={e=>set('type',e.target.value)}
-          style={{width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-            borderRadius:4,padding:'9px 12px',color:'#c0d8f0',fontSize:12,...mono}}>
+          style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+            borderRadius:4,padding:'9px 12px',color:'var(--rr-text)',fontSize:12,...mono}}>
           <option value='dod_program'>DoD Program (F-35, F-22, B-21...)</option>
           <option value='prime_contractor'>Prime Contractor (LM, Raytheon, Boeing...)</option>
           <option value='cmmc_sb'>CMMC Small Business</option>
@@ -435,8 +435,8 @@ function CreateOrgPanel({onCreated}){
       {inp('ISSM EMAIL',f.issm_email,e=>set('issm_email',e.target.value),'issm@program.mil',
         'Receives bootstrap token. Creates ISSM account first.')}
       {inp('EMAIL DOMAIN RESTRICTION (optional)',f.domain,e=>set('domain',e.target.value),'.mil or lm.com')}
-      <div style={{background:'#061224',border:'1px solid #1e3a5f',borderRadius:4,
-        padding:12,marginBottom:16,fontSize:10,color:'#4a7a9b',lineHeight:1.9}}>
+      <div style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:4,
+        padding:12,marginBottom:16,fontSize:10,color:'var(--rr-mute)',lineHeight:1.9}}>
         After creation: generate bootstrap token → ISSM creates account →
         ISSM must create ISSO → dashboard unlocks. Token single-use, 24hr TTL.
       </div>
@@ -455,14 +455,14 @@ function TokenPanel({token,onDone}){
     <div style={{maxWidth:580}}>
       <div style={{textAlign:'center',marginBottom:22}}>
         <div style={{fontSize:38,marginBottom:8}}>🔑</div>
-        <div style={{fontSize:14,fontWeight:700,color:'#e0e8f0',letterSpacing:2}}>
+        <div style={{fontSize:14,fontWeight:700,color:'var(--rr-white)',letterSpacing:2}}>
           BOOTSTRAP TOKEN GENERATED
         </div>
         <div style={{fontSize:11,color:'#ffaa44',marginTop:5}}>{token.org.name}</div>
       </div>
-      <div style={{background:'#061224',border:'2px solid #0066cc',borderRadius:6,
+      <div style={{background:'var(--rr-panel)',border:'2px solid #0066cc',borderRadius:6,
         padding:16,marginBottom:14}}>
-        <div style={{fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:8}}>
+        <div style={{fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:8}}>
           ONE-TIME SETUP LINK — expires {new Date(token.expires).toLocaleString()}
         </div>
         <div style={{wordBreak:'break-all',fontSize:11,color:'#4a9fd4',
