@@ -129,12 +129,12 @@ export default function NessusImporter() {
   };
 
   return (
-    <div style={{padding:'20px 24px',maxWidth:900,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:'20px 24px',maxWidth:900,...mono,color:'var(--rr-text)'}}>
       <div style={{marginBottom:14}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:2}}>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:2}}>
           📥 NESSUS / ACAS IMPORTER
         </div>
-        <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           Upload a .nessus scan file · Auto-parse findings · Preview before importing to POAM Tracker<br/>
           CAT I/II/III mapped from Nessus severity · CVEs and CVSS auto-populated · Phase 4: live ACAS API
         </div>
@@ -143,17 +143,17 @@ export default function NessusImporter() {
       {/* Upload area */}
       <div
         onClick={()=>fileRef.current?.click()}
-        style={{background:'#061224',border:'2px dashed #1e3a5f',borderRadius:8,
+        style={{background:'var(--rr-panel)',border:'2px dashed #1e3a5f',borderRadius:8,
           padding:'28px 24px',textAlign:'center',cursor:'pointer',marginBottom:16,
           transition:'border-color 0.2s'}}
         onMouseOver={e=>e.currentTarget.style.borderColor='#4a9fd4'}
-        onMouseOut={e=>e.currentTarget.style.borderColor='#1e3a5f'}>
+        onMouseOut={e=>e.currentTarget.style.borderColor='var(--rr-border-md)'}>
         <input ref={fileRef} type='file' accept='.nessus,.xml' style={{display:'none'}} onChange={handleFile}/>
         <div style={{fontSize:32,marginBottom:8}}>📤</div>
-        <div style={{fontSize:13,color:'#a0c8e8',fontWeight:700}}>
+        <div style={{fontSize:13,color:'var(--rr-text-dim)',fontWeight:700}}>
           {fileName?'📄 '+fileName:'Click to upload .nessus scan file'}
         </div>
-        <div style={{fontSize:10,color:'#2a5a7b',marginTop:4}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',marginTop:4}}>
           Accepts Nessus Professional, ACAS (.nessus) format
         </div>
       </div>
@@ -169,12 +169,12 @@ export default function NessusImporter() {
         <>
           {/* Stats */}
           <div style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap'}}>
-            {[['Total',findings.length,'#4a7a9b'],['CAT I',stats.cat1,'#cc2222'],
+            {[['Total',findings.length,'var(--rr-mute)'],['CAT I',stats.cat1,'#cc2222'],
               ['CAT II',stats.cat2,'#cc7700'],['CAT III',stats.cat3,'#aaaa00']].map(([l,v,c])=>(
-              <div key={l} style={{background:'#061224',border:'1px solid #0d2040',borderRadius:5,
+              <div key={l} style={{background:'var(--rr-panel)',border:'1px solid #0d2040',borderRadius:5,
                 padding:'8px 14px',textAlign:'center',minWidth:80}}>
                 <div style={{fontSize:22,fontWeight:700,color:c,...mono}}>{v}</div>
-                <div style={{fontSize:9,color:'#4a7a9b'}}>{l}</div>
+                <div style={{fontSize:9,color:'var(--rr-mute)'}}>{l}</div>
               </div>
             ))}
             {stats.cat1>0&&(
@@ -190,36 +190,36 @@ export default function NessusImporter() {
 
           {/* Import config */}
           {!done&&(
-            <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',borderRadius:6,
+            <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,
               padding:'14px 16px',marginBottom:14}}>
               <div style={{fontSize:11,fontWeight:700,color:'#a0b8d0',letterSpacing:1,marginBottom:10}}>
                 IMPORT SETTINGS — applied to all findings
               </div>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 16px'}}>
                 <div style={{marginBottom:10}}>
-                  <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+                  <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
                     POINT OF CONTACT *
                   </label>
                   <input value={poc} onChange={e=>setPoc(e.target.value)}
                     placeholder='e.g. F. Ballard / ISSM'
-                    style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                      borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                    style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                      borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                       boxSizing:'border-box',outline:'none'}}/>
                 </div>
                 <div style={{marginBottom:10}}>
-                  <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+                  <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
                     SCHEDULED COMPLETION DATE *
                   </label>
                   <input type='date' value={schedDate} onChange={e=>setSchedDate(e.target.value)}
-                    style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                      borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                    style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                      borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                       boxSizing:'border-box',outline:'none'}}/>
                 </div>
               </div>
               <button onClick={importToPOAM} disabled={importing||!poc||!schedDate}
                 style={{...mono,background:(importing||!poc||!schedDate)?'#1a2a3a':'#0055cc',
                   border:'none',borderRadius:4,padding:'9px 24px',cursor:(importing||!poc||!schedDate)?'not-allowed':'pointer',
-                  color:(importing||!poc||!schedDate)?'#2a4a6b':'#fff',fontSize:12,fontWeight:700,letterSpacing:1}}>
+                  color:(importing||!poc||!schedDate)?'var(--rr-mute)':'#fff',fontSize:12,fontWeight:700,letterSpacing:1}}>
                 {importing?'⏳ IMPORTING '+findings.length+' FINDINGS...':'⬆ IMPORT ALL TO POAM TRACKER'}
               </button>
             </div>
@@ -245,17 +245,17 @@ export default function NessusImporter() {
             {['all','CAT I','CAT II','CAT III'].map(f=>(
               <button key={f} onClick={()=>setFilter(f)}
                 style={{...mono,background:filter===f?'#0055cc':'transparent',
-                  border:'1px solid '+(filter===f?'#0055cc':'#1e3a5f'),
+                  border:'1px solid '+(filter===f?'#0055cc':'var(--rr-border-md)'),
                   borderRadius:3,padding:'4px 10px',cursor:'pointer',
-                  color:filter===f?'#fff':'#4a7a9b',fontSize:10,fontWeight:700}}>
+                  color:filter===f?'#fff':'var(--rr-mute)',fontSize:10,fontWeight:700}}>
                 {f==='all'?'All':f}
               </button>
             ))}
             <input value={search} onChange={e=>setSearch(e.target.value)}
               placeholder='Search plugin, host, CVE...'
-              style={{...mono,flex:1,minWidth:160,background:'#061224',border:'1px solid #1e3a5f',
-                borderRadius:3,padding:'5px 10px',color:'#c0d8f0',fontSize:11,outline:'none'}}/>
-            <span style={{fontSize:10,color:'#4a7a9b'}}>{filtered.length} showing</span>
+              style={{...mono,flex:1,minWidth:160,background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                borderRadius:3,padding:'5px 10px',color:'var(--rr-text)',fontSize:11,outline:'none'}}/>
+            <span style={{fontSize:10,color:'var(--rr-mute)'}}>{filtered.length} showing</span>
           </div>
 
           {/* Findings list */}
@@ -265,7 +265,7 @@ export default function NessusImporter() {
               const isOpen=expanded===i;
               return(
                 <div key={i} onClick={()=>setExpanded(isOpen?null:i)}
-                  style={{background:'#061224',border:'1px solid '+(isOpen?'#1e3a8f':'#0d2040'),
+                  style={{background:'var(--rr-panel)',border:'1px solid '+(isOpen?'#1e3a8f':'var(--rr-panel-alt)'),
                     borderLeft:'4px solid '+(CAT_COLOR[cat]||'#555'),
                     borderRadius:5,marginBottom:6,padding:'10px 14px',cursor:'pointer'}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
@@ -277,10 +277,10 @@ export default function NessusImporter() {
                       border:'1px solid '+(SEV_COLOR[f.sev]||'#555')+'44',borderRadius:2,padding:'1px 6px'}}>
                       {sevLabel(f.sev)}
                     </span>
-                    <span style={{fontSize:12,fontWeight:700,color:'#d0e8f8',flex:1}}>{f.pluginName}</span>
-                    <span style={{fontSize:9,color:'#2a4a6b',flexShrink:0}}>{isOpen?'▲':'▼'}</span>
+                    <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',flex:1}}>{f.pluginName}</span>
+                    <span style={{fontSize:9,color:'var(--rr-mute)',flexShrink:0}}>{isOpen?'▲':'▼'}</span>
                   </div>
-                  <div style={{fontSize:10,color:'#4a7a9b',marginTop:3}}>
+                  <div style={{fontSize:10,color:'var(--rr-mute)',marginTop:3}}>
                     Host: {f.host}
                     {f.port&&f.port!=='0'?' · Port: '+f.port+'/'+f.proto:''}
                     {f.cvss?' · CVSS: '+f.cvss:''}
@@ -288,9 +288,9 @@ export default function NessusImporter() {
                     {' · Plugin: '+f.pluginID}
                   </div>
                   {isOpen&&(
-                    <div style={{borderTop:'1px solid #0d2040',marginTop:8,paddingTop:8,fontSize:11,color:'#9ab0c8',lineHeight:1.7}}>
-                      {f.desc&&<div style={{marginBottom:6}}><span style={{color:'#4a7a9b'}}>Description: </span>{f.desc}</div>}
-                      {f.solution&&<div><span style={{color:'#4a7a9b'}}>Solution: </span>{f.solution}</div>}
+                    <div style={{borderTop:'1px solid #0d2040',marginTop:8,paddingTop:8,fontSize:11,color:'var(--rr-text-dim)',lineHeight:1.7}}>
+                      {f.desc&&<div style={{marginBottom:6}}><span style={{color:'var(--rr-mute)'}}>Description: </span>{f.desc}</div>}
+                      {f.solution&&<div><span style={{color:'var(--rr-mute)'}}>Solution: </span>{f.solution}</div>}
                     </div>
                   )}
                 </div>
@@ -301,17 +301,17 @@ export default function NessusImporter() {
       )}
 
       {findings.length===0&&!fileName&&(
-        <div style={{textAlign:'center',padding:'40px 0',color:'#2a4a6b',fontSize:11}}>
+        <div style={{textAlign:'center',padding:'40px 0',color:'var(--rr-mute)',fontSize:11}}>
           <div style={{fontSize:32,marginBottom:8}}>🔍</div>
           <div>Upload a .nessus file to preview findings before importing to POAM Tracker</div>
-          <div style={{marginTop:12,fontSize:10,color:'#1e3a5f',lineHeight:1.8}}>
+          <div style={{marginTop:12,fontSize:10,color:'var(--rr-border-md)',lineHeight:1.8}}>
             Export from Nessus Professional: Scan → Export → .nessus format<br/>
             Export from ACAS: Scan → Export → Nessus v2 (.nessus)
           </div>
         </div>
       )}
 
-      <div style={{marginTop:16,fontSize:10,color:'#2a4a6b',lineHeight:1.8,
+      <div style={{marginTop:16,fontSize:10,color:'var(--rr-mute)',lineHeight:1.8,
         background:'rgba(0,0,0,0.2)',border:'1px solid #0d2040',borderRadius:4,padding:'8px 14px'}}>
         Phase 1: File upload · CAT I/II/III auto-mapped · CVE + CVSS auto-populated · Audit logged ·
         Phase 4: Live ACAS API push via Collector Agent (GovCloud)
