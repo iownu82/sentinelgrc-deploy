@@ -149,7 +149,7 @@ const ROADMAP = [
   },
 ];
 const StatusDot = ({ s }) => {
-  const cfg = { done:{c:"#00CC88",l:"BUILT"}, delta:{c:"#FFD700",l:"DELTA"}, future:{c:"#3A5570",l:"FUTURE"} };
+  const cfg = { done:{c:"#00CC88",l:"BUILT"}, delta:{c:"#FFD700",l:"DELTA"}, future:{c:"var(--rr-mute)",l:"FUTURE"} };
   const d = cfg[s]||cfg.future;
   return <span style={{ ...mono, fontSize:9, color:d.c, background:`${d.c}14`, border:`1px solid ${d.c}30`, borderRadius:3, padding:"1px 5px" }}>{d.l}</span>;
 };
