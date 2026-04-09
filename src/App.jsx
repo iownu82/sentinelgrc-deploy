@@ -50,6 +50,8 @@ const NAV = [
   { id:"admin",     label:"Admin Console",       icon:"🛡",  desc:"Org management · Bootstrap tokens · User oversight" },
   { id:"yubikey",   label:"YubiKey / MFA Test",   icon:"🔐", desc:"FIDO2 enrollment · WebAuthn test · Hardware MFA" },
   { id:"ai",         label:"RiskRadar AI",           icon:"🧠", desc:"ISSM · ISSO · SysAdmin advisor" },
+  { id:"stig_evidence", label:"STIG Evidence",        icon:"📸", desc:"Submit STIG implementation proof · SysAdmin" },
+  { id:"stig_alerts",   label:"STIG Review",          icon:"🔔", desc:"Review SysAdmin evidence submissions" },
   { id:"cyber_news", label:"Cyber Intelligence",     icon:"📡", desc:"CISA · SANS · Krebs · Dark Reading · Microsoft · CrowdStrike" },
   { id:"feed_mgr",   label:"Feed Manager",           icon:"⚙️",  desc:"Add · remove · toggle feeds · ITR vendor tracking" },
   { id:"approved_hw",label:"Approved Hardware",       icon:"🖥️",  desc:"ITR-approved hardware · STIG status · read-only for admins" },
@@ -68,7 +70,7 @@ function Dashboard() {
   // Role-based nav filtering
   // sysadmin: Approved HW, Approved SW, POAM (read-only), Security Updates
   // readonly: same as sysadmin
-  const SYSADMIN_TABS = new Set(['approved_hw','approved_sw','poam','updates','inspection','itr_submit','ai']);
+  const SYSADMIN_TABS = new Set(['approved_hw','approved_sw','poam','updates','inspection','itr_submit','ai','stig_evidence']);
   const ISSO_HIDDEN = new Set(['admin']);
   const filteredNav = (role==='sysadmin'||role==='readonly')
     ? NAV.filter(n => SYSADMIN_TABS.has(n.id))
@@ -99,6 +101,8 @@ function Dashboard() {
       case "admin":     return <AdminConsole />;
       case "yubikey":   return <YubiKeyTest />;
       case "ai":        return <RiskRadarAI />;
+      case "stig_evidence": return <STIGEvidence member={member} />;
+      case "stig_alerts":   return <STIGAlerts role={role} />;
       case "cyber_news": return <CyberNewsFeed />;
       case "feed_mgr":   return <FeedManager />;
       case "approved_hw": return <ApprovedHardware readOnly={isReadOnly} />;
