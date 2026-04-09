@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { loadSubmissions, addSubmission, generateId } from '../utils/stigStore.js';
 
 const C = {
   bg:"var(--rr-bg)", panel:"var(--rr-panel)", border:"var(--rr-border)",
@@ -33,11 +34,15 @@ export default function STIGEvidence({ member }) {
   const [imagePreview, setImagePreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [submissions, setSubmissions] = useState([
-    { id:'SE-001', ruleId:'V-254239', vulnId:'V-254239', title:'Minimum password length must be 14 characters', cat:'CAT II', family:'Windows Server 2022', status:'pending', submittedBy:'SysAdmin', submittedAt:'2026-04-09 08:14', notes:'Configured via Local Security Policy. Screenshot shows minimum password length set to 14.' },
-    { id:'SE-002', ruleId:'V-220706', vulnId:'V-220706', title:'Account lockout threshold must be 3 attempts', cat:'CAT I', family:'Windows Server 2022', status:'approved', submittedBy:'SysAdmin', submittedAt:'2026-04-08 14:32', notes:'GPO applied domain-wide. RSOP confirms value.', approvedBy:'ISSO', approvedAt:'2026-04-08 15:45' },
-  ]);
+  const [submissions, setSubmissions] = useState(() => loadSubmissions());
   const fileRef = useRef(null);
+
+  // Listen for cross-role updates (ISSO/ISSM approve/reject)
+  useEffect(() => {
+    const onStorage = () => setSubmissions(loadSubmissions());
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -63,14 +68,15 @@ export default function STIGEvidence({ member }) {
     setSubmitting(true);
     await new Promise(r => setTimeout(r, 800));
     const newSub = {
-      id: 'SE-' + String(submissions.length + 1).padStart(3,'0'),
+      id: generateId(),
       ruleId, vulnId, title, cat, family, notes,
       status: 'pending',
       submittedBy: member?.name || 'SysAdmin',
       submittedAt: new Date().toISOString().slice(0,16).replace('T',' '),
       preview: imagePreview,
     };
-    setSubmissions(prev => [newSub, ...prev]);
+    const updated = addSubmission(newSub);
+    setSubmissions(updated);
     setSubmitted(true);
     setSubmitting(false);
     // Reset form
