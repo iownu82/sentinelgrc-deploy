@@ -82,8 +82,8 @@ export default function UpdatesFeed(){
           </div>
         </div>
         <div style={{display:'flex',gap:8}}>
-          {[['CRITICAL',counts.CRITICAL,'#cc4444','#660000'],['HIGH',counts.HIGH,'#ffaa44','#664400'],
-            ['PENDING',counts.pending,'#4a9fd4','#004488']].map(([l,n,c,b])=>(
+          {[['CRITICAL',counts.CRITICAL,'#cc4444','var(--rr-tint-red)'],['HIGH',counts.HIGH,'#ffaa44','var(--rr-tint-orange)'],
+            ['PENDING',counts.pending,'#4a9fd4','var(--rr-tint-blue)']].map(([l,n,c,b])=>(
             <div key={l} style={{fontSize:10,padding:'4px 10px',borderRadius:4,
               background:'rgba(0,0,0,0.3)',border:'1px solid '+b,color:c}}>
               {l}: {n}
@@ -138,7 +138,7 @@ export default function UpdatesFeed(){
         <span style={{fontSize:10,color:'var(--rr-mute)'}}>{sel.size} selected</span>
         <button onClick={genISO} disabled={!sel.size||busy}
           style={{...mono,fontSize:10,fontWeight:700,
-            background:sel.size?'#003366':'var(--rr-panel-alt)',
+            background:sel.size?'var(--rr-tint-blue)':'var(--rr-panel-alt)',
             border:'1px solid '+(sel.size?'#0055aa':'var(--rr-border-md)'),
             color:sel.size?'#4a9fd4':'var(--rr-mute)',
             borderRadius:4,padding:'7px 14px',cursor:sel.size?'pointer':'not-allowed'}}>
@@ -146,8 +146,8 @@ export default function UpdatesFeed(){
         </button>
         <button onClick={()=>alert('DoD SAFE requires AO approval. Submit transfer request.')}
           disabled={!sel.size} style={{...mono,fontSize:10,fontWeight:700,
-            background:sel.size?'#002244':'var(--rr-panel-alt)',
-            border:'1px solid '+(sel.size?'#004488':'var(--rr-border-md)'),
+            background:sel.size?'var(--rr-tint-blue)':'var(--rr-panel-alt)',
+            border:'1px solid '+(sel.size?'var(--rr-tint-blue)':'var(--rr-border-md)'),
             color:sel.size?'#4a8ab0':'var(--rr-mute)',
             borderRadius:4,padding:'7px 14px',cursor:sel.size?'pointer':'not-allowed'}}>
           📁 DoD SAFE
