@@ -15,7 +15,7 @@ const RULES = [
 ];
 
 export function useROBAccepted(memberId) {
-  return !!localStorage.getItem(ROB_VERSION + '_' + (memberId || 'demo'));
+  return !!sessionStorage.getItem(ROB_VERSION + '_' + (memberId || 'demo'));
 }
 
 export default function RulesOfBehaviorModal({ onAccept }) {
@@ -26,7 +26,7 @@ export default function RulesOfBehaviorModal({ onAccept }) {
   const accept = () => {
     if (!checked || busy) return;
     setBusy(true);
-    localStorage.setItem(ROB_VERSION + '_' + (member?.id || 'demo'), Date.now().toString());
+    sessionStorage.setItem(ROB_VERSION + '_' + (member?.id || 'demo'), Date.now().toString());
     setTimeout(() => onAccept(), 400);
   };
 
