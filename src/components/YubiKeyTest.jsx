@@ -114,8 +114,8 @@ export default function YubiKeyTest() {
         </div>
         <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           FIDO2 · WebAuthn · Phishing-resistant hardware MFA<br/>
-          Testing on: <span style={{color:'#a0b8d0'}}>{window.location.hostname}</span>
-          {' · '}User: <span style={{color:'#a0b8d0'}}>{userName}</span>
+          Testing on: <span style={{color:'var(--rr-text-dim)'}}>{window.location.hostname}</span>
+          {' · '}User: <span style={{color:'var(--rr-text-dim)'}}>{userName}</span>
         </div>
       </div>
 
