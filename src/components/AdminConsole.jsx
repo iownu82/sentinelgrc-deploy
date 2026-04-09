@@ -170,10 +170,10 @@ export default function AdminConsole(){
                       <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:8,
                         fontSize:10,color:'var(--rr-mute)'}}>
                         <div>SLUG<br/><span style={{color:'var(--rr-text-dim)'}}>{org.slug}</span></div>
-                        <div>MEMBERS<br/><span style={{color:'#a0b8d0'}}>{org.members}</span></div>
-                        <div>CREATED<br/><span style={{color:'#a0b8d0'}}>{org.created}</span></div>
-                        <div>ISSM<br/><span style={{color:'#a0b8d0',fontSize:9}}>{org.issm}</span></div>
-                        <div>ISSO<br/><span style={{color:org.isso==='—'?'#cc4444':'#a0b8d0',fontSize:9}}>{org.isso}</span></div>
+                        <div>MEMBERS<br/><span style={{color:'var(--rr-text-dim)'}}>{org.members}</span></div>
+                        <div>CREATED<br/><span style={{color:'var(--rr-text-dim)'}}>{org.created}</span></div>
+                        <div>ISSM<br/><span style={{color:'var(--rr-text-dim)',fontSize:9}}>{org.issm}</span></div>
+                        <div>ISSO<br/><span style={{color:org.isso==='—'?'#cc4444':'var(--rr-text-dim)',fontSize:9}}>{org.isso}</span></div>
                       </div>
                     </div>
                     <Btn sm onClick={()=>generateToken(org)} variant='ghost'>🔑 TOKEN</Btn>
@@ -254,7 +254,7 @@ export default function AdminConsole(){
                 fontSize:10,alignItems:'center'}}>
                 <div style={{color:'var(--rr-mute)'}}>{row.ts}</div>
                 <div>
-                  <div style={{color:'#a0b8d0'}}>{row.actor}</div>
+                  <div style={{color:'var(--rr-text-dim)'}}>{row.actor}</div>
                   <div style={{fontSize:9,color:'var(--rr-mute)'}}>{row.org}</div>
                 </div>
                 <div style={{color:ACTION_C[row.action]||'#888',fontWeight:700,fontSize:9}}>
@@ -308,10 +308,10 @@ export default function AdminConsole(){
               <div style={{background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',borderRadius:4,
                 padding:14,marginBottom:14,fontSize:11,color:'var(--rr-mute)',lineHeight:1.9}}>
                 <div style={{color:'var(--rr-white)',fontWeight:700,marginBottom:6}}>LOCKOUT EVENT</div>
-                Account: <span style={{color:'#a0b8d0'}}>{unlockTarget.email}</span><br/>
-                Org: <span style={{color:'#a0b8d0'}}>{unlockTarget.org}</span><br/>
+                Account: <span style={{color:'var(--rr-text-dim)'}}>{unlockTarget.email}</span><br/>
+                Org: <span style={{color:'var(--rr-text-dim)'}}>{unlockTarget.org}</span><br/>
                 Reason: <span style={{color:'#cc4444'}}>{unlockTarget.locked_reason}</span><br/>
-                Last Login: <span style={{color:'#a0b8d0'}}>{unlockTarget.last_login}</span>
+                Last Login: <span style={{color:'var(--rr-text-dim)'}}>{unlockTarget.last_login}</span>
               </div>
               <div style={{background:'rgba(0,80,160,0.1)',border:'1px solid #003366',
                 borderRadius:4,padding:12,marginBottom:18,fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
