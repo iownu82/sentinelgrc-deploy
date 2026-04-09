@@ -325,14 +325,14 @@ export default function NetworkScanner() {
             {/* Terminal log */}
             <div ref={logRef} style={{ flex:1, background:C.bg, border:`1px solid #0D2030`, borderRadius:8, padding:14, overflowY:"auto", fontFamily:"'Courier New',monospace", fontSize:11, lineHeight:1.8 }}>
               {scanLog.length === 0 ? (
-                <div style={{ color:"#3A5570", textAlign:"center", marginTop:40 }}>
+                <div style={{ color:"var(--rr-mute)", textAlign:"center", marginTop:40 }}>
                   <div style={{ fontSize:32, marginBottom:10 }}>📡</div>
                   <div>Select targets and click RUN SCAN to begin</div>
                 </div>
               ) : (
                 scanLog.map((entry, i) => (
                   <div key={i} style={{ display:"flex", gap:10 }}>
-                    <span style={{ color:"#3A5570", flexShrink:0 }}>{entry.time}</span>
+                    <span style={{ color:"var(--rr-mute)", flexShrink:0 }}>{entry.time}</span>
                     {entry.dev && <span style={{ color:"#1A7AFF", flexShrink:0 }}>[{entry.dev}]</span>}
                     <span style={{ color:entry.warn?"#FF8C00":entry.highlight?"#00D4AA":"#7AB8D8" }}>{entry.msg}</span>
                   </div>
