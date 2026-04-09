@@ -126,7 +126,7 @@ const FormatBadge = ({ format }) => {
 const StatusBar = ({ label, score, color }) => (
   <div style={{ marginBottom:8 }}>
     <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
-      <span style={{ ...mono, fontSize:11, color:"#3A5570" }}>{label}</span>
+      <span style={{ ...mono, fontSize:11, color:"var(--rr-mute)" }}>{label}</span>
       <span style={{ ...mono, fontSize:11, fontWeight:700, color }}>{score}%</span>
     </div>
     <div style={{ height:4, background:C.input, borderRadius:2, overflow:"hidden" }}>
@@ -144,7 +144,7 @@ const PackageCard = ({ pkg, selected, onToggle }) => {
       <div>
         <div style={{ fontSize:14, fontWeight:700, color:C.white }}>{pkg.label}</div>
         <div style={{ ...mono, fontSize:10, color:pkg.color, marginTop:2 }}>{pkg.subtitle}</div>
-        <div style={{ fontSize:10, color:"#3A5570", marginTop:2 }}>For: {pkg.audience}</div>
+        <div style={{ fontSize:10, color:"var(--rr-mute)", marginTop:2 }}>For: {pkg.audience}</div>
       </div>
     </div>
     <div style={{ display:"flex", gap:5, flexWrap:"wrap", marginBottom:10 }}>
@@ -152,7 +152,7 @@ const PackageCard = ({ pkg, selected, onToggle }) => {
         <span key={f} style={{ ...mono, fontSize:10, color:pkg.color, background:`${pkg.color}10`, border:`1px solid ${pkg.color}25`, borderRadius:3, padding:"2px 6px" }}>{f}</span>
       ))}
     </div>
-    <div style={{ ...mono, fontSize:10, color:"#3A5570" }}>{pkg.deliverables.length} deliverables · {pkg.deliverables.filter(d=>d.required).length} required</div>
+    <div style={{ ...mono, fontSize:10, color:"var(--rr-mute)" }}>{pkg.deliverables.length} deliverables · {pkg.deliverables.filter(d=>d.required).length} required</div>
   </div>
 );
 };
@@ -167,22 +167,22 @@ const DeliverableRow = ({ d, pkgColor, included }) => (
         <span style={{ fontSize:12, color:C.white, fontWeight:500 }}>{d.name}</span>
         <FormatBadge format={d.format} />
         {d.required && <span style={{ ...mono, fontSize:10, color:"#FF4444" }}>REQUIRED</span>}
-        {d.pages && <span style={{ ...mono, fontSize:10, color:"#3A5570" }}>{d.pages} pages</span>}
+        {d.pages && <span style={{ ...mono, fontSize:10, color:"var(--rr-mute)" }}>{d.pages} pages</span>}
       </div>
-      <div style={{ fontSize:11, color:"#7A9AB8" }}>{d.desc}</div>
+      <div style={{ fontSize:11, color:"var(--rr-text-dim)" }}>{d.desc}</div>
     </div>
   </div>
 );
 // ─── Generation Progress ──────────────────────────────────────────────────────
 const GenerationStep = ({ label, status, detail }) => {
-  const cfg = { done:{color:"#00CC88",icon:"✓"}, running:{color:"#00D4AA",icon:"⟳"}, pending:{color:"#3A5570",icon:"○"} };
+  const cfg = { done:{color:"#00CC88",icon:"✓"}, running:{color:"#00D4AA",icon:"⟳"}, pending:{color:"var(--rr-mute)",icon:"○"} };
   const s = cfg[status] || cfg.pending;
   return (
     <div style={{ display:"flex", gap:12, alignItems:"flex-start", padding:"8px 0" }}>
       <div style={{ ...mono, fontSize:14, color:s.color, minWidth:20, animation:status==="running"?"spin 1s linear infinite":"none" }}>{s.icon}</div>
       <div>
-        <div style={{ fontSize:12, color:status==="pending"?"#3A5570":C.white }}>{label}</div>
-        {detail && status !== "pending" && <div style={{ ...mono, fontSize:11, color:"#3A5570", marginTop:2 }}>{detail}</div>}
+        <div style={{ fontSize:12, color:status==="pending"?"var(--rr-mute)":C.white }}>{label}</div>
+        {detail && status !== "pending" && <div style={{ ...mono, fontSize:11, color:"var(--rr-mute)", marginTop:2 }}>{detail}</div>}
       </div>
     </div>
   );
@@ -197,7 +197,7 @@ const DownloadBtn = ({ label, format, size, color, pkg }) => (
     <span style={{ fontSize:18 }}>{format==="DOCX"?"📄":format==="XLSX"?"📊":format==="PDF"?"📋":format==="XML"?"📝":"📁"}</span>
     <div style={{ flex:1, textAlign:"left" }}>
       <div style={{ fontSize:12, color:C.white, fontWeight:500 }}>{label}</div>
-      <div style={{ ...mono, fontSize:11, color:"#3A5570" }}>{format} · {size}</div>
+      <div style={{ ...mono, fontSize:11, color:"var(--rr-mute)" }}>{format} · {size}</div>
     </div>
     <span style={{ color, fontSize:14, fontWeight:700 }}>↓</span>
   </button>
