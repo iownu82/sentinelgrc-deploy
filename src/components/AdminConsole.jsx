@@ -49,7 +49,7 @@ function Btn({onClick,children,variant='primary',sm,disabled}){
       variant==='danger'?'#550000':'transparent',
     color:variant==='primary'?'#fff':variant==='success'?'#00cc66':
       variant==='danger'?'#ff8888':'var(--rr-mute)',
-    border:variant==='ghost'?'1px solid #1e3a5f':'none'};
+    border:variant==='ghost'?'1px solid var(--rr-border-md)':'none'};
   return <button style={s} onClick={onClick} disabled={disabled}>{children}</button>;
 }
 function Badge({label,color='#4a8ab0'}){
@@ -110,7 +110,7 @@ export default function AdminConsole(){
     <div style={{padding:24,...mono,color:'var(--rr-text)'}}>
       {/* Header */}
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',
-        marginBottom:20,paddingBottom:16,borderBottom:'1px solid #1e3a5f'}}>
+        marginBottom:20,paddingBottom:16,borderBottom:'1px solid var(--rr-border-md)'}}>
         <div>
           <div style={{fontSize:16,fontWeight:900,color:'var(--rr-white)',letterSpacing:2}}>
             🛡 ADMIN CONSOLE
@@ -133,7 +133,7 @@ export default function AdminConsole(){
         color:msgType==='ok'?'#00cc66':'#ff8888'}}>{msg}</div>}
 
       {/* Tabs */}
-      <div style={{display:'flex',gap:2,marginBottom:20,borderBottom:'1px solid #1e3a5f'}}>
+      <div style={{display:'flex',gap:2,marginBottom:20,borderBottom:'1px solid var(--rr-border-md)'}}>
         {TABS.map(t=>(
           <div key={t.id} onClick={()=>setTab(t.id)} style={{padding:'8px 16px',cursor:'pointer',
             fontSize:11,fontWeight:700,letterSpacing:1,borderRadius:'4px 4px 0 0',
@@ -158,7 +158,7 @@ export default function AdminConsole(){
               const tc={dod_program:'DoD Program',prime_contractor:'Prime Contractor',
                 cmmc_sb:'CMMC SB',subcontractor:'Sub'}[org.type]||org.type;
               return(
-                <div key={org.id} style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                <div key={org.id} style={{background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',
                   borderRadius:6,padding:16}}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                     <div style={{flex:1}}>
@@ -242,7 +242,7 @@ export default function AdminConsole(){
             <div style={{fontSize:12,fontWeight:700,color:'var(--rr-white)'}}>AUDIT LOG — IMMUTABLE</div>
             <div style={{fontSize:10,color:'var(--rr-mute)'}}>3-year WORM · SHA-256 chained</div>
           </div>
-          <div style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:6,overflow:'hidden'}}>
+          <div style={{background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',borderRadius:6,overflow:'hidden'}}>
             <div style={{display:'grid',gridTemplateColumns:'130px 1fr 140px 110px',gap:8,
               padding:'8px 14px',background:'#0a1a2e',fontSize:9,color:'var(--rr-mute)',
               letterSpacing:1.5,fontWeight:700}}>
@@ -280,7 +280,7 @@ export default function AdminConsole(){
             ['JSIG Compliance','SAP Controls — Phase 3','info'],
             ['GovCloud Migration','Phase 4','info'],
           ].map(([l,v,s])=>(
-            <div key={l} style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+            <div key={l} style={{background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',
               borderRadius:6,padding:14}}>
               <div style={{fontSize:10,color:'var(--rr-mute)',marginBottom:5}}>{l}</div>
               <div style={{fontSize:11,fontWeight:700,
@@ -305,7 +305,7 @@ export default function AdminConsole(){
               <div style={{fontSize:10,color:'#ffaa44',marginBottom:18,letterSpacing:1}}>
                 PRIVILEGED ACTION · REQUIRES CAC+PIN AUTHENTICATION · LOGGED PER AU-10
               </div>
-              <div style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:4,
+              <div style={{background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',borderRadius:4,
                 padding:14,marginBottom:14,fontSize:11,color:'var(--rr-mute)',lineHeight:1.9}}>
                 <div style={{color:'var(--rr-white)',fontWeight:700,marginBottom:6}}>LOCKOUT EVENT</div>
                 Account: <span style={{color:'#a0b8d0'}}>{unlockTarget.email}</span><br/>
@@ -342,7 +342,7 @@ export default function AdminConsole(){
                 <input type='password' value={unlockPin}
                   onChange={e=>setUnlockPin(e.target.value)}
                   placeholder='••••••' maxLength={8} autoFocus
-                  style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  style={{width:'100%',background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',
                     borderRadius:4,padding:'10px',color:'var(--rr-text)',fontSize:18,
                     ...mono,textAlign:'center',letterSpacing:8,boxSizing:'border-box'}}/>
               </div>
@@ -354,7 +354,7 @@ export default function AdminConsole(){
                 <textarea value={unlockReason} onChange={e=>setUnlockReason(e.target.value)}
                   placeholder='e.g. User confirmed legitimate access. Identity verified via phone. Approved to re-enable.'
                   rows={3}
-                  style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  style={{width:'100%',background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',
                     borderRadius:4,padding:'10px',color:'var(--rr-text)',fontSize:11,
                     ...mono,boxSizing:'border-box',resize:'vertical'}}/>
               </div>
@@ -405,7 +405,7 @@ function CreateOrgPanel({onCreated}){
       <label style={{display:'block',fontSize:10,color:'var(--rr-mute)',
         letterSpacing:2,marginBottom:5}}>{label}</label>
       <input value={val} onChange={onChange} placeholder={placeholder}
-        style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+        style={{width:'100%',background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',
           borderRadius:4,padding:'9px 12px',color:'var(--rr-text)',fontSize:12,...mono,boxSizing:'border-box'}}/>
       {note&&<div style={{fontSize:9,color:'var(--rr-mute)',marginTop:3}}>{note}</div>}
     </div>
@@ -424,7 +424,7 @@ function CreateOrgPanel({onCreated}){
           PROGRAM TYPE
         </label>
         <select value={f.type} onChange={e=>set('type',e.target.value)}
-          style={{width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+          style={{width:'100%',background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',
             borderRadius:4,padding:'9px 12px',color:'var(--rr-text)',fontSize:12,...mono}}>
           <option value='dod_program'>DoD Program (F-35, F-22, B-21...)</option>
           <option value='prime_contractor'>Prime Contractor (LM, Raytheon, Boeing...)</option>
@@ -435,7 +435,7 @@ function CreateOrgPanel({onCreated}){
       {inp('ISSM EMAIL',f.issm_email,e=>set('issm_email',e.target.value),'issm@program.mil',
         'Receives bootstrap token. Creates ISSM account first.')}
       {inp('EMAIL DOMAIN RESTRICTION (optional)',f.domain,e=>set('domain',e.target.value),'.mil or lm.com')}
-      <div style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:4,
+      <div style={{background:'var(--rr-panel)',border:'1px solid var(--rr-border-md)',borderRadius:4,
         padding:12,marginBottom:16,fontSize:10,color:'var(--rr-mute)',lineHeight:1.9}}>
         After creation: generate bootstrap token → ISSM creates account →
         ISSM must create ISSO → dashboard unlocks. Token single-use, 24hr TTL.
