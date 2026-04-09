@@ -123,7 +123,7 @@ export default function YubiKeyTest() {
       <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
         <span style={{fontSize:10,padding:'3px 10px',borderRadius:4,
           background:supported?'rgba(0,150,50,0.12)':'rgba(180,0,0,0.12)',
-          border:'1px solid '+(supported?'#006622':'#660000'),
+          border:'1px solid '+(supported?'var(--rr-tint-green)':'var(--rr-tint-red)'),
           color:supported?'#00cc66':'#cc4444'}}>
           {supported?'✅ WebAuthn supported':'❌ WebAuthn not supported'}
         </span>
@@ -154,7 +154,7 @@ export default function YubiKeyTest() {
           const status = res ? (res.pass?'pass':'fail') : active ? 'running' : 'pending';
           const bg     = {pass:'rgba(0,150,50,0.08)',fail:'rgba(180,0,0,0.08)',
                           running:'rgba(0,100,200,0.1)',pending:'var(--rr-panel)'}[status];
-          const border = {pass:'#006622',fail:'#660000',running:'#003366',pending:'var(--rr-border-md)'}[status];
+          const border = {pass:'var(--rr-tint-green)',fail:'var(--rr-tint-red)',running:'var(--rr-tint-blue)',pending:'var(--rr-border-md)'}[status];
           const icon   = {pass:'✅',fail:'❌',running:'⏳',pending:'○'}[status];
           const numClr = {pass:'#00cc66',fail:'#cc4444',running:'#4a9fd4',pending:'var(--rr-mute)'}[status];
           return (
@@ -189,7 +189,7 @@ export default function YubiKeyTest() {
       {/* Result banner */}
       {done && (
         <div style={{background:allPassed?'rgba(0,150,50,0.12)':'rgba(180,0,0,0.12)',
-          border:'2px solid '+(allPassed?'#006622':'#660000'),
+          border:'2px solid '+(allPassed?'var(--rr-tint-green)':'var(--rr-tint-red)'),
           borderRadius:8,padding:20,marginBottom:20,textAlign:'center'}}>
           <div style={{fontSize:36,marginBottom:8}}>{allPassed?'✅':'❌'}</div>
           <div style={{fontSize:14,fontWeight:700,
