@@ -65,13 +65,13 @@ export default function FeedManager() {
   const enabledCount = feeds.filter(f=>f.enabled!==false).length;
 
   return (
-    <div style={{padding:'20px 24px',maxWidth:760,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:'20px 24px',maxWidth:760,...mono,color:'var(--rr-text)'}}>
       {/* Header */}
       <div style={{marginBottom:18}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:2}}>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:2}}>
           ⚙️ FEED MANAGER
         </div>
-        <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           Add, remove, or toggle intelligence feeds · Environment feeds track approved ITR vendors<br/>
           When a vendor is approved via ITR, add their feed here to monitor proactively
         </div>
@@ -80,15 +80,15 @@ export default function FeedManager() {
       {/* Stats */}
       <div style={{display:'flex',gap:10,marginBottom:16,flexWrap:'wrap'}}>
         {[
-          ['Total feeds', feeds.length, '#4a7a9b'],
+          ['Total feeds', feeds.length, 'var(--rr-mute)'],
           ['Active', enabledCount, '#00aa66'],
           ['Environment vendors', envCount, '#cc8800'],
           ['Intel sources', feeds.filter(f=>f.cat==='intel').length, '#0055cc'],
         ].map(([label,val,color])=>(
-          <div key={label} style={{background:'#061224',border:'1px solid #1e3a5f',
+          <div key={label} style={{background:'var(--rr-panel)',border:'1px solid #1e3a5f',
             borderRadius:4,padding:'8px 14px',textAlign:'center',minWidth:90}}>
             <div style={{fontSize:18,fontWeight:700,color}}>{val}</div>
-            <div style={{fontSize:9,color:'#4a7a9b'}}>{label}</div>
+            <div style={{fontSize:9,color:'var(--rr-mute)'}}>{label}</div>
           </div>
         ))}
         {saved && (
@@ -103,8 +103,8 @@ export default function FeedManager() {
       {/* Controls row */}
       <div style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap',alignItems:'center'}}>
         <select value={filter} onChange={e=>setFilter(e.target.value)}
-          style={{...mono,background:'#061224',border:'1px solid #1e3a5f',
-            borderRadius:3,padding:'5px 8px',color:'#c0d8f0',fontSize:11}}>
+          style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+            borderRadius:3,padding:'5px 8px',color:'var(--rr-text)',fontSize:11}}>
           <option value='all'>All feeds</option>
           <option value='intel'>Intelligence only</option>
           <option value='environment'>Environment vendors</option>
@@ -113,9 +113,9 @@ export default function FeedManager() {
         </select>
         <input value={search} onChange={e=>setSearch(e.target.value)}
           placeholder="Search feeds..."
-          style={{...mono,flex:1,minWidth:140,background:'#061224',
+          style={{...mono,flex:1,minWidth:140,background:'var(--rr-panel)',
             border:'1px solid #1e3a5f',borderRadius:3,padding:'5px 10px',
-            color:'#c0d8f0',fontSize:11,outline:'none'}}/>
+            color:'var(--rr-text)',fontSize:11,outline:'none'}}/>
         <button onClick={()=>setAdding(!adding)}
           style={{...mono,background:adding?'#333':'#0055cc',border:'none',
             borderRadius:3,padding:'5px 14px',cursor:'pointer',
@@ -132,19 +132,19 @@ export default function FeedManager() {
 
       {/* Add feed form */}
       {adding && (
-        <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',
+        <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',
           borderRadius:6,padding:16,marginBottom:14}}>
           <div style={{fontSize:11,fontWeight:700,color:'#a0b8d0',
             marginBottom:12,letterSpacing:1}}>ADD NEW FEED</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:10}}>
             {/* Vendor search with autocomplete */}
             <div style={{position:'relative'}}>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',
                 letterSpacing:2,marginBottom:4}}>VENDOR NAME</label>
               <input value={form.vendor} onChange={e=>set('vendor',e.target.value)}
                 placeholder="e.g. Fortinet, Palo Alto..."
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                   boxSizing:'border-box',outline:'none'}}/>
               {suggest.length>0 && (
                 <div style={{position:'absolute',top:'100%',left:0,right:0,zIndex:10,
@@ -152,8 +152,8 @@ export default function FeedManager() {
                   {suggest.map(kv=>(
                     <div key={kv.label} onClick={()=>pickSuggest(kv)}
                       style={{padding:'6px 10px',cursor:'pointer',fontSize:11,
-                        color:'#a0c8e8',borderBottom:'1px solid #0a1520'}}
-                      onMouseOver={e=>e.target.style.background='#1a3a5f'}
+                        color:'var(--rr-text-dim)',borderBottom:'1px solid #0a1520'}}
+                      onMouseOver={e=>e.target.style.background='var(--rr-border-md)'}
                       onMouseOut={e=>e.target.style.background='transparent'}>
                       {kv.label}
                     </div>
@@ -162,54 +162,54 @@ export default function FeedManager() {
               )}
             </div>
             <div>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',
                 letterSpacing:2,marginBottom:4}}>RSS FEED URL *</label>
               <input value={form.url} onChange={e=>set('url',e.target.value)}
                 placeholder="https://vendor.com/feed.xml"
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid '+(form.url?'#00aa44':'#1e3a5f'),
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid '+(form.url?'#00aa44':'var(--rr-border-md)'),
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                   boxSizing:'border-box',outline:'none'}}/>
             </div>
             <div>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',
                 letterSpacing:2,marginBottom:4}}>DISPLAY LABEL</label>
               <input value={form.label} onChange={e=>set('label',e.target.value)}
                 placeholder="Short display name"
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                   boxSizing:'border-box',outline:'none'}}/>
             </div>
             <div>
-              <label style={{display:'block',fontSize:9,color:'#4a7a9b',
+              <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',
                 letterSpacing:2,marginBottom:4}}>ITR NUMBER (if applicable)</label>
               <input value={form.itrNumber} onChange={e=>set('itrNumber',e.target.value)}
                 placeholder="e.g. ITR-001"
-                style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',
-                  borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,
+                style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+                  borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,
                   boxSizing:'border-box',outline:'none'}}/>
             </div>
           </div>
           <div style={{marginBottom:12}}>
-            <label style={{display:'block',fontSize:9,color:'#4a7a9b',
+            <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',
               letterSpacing:2,marginBottom:4}}>CATEGORY</label>
             <div style={{display:'flex',gap:6}}>
               {[['environment','🏢 Environment Vendor','#cc8800'],['intel','🌐 Intelligence Source','#0055cc']].map(([val,lbl,col])=>(
                 <label key={val} style={{display:'flex',alignItems:'center',gap:6,cursor:'pointer',
-                  fontSize:11,color:form.cat===val?col:'#4a7a9b'}}>
+                  fontSize:11,color:form.cat===val?col:'var(--rr-mute)'}}>
                   <input type='radio' name='cat' value={val} checked={form.cat===val}
                     onChange={()=>set('cat',val)} style={{accentColor:col}}/>
                   {lbl}
                 </label>
               ))}
             </div>
-            <div style={{fontSize:9,color:'#2a5a7b',marginTop:4}}>
+            <div style={{fontSize:9,color:'var(--rr-mute)',marginTop:4}}>
               Environment = ITR-approved vendor in your system · Intelligence = general cyber news
             </div>
           </div>
           <button onClick={handleAdd} disabled={!form.url.trim()}
             style={{...mono,background:form.url?'#0055cc':'#1a2a3a',border:'none',
               borderRadius:3,padding:'8px 20px',cursor:form.url?'pointer':'not-allowed',
-              color:form.url?'#fff':'#2a4a6b',fontSize:11,fontWeight:700}}>
+              color:form.url?'#fff':'var(--rr-mute)',fontSize:11,fontWeight:700}}>
             ADD FEED →
           </button>
         </div>
@@ -219,17 +219,17 @@ export default function FeedManager() {
       <div style={{display:'flex',flexDirection:'column',gap:6}}>
         {filtered.map(feed=>(
           <div key={feed.id} style={{
-            background: feed.cat==='environment'?'rgba(80,40,0,0.15)':'#061224',
-            border:'1px solid '+(feed.enabled===false?'#1a1a1a':feed.cat==='environment'?'#3a2200':'#0d2040'),
-            borderLeft:'3px solid '+(feed.enabled===false?'#333':TAG_COLOR[feed.tag]||'#4a7a9b'),
+            background: feed.cat==='environment'?'rgba(80,40,0,0.15)':'var(--rr-panel)',
+            border:'1px solid '+(feed.enabled===false?'#1a1a1a':feed.cat==='environment'?'#3a2200':'var(--rr-panel-alt)'),
+            borderLeft:'3px solid '+(feed.enabled===false?'#333':TAG_COLOR[feed.tag]||'var(--rr-mute)'),
             borderRadius:5,padding:'10px 14px',
             opacity:feed.enabled===false?0.45:1,transition:'opacity 0.2s'
           }}>
             <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
               {/* Tags */}
               <span style={{fontSize:9,fontWeight:700,
-                color:TAG_COLOR[feed.tag]||'#4a7a9b',
-                border:'1px solid '+(TAG_COLOR[feed.tag]||'#4a7a9b')+'44',
+                color:TAG_COLOR[feed.tag]||'var(--rr-mute)',
+                border:'1px solid '+(TAG_COLOR[feed.tag]||'var(--rr-mute)')+'44',
                 borderRadius:2,padding:'1px 6px',whiteSpace:'nowrap'}}>
                 {TAG_LABEL[feed.tag]||feed.tag?.toUpperCase()}
               </span>
@@ -252,9 +252,9 @@ export default function FeedManager() {
                 </span>
               )}
               {/* Label */}
-              <span style={{fontSize:12,fontWeight:700,color:'#d0e8f8',flex:1}}>{feed.label}</span>
+              <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',flex:1}}>{feed.label}</span>
               {feed.vendor && feed.vendor!==feed.label && (
-                <span style={{fontSize:10,color:'#4a7a9b'}}>{feed.vendor}</span>
+                <span style={{fontSize:10,color:'var(--rr-mute)'}}>{feed.vendor}</span>
               )}
               {/* Actions */}
               <div style={{display:'flex',gap:6,marginLeft:'auto'}}>
@@ -276,7 +276,7 @@ export default function FeedManager() {
               </div>
             </div>
             {/* URL */}
-            <div style={{fontSize:9,color:'#2a4a6b',marginTop:4,
+            <div style={{fontSize:9,color:'var(--rr-mute)',marginTop:4,
               whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
               {feed.url}
             </div>
@@ -285,7 +285,7 @@ export default function FeedManager() {
       </div>
 
       {filtered.length===0 && (
-        <div style={{textAlign:'center',padding:30,color:'#2a4a6b',fontSize:12}}>
+        <div style={{textAlign:'center',padding:30,color:'var(--rr-mute)',fontSize:12}}>
           No feeds match your filter
         </div>
       )}
