@@ -8,7 +8,7 @@ import {
 const mono = { fontFamily:"'Courier New',monospace" };
 const CAT_COLOR  = { 'CAT I':'#cc2222', 'CAT II':'#cc7700', 'CAT III':'#aaaa00' };
 const STATUS_COLOR = {
-  'Ongoing':'#4a7a9b','Completed':'#00aa44','Risk Accepted':'#cc8800',
+  'Ongoing':'var(--rr-mute)','Completed':'#00aa44','Risk Accepted':'#cc8800',
   'False Positive':'#555','Delayed':'#cc4400','NA - Not a Finding':'#444'
 };
 const SOURCES = ['ACAS/Nessus','STIG','SCA Finding','Self-Assessment','CCRI','Pen Test','Other'];
@@ -41,9 +41,9 @@ function saveLog(key,data) { try { localStorage.setItem(key,JSON.stringify(data)
 
 // ── Stat card ──────────────────────────────────────────────────────────────
 const Stat = ({label,val,color,sub}) => (
-  <div style={{background:'#061224',border:'1px solid #0d2040',borderRadius:5,padding:'10px 14px',minWidth:80,textAlign:'center'}}>
-    <div style={{fontSize:22,fontWeight:700,color:color||'#4a7a9b',fontFamily:"'Courier New',monospace"}}>{val}</div>
-    <div style={{fontSize:9,color:'#4a7a9b',marginTop:1}}>{label}</div>
+  <div style={{background:'var(--rr-panel)',border:'1px solid #0d2040',borderRadius:5,padding:'10px 14px',minWidth:80,textAlign:'center'}}>
+    <div style={{fontSize:22,fontWeight:700,color:color||'var(--rr-mute)',fontFamily:"'Courier New',monospace"}}>{val}</div>
+    <div style={{fontSize:9,color:'var(--rr-mute)',marginTop:1}}>{label}</div>
     {sub&&<div style={{fontSize:9,color:sub.color||'#cc4400',marginTop:2}}>{sub.text}</div>}
   </div>
 );
@@ -51,26 +51,26 @@ const Stat = ({label,val,color,sub}) => (
 // ── Form helpers ───────────────────────────────────────────────────────────
 const Field = ({label,children,required,note}) => (
   <div style={{marginBottom:12}}>
-    <label style={{display:'block',fontSize:9,color:'#4a7a9b',letterSpacing:2,marginBottom:4}}>
+    <label style={{display:'block',fontSize:9,color:'var(--rr-mute)',letterSpacing:2,marginBottom:4}}>
       {label}{required&&<span style={{color:'#cc4444'}}> *</span>}
     </label>
     {children}
-    {note&&<div style={{fontSize:9,color:'#2a5a7b',marginTop:3}}>{note}</div>}
+    {note&&<div style={{fontSize:9,color:'var(--rr-mute)',marginTop:3}}>{note}</div>}
   </div>
 );
 const Inp = ({value,onChange,placeholder,type,disabled}) => (
   <input type={type||'text'} value={value||''} onChange={onChange} placeholder={placeholder} disabled={disabled}
-    style={{...mono,width:'100%',background:disabled?'#040e18':'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box',outline:'none'}}/>
+    style={{...mono,width:'100%',background:disabled?'#040e18':'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box',outline:'none'}}/>
 );
 const Sel = ({value,onChange,children,disabled}) => (
   <select value={value||''} onChange={onChange} disabled={disabled}
-    style={{...mono,width:'100%',background:disabled?'#040e18':'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box'}}>
+    style={{...mono,width:'100%',background:disabled?'#040e18':'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box'}}>
     {children}
   </select>
 );
 const Btn = ({children,onClick,disabled,variant}) => {
   const bg = variant==='danger'?'#440000':variant==='success'?'#004422':variant==='primary'?'#0055cc':'transparent';
-  const col = variant==='danger'?'#ff8888':variant==='success'?'#00cc66':variant==='primary'?'#fff':'#4a7a9b';
+  const col = variant==='danger'?'#ff8888':variant==='success'?'#00cc66':variant==='primary'?'#fff':'var(--rr-mute)';
   const bdr = variant?'none':'1px solid #1e3a5f';
   return <button style={{...mono,background:bg,border:bdr,borderRadius:3,padding:'5px 14px',cursor:disabled?'not-allowed':'pointer',color:col,fontSize:10,fontWeight:700,opacity:disabled?0.5:1}} onClick={onClick} disabled={disabled}>{children}</button>;
 };
@@ -84,54 +84,54 @@ function POAMCard({item,onEdit,onDelete,onAddMs,onStatusChange}) {
   const over=isOverdue(item.scheduledDate)&&item.status==='Ongoing';
   const pct=item.milestones&&item.milestones.length?Math.round(item.milestones.filter(m=>m.status==='Completed').length/item.milestones.length*100):0;
   return (
-    <div style={{background:'#061224',border:'1px solid '+(open?'#1e3a8f':over?'#440000':'#0d2040'),borderLeft:'4px solid '+(CAT_COLOR[item.cat]||'#4a7a9b'),borderRadius:6,marginBottom:8}}>
+    <div style={{background:'var(--rr-panel)',border:'1px solid '+(open?'#1e3a8f':over?'#440000':'var(--rr-panel-alt)'),borderLeft:'4px solid '+(CAT_COLOR[item.cat]||'var(--rr-mute)'),borderRadius:6,marginBottom:8}}>
       <div onClick={()=>setOpen(!open)} style={{padding:'12px 16px',cursor:'pointer',display:'flex',alignItems:'flex-start',gap:10,flexWrap:'wrap'}}>
         <span style={{fontSize:9,fontWeight:700,color:CAT_COLOR[item.cat],border:'1px solid '+(CAT_COLOR[item.cat]||'')+'44',borderRadius:2,padding:'2px 7px',flexShrink:0,marginTop:1}}>{item.cat}</span>
-        <span style={{...mono,fontSize:10,color:'#2a5a7b',flexShrink:0,marginTop:1}}>{item.poamNumber}</span>
-        <span style={{fontSize:12,fontWeight:700,color:'#d0e8f8',flex:1,lineHeight:1.4}}>{item.weakness}</span>
-        <span style={{fontSize:9,fontWeight:700,color:STATUS_COLOR[item.status]||'#4a7a9b',border:'1px solid '+(STATUS_COLOR[item.status]||'#4a7a9b')+'44',borderRadius:2,padding:'2px 7px',flexShrink:0,whiteSpace:'nowrap'}}>{item.status}</span>
+        <span style={{...mono,fontSize:10,color:'var(--rr-mute)',flexShrink:0,marginTop:1}}>{item.poamNumber}</span>
+        <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',flex:1,lineHeight:1.4}}>{item.weakness}</span>
+        <span style={{fontSize:9,fontWeight:700,color:STATUS_COLOR[item.status]||'var(--rr-mute)',border:'1px solid '+(STATUS_COLOR[item.status]||'var(--rr-mute)')+'44',borderRadius:2,padding:'2px 7px',flexShrink:0,whiteSpace:'nowrap'}}>{item.status}</span>
         {over&&<span style={{fontSize:9,color:'#ff6666',border:'1px solid #660000',borderRadius:2,padding:'2px 7px',flexShrink:0}}>⚠ OVERDUE</span>}
-        <span style={{fontSize:10,color:'#2a4a6b',flexShrink:0,marginTop:1}}>{open?'▲':'▼'}</span>
+        <span style={{fontSize:10,color:'var(--rr-mute)',flexShrink:0,marginTop:1}}>{open?'▲':'▼'}</span>
       </div>
-      <div style={{paddingLeft:16,paddingRight:16,paddingBottom:8,display:'flex',gap:12,flexWrap:'wrap',fontSize:10,color:'#4a7a9b'}}>
-        <span>Source: <span style={{color:'#7a9ab8'}}>{item.source}</span></span>
-        {item.control&&<span>Control: <span style={{color:'#7a9ab8'}}>{item.control}</span></span>}
-        {item.cvss&&<span>CVSS: <span style={{color:'#7a9ab8'}}>{item.cvss}</span></span>}
-        <span>POC: <span style={{color:'#7a9ab8'}}>{item.poc}</span></span>
-        <span style={{color:over?'#ff6666':dl!=null&&dl<14?'#cc8800':'#4a7a9b'}}>Due: {fmtDate(item.scheduledDate)}{dl!=null&&item.status==='Ongoing'&&' ('+(dl<0?'overdue '+Math.abs(dl)+'d':dl+'d left')+')'}</span>
+      <div style={{paddingLeft:16,paddingRight:16,paddingBottom:8,display:'flex',gap:12,flexWrap:'wrap',fontSize:10,color:'var(--rr-mute)'}}>
+        <span>Source: <span style={{color:'var(--rr-text-dim)'}}>{item.source}</span></span>
+        {item.control&&<span>Control: <span style={{color:'var(--rr-text-dim)'}}>{item.control}</span></span>}
+        {item.cvss&&<span>CVSS: <span style={{color:'var(--rr-text-dim)'}}>{item.cvss}</span></span>}
+        <span>POC: <span style={{color:'var(--rr-text-dim)'}}>{item.poc}</span></span>
+        <span style={{color:over?'#ff6666':dl!=null&&dl<14?'#cc8800':'var(--rr-mute)'}}>Due: {fmtDate(item.scheduledDate)}{dl!=null&&item.status==='Ongoing'&&' ('+(dl<0?'overdue '+Math.abs(dl)+'d':dl+'d left')+')'}</span>
         {item.milestones&&item.milestones.length>0&&<span>Milestones: {pct}% ({item.milestones.filter(m=>m.status==='Completed').length}/{item.milestones.length})</span>}
       </div>
       {item.milestones&&item.milestones.length>0&&(
-        <div style={{margin:'0 16px 8px',height:3,background:'#0a1520',borderRadius:2}}>
+        <div style={{margin:'0 16px 8px',height:3,background:'var(--rr-panel-alt)',borderRadius:2}}>
           <div style={{width:pct+'%',height:'100%',background:pct===100?'#00aa44':'#0055cc',borderRadius:2}}/>
         </div>
       )}
       {open&&(
         <div style={{borderTop:'1px solid #0d2040',padding:'14px 16px'}}>
-          {item.description&&<div style={{marginBottom:10,fontSize:11,color:'#9ab0c8',lineHeight:1.7}}>{item.description}</div>}
+          {item.description&&<div style={{marginBottom:10,fontSize:11,color:'var(--rr-text-dim)',lineHeight:1.7}}>{item.description}</div>}
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px 20px',marginBottom:12,fontSize:11}}>
-            {item.cve&&<div><span style={{color:'#4a7a9b'}}>CVE: </span><span style={{color:'#a0c8e8'}}>{item.cve}</span></div>}
-            {item.stigId&&<div><span style={{color:'#4a7a9b'}}>STIG ID: </span><span style={{color:'#a0c8e8'}}>{item.stigId}</span></div>}
-            {item.resources&&<div><span style={{color:'#4a7a9b'}}>Resources: </span><span style={{color:'#a0c8e8'}}>{item.resources}</span></div>}
-            <div><span style={{color:'#4a7a9b'}}>Created: </span><span style={{color:'#a0c8e8'}}>{fmtDate(item.createdAt)} by {item.createdBy}</span></div>
-            {item.raJustification&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>RA Justification: </span><span style={{color:'#a0c8e8'}}>{item.raJustification}</span></div>}
-            {item.naExplanation&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#4a7a9b'}}>NA Explanation: </span><span style={{color:'#a0c8e8'}}>{item.naExplanation}</span></div>}
-            {item.comments&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#4a7a9b'}}>Comments: </span><span style={{color:'#7a9ab8'}}>{item.comments}</span></div>}
+            {item.cve&&<div><span style={{color:'var(--rr-mute)'}}>CVE: </span><span style={{color:'var(--rr-text-dim)'}}>{item.cve}</span></div>}
+            {item.stigId&&<div><span style={{color:'var(--rr-mute)'}}>STIG ID: </span><span style={{color:'var(--rr-text-dim)'}}>{item.stigId}</span></div>}
+            {item.resources&&<div><span style={{color:'var(--rr-mute)'}}>Resources: </span><span style={{color:'var(--rr-text-dim)'}}>{item.resources}</span></div>}
+            <div><span style={{color:'var(--rr-mute)'}}>Created: </span><span style={{color:'var(--rr-text-dim)'}}>{fmtDate(item.createdAt)} by {item.createdBy}</span></div>
+            {item.raJustification&&<div style={{gridColumn:'1/-1'}}><span style={{color:'#cc8800'}}>RA Justification: </span><span style={{color:'var(--rr-text-dim)'}}>{item.raJustification}</span></div>}
+            {item.naExplanation&&<div style={{gridColumn:'1/-1'}}><span style={{color:'var(--rr-mute)'}}>NA Explanation: </span><span style={{color:'var(--rr-text-dim)'}}>{item.naExplanation}</span></div>}
+            {item.comments&&<div style={{gridColumn:'1/-1'}}><span style={{color:'var(--rr-mute)'}}>Comments: </span><span style={{color:'var(--rr-text-dim)'}}>{item.comments}</span></div>}
           </div>
           {item.milestones&&(
             <div style={{marginBottom:12}}>
               <div style={{fontSize:10,fontWeight:700,color:'#6a9ab0',letterSpacing:1,marginBottom:6}}>MILESTONES</div>
-              {(!item.milestones||item.milestones.length===0)&&<div style={{fontSize:11,color:'#2a4a6b',marginBottom:6}}>No milestones</div>}
+              {(!item.milestones||item.milestones.length===0)&&<div style={{fontSize:11,color:'var(--rr-mute)',marginBottom:6}}>No milestones</div>}
               {(item.milestones||[]).map(ms=>(
-                <div key={ms.id} style={{display:'flex',alignItems:'center',gap:10,marginBottom:5,fontSize:11,padding:'6px 10px',background:'#040e18',borderRadius:4,border:'1px solid '+(ms.status==='Completed'?'#004422':'#0d2040')}}>
+                <div key={ms.id} style={{display:'flex',alignItems:'center',gap:10,marginBottom:5,fontSize:11,padding:'6px 10px',background:'#040e18',borderRadius:4,border:'1px solid '+(ms.status==='Completed'?'#004422':'var(--rr-panel-alt)')}}>
                   <span>{ms.status==='Completed'?'✅':'⏳'}</span>
-                  <span style={{flex:1,color:'#9ab0c8'}}>{ms.description}</span>
-                  <span style={{color:'#4a7a9b',whiteSpace:'nowrap'}}>{fmtDate(ms.scheduledDate)}</span>
+                  <span style={{flex:1,color:'var(--rr-text-dim)'}}>{ms.description}</span>
+                  <span style={{color:'var(--rr-mute)',whiteSpace:'nowrap'}}>{fmtDate(ms.scheduledDate)}</span>
                   <span style={{fontSize:9,color:ms.status==='Completed'?'#00aa44':'#cc8800',border:'1px solid '+(ms.status==='Completed'?'#006622':'#cc880044'),borderRadius:2,padding:'1px 6px'}}>{ms.status}</span>
                 </div>
               ))}
               {addingMs?(
-                <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',borderRadius:4,padding:10,marginTop:6}}>
+                <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:4,padding:10,marginTop:6}}>
                   <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
                     <div style={{gridColumn:'1/-1'}}><Inp value={msForm.description} onChange={e=>setMsForm(f=>({...f,description:e.target.value}))} placeholder='Milestone description...'/></div>
                     <Inp type='date' value={msForm.scheduledDate} onChange={e=>setMsForm(f=>({...f,scheduledDate:e.target.value}))}/>
@@ -145,7 +145,7 @@ function POAMCard({item,onEdit,onDelete,onAddMs,onStatusChange}) {
                   </div>
                 </div>
               ):(item.status==='Ongoing'||item.status==='Delayed')&&(
-                <button onClick={()=>setAddingMs(true)} style={{...mono,background:'transparent',border:'1px dashed #1e3a5f',borderRadius:3,padding:'4px 12px',cursor:'pointer',color:'#2a5a7b',fontSize:10,marginTop:4,width:'100%'}}>+ ADD MILESTONE</button>
+                <button onClick={()=>setAddingMs(true)} style={{...mono,background:'transparent',border:'1px dashed #1e3a5f',borderRadius:3,padding:'4px 12px',cursor:'pointer',color:'var(--rr-mute)',fontSize:10,marginTop:4,width:'100%'}}>+ ADD MILESTONE</button>
               )}
             </div>
           )}
@@ -253,11 +253,11 @@ export default function POAMTracker() {
   };
 
   return (
-    <div style={{padding:'20px 24px',maxWidth:920,...mono,color:'#c0d8f0'}}>
+    <div style={{padding:'20px 24px',maxWidth:920,...mono,color:'var(--rr-text)'}}>
       {/* Header */}
       <div style={{marginBottom:14}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:2}}>📋 POAM TRACKER — STAGE 1</div>
-        <div style={{fontSize:10,color:'#4a7a9b'}}>Plan of Action and Milestones · NIST 800-53 CA-5 · DoD 8510.01 RMF Step 4 · All actions audited</div>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:2}}>📋 POAM TRACKER — STAGE 1</div>
+        <div style={{fontSize:10,color:'var(--rr-mute)'}}>Plan of Action and Milestones · NIST 800-53 CA-5 · DoD 8510.01 RMF Step 4 · All actions audited</div>
       </div>
 
       {/* Stats */}
@@ -266,7 +266,7 @@ export default function POAMTracker() {
         <Stat label='CAT I' val={stats.cat1} color='#cc2222' sub={stats.cat1>0?{text:'Remediate immediately',color:'#cc4444'}:null}/>
         <Stat label='CAT II' val={stats.cat2} color='#cc7700'/>
         <Stat label='CAT III' val={stats.cat3} color='#aaaa00'/>
-        <Stat label='OVERDUE' val={stats.overdue} color={stats.overdue>0?'#ff6666':'#4a7a9b'} sub={stats.overdue>0?{text:'Action required',color:'#ff6666'}:null}/>
+        <Stat label='OVERDUE' val={stats.overdue} color={stats.overdue>0?'#ff6666':'var(--rr-mute)'} sub={stats.overdue>0?{text:'Action required',color:'#ff6666'}:null}/>
         <Stat label='OPEN' val={stats.open} color='#4a9fd4'/>
         <Stat label='CLOSED' val={stats.closed} color='#00aa44'/>
         <Stat label='RISK ACCEPTED' val={stats.ra} color='#cc8800'/>
@@ -289,9 +289,9 @@ export default function POAMTracker() {
         {TABS.map(tab=>(
           <button key={tab.id} onClick={()=>setActiveTab(tab.id)}
             title={tab.desc}
-            style={{...mono,background:activeTab===tab.id?'#0d2040':'transparent',
+            style={{...mono,background:activeTab===tab.id?'var(--rr-panel-alt)':'transparent',
               border:'none',borderBottom:activeTab===tab.id?'2px solid #4a9fd4':'2px solid transparent',
-              padding:'7px 12px',cursor:'pointer',color:activeTab===tab.id?'#e0e8f0':'#4a7a9b',
+              padding:'7px 12px',cursor:'pointer',color:activeTab===tab.id?'var(--rr-white)':'var(--rr-mute)',
               fontSize:10,fontWeight:activeTab===tab.id?700:400,whiteSpace:'nowrap'}}>
             {tab.icon} {tab.label}
           </button>
@@ -303,16 +303,16 @@ export default function POAMTracker() {
         <div style={{display:'flex',gap:8,marginBottom:12,flexWrap:'wrap',alignItems:'center'}}>
           <input value={search} onChange={e=>setSearch(e.target.value)}
             placeholder={activeTab==='stig'?'Search STIG ID, finding...':'Search weakness, POAM ID, CVE, control...'}
-            style={{...mono,flex:1,minWidth:180,background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'6px 10px',color:'#c0d8f0',fontSize:11,outline:'none'}}/>
+            style={{...mono,flex:1,minWidth:180,background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'6px 10px',color:'var(--rr-text)',fontSize:11,outline:'none'}}/>
           {(activeTab==='sc_poam'||activeTab==='stig')&&(
             <select value={catFilter} onChange={e=>setCatFilter(e.target.value)}
-              style={{...mono,background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'6px 8px',color:'#c0d8f0',fontSize:11}}>
+              style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'6px 8px',color:'var(--rr-text)',fontSize:11}}>
               <option value='all'>All CAT</option>
               {CATS.map(c=><option key={c}>{c}</option>)}
             </select>
           )}
           <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-            style={{...mono,background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'6px 8px',color:'#c0d8f0',fontSize:11}}>
+            style={{...mono,background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'6px 8px',color:'var(--rr-text)',fontSize:11}}>
             <option value='cat'>Sort: CAT</option>
             <option value='date'>Sort: Due date</option>
           </select>
@@ -324,8 +324,8 @@ export default function POAMTracker() {
 
       {/* ── New Finding Form ── */}
       {showForm&&activeTab==='sc_poam'&&(
-        <div style={{background:'#0a1a30',border:'1px solid '+(errors.length?'#660000':'#1e3a5f'),borderRadius:6,padding:20,marginBottom:14}}>
-          <div style={{fontSize:13,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:12}}>{editItem?'✎ EDIT FINDING':'+ NEW POAM FINDING'}</div>
+        <div style={{background:'var(--rr-panel-alt)',border:'1px solid '+(errors.length?'#660000':'var(--rr-border-md)'),borderRadius:6,padding:20,marginBottom:14}}>
+          <div style={{fontSize:13,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:12}}>{editItem?'✎ EDIT FINDING':'+ NEW POAM FINDING'}</div>
           {errors.length>0&&<div style={{background:'rgba(160,0,0,0.15)',border:'1px solid #660000',borderRadius:4,padding:'10px 14px',marginBottom:12}}>{errors.map((e,i)=><div key={i} style={{fontSize:11,color:'#ff9999',marginBottom:i<errors.length-1?4:0}}>⚠ {e}</div>)}</div>}
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 16px'}}>
             <div style={{gridColumn:'1/-1'}}><Field label='WEAKNESS / FINDING NAME' required><Inp value={form.weakness} onChange={e=>setF('weakness',e.target.value)} placeholder='e.g. Missing patch allows RCE'/></Field></div>
@@ -338,7 +338,7 @@ export default function POAMTracker() {
             <Field label='NIST 800-53 CONTROL'><Sel value={form.control} onChange={e=>setF('control',e.target.value)}><option value=''>Select...</option>{CONTROLS_800_53.map(c=><option key={c}>{c}</option>)}</Sel></Field>
             <Field label='POINT OF CONTACT' required><Inp value={form.poc} onChange={e=>setF('poc',e.target.value)} placeholder='J. Smith / System Admin'/></Field>
             <Field label='SCHEDULED COMPLETION' required><Inp type='date' value={form.scheduledDate} onChange={e=>setF('scheduledDate',e.target.value)}/></Field>
-            <div style={{gridColumn:'1/-1'}}><Field label='DESCRIPTION'><textarea value={form.description} onChange={e=>setF('description',e.target.value)} rows={3} placeholder='Finding detail and remediation steps...' style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
+            <div style={{gridColumn:'1/-1'}}><Field label='DESCRIPTION'><textarea value={form.description} onChange={e=>setF('description',e.target.value)} rows={3} placeholder='Finding detail and remediation steps...' style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
           </div>
           <div style={{display:'flex',gap:10,marginTop:4}}>
             <Btn variant='primary' onClick={handleSubmit} disabled={submitting}>{submitting?'SAVING…':editItem?'UPDATE →':'CREATE FINDING →'}</Btn>
@@ -349,11 +349,11 @@ export default function POAMTracker() {
 
       {/* ── RA Request Form ── */}
       {showRAForm&&activeTab==='ra_life'&&(
-        <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',borderRadius:6,padding:18,marginBottom:14}}>
+        <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,padding:18,marginBottom:14}}>
           <div style={{fontSize:12,fontWeight:700,color:'#cc8800',marginBottom:12,letterSpacing:1}}>📝 NEW RISK ACCEPTANCE REQUEST</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 16px'}}>
             <div style={{gridColumn:'1/-1'}}><Field label='WEAKNESS / RISK' required><Inp value={raForm.weakness} onChange={e=>setRaForm(f=>({...f,weakness:e.target.value}))} placeholder='Describe the risk being accepted...'/></Field></div>
-            <div style={{gridColumn:'1/-1'}}><Field label='JUSTIFICATION' required><textarea value={raForm.justification} onChange={e=>setRaForm(f=>({...f,justification:e.target.value}))} rows={3} placeholder='Why this risk is acceptable and mitigating factors...' style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
+            <div style={{gridColumn:'1/-1'}}><Field label='JUSTIFICATION' required><textarea value={raForm.justification} onChange={e=>setRaForm(f=>({...f,justification:e.target.value}))} rows={3} placeholder='Why this risk is acceptable and mitigating factors...' style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
             <Field label='AO APPROVAL DATE'><Inp type='date' value={raForm.aoDate} onChange={e=>setRaForm(f=>({...f,aoDate:e.target.value}))}/></Field>
             <Field label='DURATION'><Sel value={raForm.duration} onChange={e=>setRaForm(f=>({...f,duration:e.target.value}))}><option>Lifetime</option><option>1 Year</option><option>2 Years</option><option>3 Years</option></Sel></Field>
           </div>
@@ -371,11 +371,11 @@ export default function POAMTracker() {
             <Btn variant='primary' onClick={()=>setShowRAForm(!showRAForm)}>{showRAForm?'✕ CANCEL':'+ SUBMIT RA REQUEST'}</Btn>
           </div>
           {showRAForm&&(
-            <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',borderRadius:6,padding:18,marginBottom:14}}>
+            <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,padding:18,marginBottom:14}}>
               <div style={{fontSize:12,fontWeight:700,color:'#cc8800',marginBottom:12,letterSpacing:1}}>📝 NEW RISK ACCEPTANCE REQUEST</div>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 16px'}}>
                 <div style={{gridColumn:'1/-1'}}><Field label='WEAKNESS / RISK' required><Inp value={raForm.weakness} onChange={e=>setRaForm(f=>({...f,weakness:e.target.value}))} placeholder='Describe the risk being accepted...'/></Field></div>
-                <div style={{gridColumn:'1/-1'}}><Field label='JUSTIFICATION' required><textarea value={raForm.justification} onChange={e=>setRaForm(f=>({...f,justification:e.target.value}))} rows={3} placeholder='Why this risk is acceptable...' style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
+                <div style={{gridColumn:'1/-1'}}><Field label='JUSTIFICATION' required><textarea value={raForm.justification} onChange={e=>setRaForm(f=>({...f,justification:e.target.value}))} rows={3} placeholder='Why this risk is acceptable...' style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
                 <Field label='AO APPROVAL DATE'><Inp type='date' value={raForm.aoDate} onChange={e=>setRaForm(f=>({...f,aoDate:e.target.value}))}/></Field>
                 <Field label='DURATION'><Sel value={raForm.duration} onChange={e=>setRaForm(f=>({...f,duration:e.target.value}))}><option>Lifetime</option><option>1 Year</option><option>2 Years</option><option>3 Years</option></Sel></Field>
               </div>
@@ -385,15 +385,15 @@ export default function POAMTracker() {
               </div>
             </div>
           )}
-          {raLog.length===0&&!showRAForm&&<div style={{textAlign:'center',padding:30,color:'#2a4a6b',fontSize:12}}>No pending RA requests</div>}
+          {raLog.length===0&&!showRAForm&&<div style={{textAlign:'center',padding:30,color:'var(--rr-mute)',fontSize:12}}>No pending RA requests</div>}
           {raLog.map(ra=>(
-            <div key={ra.id} style={{background:'#061224',border:'1px solid #3a2200',borderLeft:'4px solid #cc8800',borderRadius:6,padding:'12px 16px',marginBottom:8}}>
+            <div key={ra.id} style={{background:'var(--rr-panel)',border:'1px solid #3a2200',borderLeft:'4px solid #cc8800',borderRadius:6,padding:'12px 16px',marginBottom:8}}>
               <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
-                <span style={{fontSize:12,fontWeight:700,color:'#d0e8f8',flex:1}}>{ra.weakness}</span>
+                <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)',flex:1}}>{ra.weakness}</span>
                 <span style={{fontSize:9,color:ra.status.includes('Pending')?'#cc8800':'#00aa44',border:'1px solid #cc880044',borderRadius:2,padding:'2px 8px'}}>{ra.status}</span>
               </div>
-              <div style={{fontSize:11,color:'#9ab0c8',marginBottom:4}}>{ra.justification}</div>
-              <div style={{fontSize:10,color:'#4a7a9b'}}>Duration: {ra.duration} · Submitted: {fmtDate(ra.submittedAt)} by {ra.submittedBy}</div>
+              <div style={{fontSize:11,color:'var(--rr-text-dim)',marginBottom:4}}>{ra.justification}</div>
+              <div style={{fontSize:10,color:'var(--rr-mute)'}}>Duration: {ra.duration} · Submitted: {fmtDate(ra.submittedAt)} by {ra.submittedBy}</div>
             </div>
           ))}
         </div>
@@ -406,25 +406,25 @@ export default function POAMTracker() {
             <Btn variant='primary' onClick={()=>setShowCCForm(!showCCForm)}>{showCCForm?'✕ CANCEL':'+ LOG CHANGE'}</Btn>
           </div>
           {showCCForm&&(
-            <div style={{background:'#0a1a30',border:'1px solid #1e3a5f',borderRadius:6,padding:18,marginBottom:14}}>
+            <div style={{background:'var(--rr-panel-alt)',border:'1px solid #1e3a5f',borderRadius:6,padding:18,marginBottom:14}}>
               <div style={{fontSize:12,fontWeight:700,color:'#4a9fd4',marginBottom:12,letterSpacing:1}}>🔄 LOG POAM CHANGE</div>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 16px'}}>
                 <Field label='VERSION' required><Inp value={ccForm.version} onChange={e=>setCcForm(f=>({...f,version:e.target.value}))} placeholder='e.g. v1.1 or 2026-04-07-A'/></Field>
                 <Field label='AUTHOR'><Inp value={ccForm.author} onChange={e=>setCcForm(f=>({...f,author:e.target.value}))} placeholder='F. Ballard / ISSM'/></Field>
-                <div style={{gridColumn:'1/-1'}}><Field label='CHANGE DESCRIPTION' required><textarea value={ccForm.description} onChange={e=>setCcForm(f=>({...f,description:e.target.value}))} rows={3} placeholder='What was changed and why...' style={{...mono,width:'100%',background:'#061224',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'#c0d8f0',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
+                <div style={{gridColumn:'1/-1'}}><Field label='CHANGE DESCRIPTION' required><textarea value={ccForm.description} onChange={e=>setCcForm(f=>({...f,description:e.target.value}))} rows={3} placeholder='What was changed and why...' style={{...mono,width:'100%',background:'var(--rr-panel)',border:'1px solid #1e3a5f',borderRadius:3,padding:'7px 10px',color:'var(--rr-text)',fontSize:11,boxSizing:'border-box',outline:'none',resize:'vertical'}}/></Field></div>
               </div>
               <Btn variant='primary' onClick={submitCC} disabled={!ccForm.version||!ccForm.description}>LOG CHANGE →</Btn>
             </div>
           )}
-          {changelog.length===0&&!showCCForm&&<div style={{textAlign:'center',padding:30,color:'#2a4a6b',fontSize:12}}>No change log entries — log your first version change above</div>}
+          {changelog.length===0&&!showCCForm&&<div style={{textAlign:'center',padding:30,color:'var(--rr-mute)',fontSize:12}}>No change log entries — log your first version change above</div>}
           {[...changelog].reverse().map(entry=>(
-            <div key={entry.id} style={{background:'#061224',border:'1px solid #0d2040',borderLeft:'4px solid #4a9fd4',borderRadius:6,padding:'12px 16px',marginBottom:8}}>
+            <div key={entry.id} style={{background:'var(--rr-panel)',border:'1px solid #0d2040',borderLeft:'4px solid #4a9fd4',borderRadius:6,padding:'12px 16px',marginBottom:8}}>
               <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:4}}>
                 <span style={{fontSize:11,fontWeight:700,color:'#4a9fd4',border:'1px solid #4a9fd444',borderRadius:2,padding:'2px 8px'}}>{entry.version}</span>
-                <span style={{fontSize:10,color:'#4a7a9b'}}>{fmtDate(entry.date)}</span>
-                <span style={{fontSize:10,color:'#4a7a9b',marginLeft:'auto'}}>{entry.author}</span>
+                <span style={{fontSize:10,color:'var(--rr-mute)'}}>{fmtDate(entry.date)}</span>
+                <span style={{fontSize:10,color:'var(--rr-mute)',marginLeft:'auto'}}>{entry.author}</span>
               </div>
-              <div style={{fontSize:11,color:'#9ab0c8',lineHeight:1.6}}>{entry.description}</div>
+              <div style={{fontSize:11,color:'var(--rr-text-dim)',lineHeight:1.6}}>{entry.description}</div>
             </div>
           ))}
         </div>
@@ -433,7 +433,7 @@ export default function POAMTracker() {
       {/* ── POAM Item List (all non-special tabs) ── */}
       {activeTab!=='change'&&activeTab!=='ra_new'&&(
         <div>
-          {tabItems.length===0&&<div style={{textAlign:'center',padding:30,color:'#2a4a6b',fontSize:12}}>
+          {tabItems.length===0&&<div style={{textAlign:'center',padding:30,color:'var(--rr-mute)',fontSize:12}}>
             {activeTab==='sc_poam'?'No open findings — click \'+ NEW FINDING\' to add':
              activeTab==='stig'?'No STIG-sourced findings':
              activeTab==='ra_life'?'No lifetime risk acceptances — use \'+ NEW RA REQUEST\' to submit':
@@ -450,7 +450,7 @@ export default function POAMTracker() {
         </div>
       )}
 
-      <div style={{marginTop:14,fontSize:10,color:'#2a4a6b',lineHeight:1.8,background:'rgba(0,0,0,0.2)',border:'1px solid #0d2040',borderRadius:4,padding:'8px 14px'}}>
+      <div style={{marginTop:14,fontSize:10,color:'var(--rr-mute)',lineHeight:1.8,background:'rgba(0,0,0,0.2)',border:'1px solid #0d2040',borderRadius:4,padding:'8px 14px'}}>
         Stage 1 · localStorage · All actions AU-2 logged · XSS sanitized · eMASS CSV export · Phase 4: GovCloud RDS (one env var)  
       </div>
     </div>
