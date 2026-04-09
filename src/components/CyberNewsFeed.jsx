@@ -254,7 +254,7 @@ export default function CyberNewsFeed() {
             TOTAL: {filtered.length} articles
           </div>
           {failedSrcs.length > 0 && (
-            <div style={{fontSize:9,color:'#663300',background:'rgba(80,30,0,0.2)',
+            <div style={{fontSize:9,color:'var(--rr-tint-orange)',background:'rgba(80,30,0,0.2)',
               border:'1px solid #663300',borderRadius:3,padding:'3px 10px'}}>
               ⚠ {failedSrcs.length} source(s) unavailable
             </div>
@@ -285,7 +285,7 @@ export default function CyberNewsFeed() {
             <div key={item.id}
               style={{
                 background: isCrit?'rgba(180,0,0,0.08)':'var(--rr-panel)',
-                border:'1px solid '+(isCrit?'#660000':isOpen?'#1e3a8f':'var(--rr-panel-alt)'),
+                border:'1px solid '+(isCrit?'var(--rr-tint-red)':isOpen?'#1e3a8f':'var(--rr-panel-alt)'),
                 borderLeft:'3px solid '+item.color,
                 borderRadius:5,padding:'10px 14px',
                 cursor:'pointer',transition:'border-color 0.15s',
