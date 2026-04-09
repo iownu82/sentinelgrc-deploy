@@ -106,13 +106,13 @@ export default function YubiKeyTest() {
   const anyFailed = done && Object.values(results).some(r=>r?.pass===false);
 
   return (
-    <div style={{padding:24,...mono,color:'#c0d8f0',maxWidth:680}}>
+    <div style={{padding:24,...mono,color:'var(--rr-text)',maxWidth:680}}>
       {/* Header */}
       <div style={{marginBottom:20}}>
-        <div style={{fontSize:16,fontWeight:700,color:'#e0e8f0',letterSpacing:1,marginBottom:4}}>
+        <div style={{fontSize:16,fontWeight:700,color:'var(--rr-white)',letterSpacing:1,marginBottom:4}}>
           🔐 YUBIKEY / FIDO2 — AUTOMATED TEST SUITE
         </div>
-        <div style={{fontSize:10,color:'#4a7a9b',lineHeight:1.8}}>
+        <div style={{fontSize:10,color:'var(--rr-mute)',lineHeight:1.8}}>
           FIDO2 · WebAuthn · Phishing-resistant hardware MFA<br/>
           Testing on: <span style={{color:'#a0b8d0'}}>{window.location.hostname}</span>
           {' · '}User: <span style={{color:'#a0b8d0'}}>{userName}</span>
@@ -132,7 +132,7 @@ export default function YubiKeyTest() {
           🔒 HTTPS: {window.location.protocol==='https:'?'✅':'❌'}
         </span>
         <span style={{fontSize:10,padding:'3px 10px',borderRadius:4,
-          background:'rgba(0,0,0,0.2)',border:'1px solid #1e3a5f',color:'#4a7a9b'}}>
+          background:'rgba(0,0,0,0.2)',border:'1px solid #1e3a5f',color:'var(--rr-mute)'}}>
           Origin: {window.location.hostname}
         </span>
       </div>
@@ -153,10 +153,10 @@ export default function YubiKeyTest() {
           const active = currentStep === i && running;
           const status = res ? (res.pass?'pass':'fail') : active ? 'running' : 'pending';
           const bg     = {pass:'rgba(0,150,50,0.08)',fail:'rgba(180,0,0,0.08)',
-                          running:'rgba(0,100,200,0.1)',pending:'#061224'}[status];
-          const border = {pass:'#006622',fail:'#660000',running:'#003366',pending:'#1e3a5f'}[status];
+                          running:'rgba(0,100,200,0.1)',pending:'var(--rr-panel)'}[status];
+          const border = {pass:'#006622',fail:'#660000',running:'#003366',pending:'var(--rr-border-md)'}[status];
           const icon   = {pass:'✅',fail:'❌',running:'⏳',pending:'○'}[status];
-          const numClr = {pass:'#00cc66',fail:'#cc4444',running:'#4a9fd4',pending:'#2a4a6b'}[status];
+          const numClr = {pass:'#00cc66',fail:'#cc4444',running:'#4a9fd4',pending:'var(--rr-mute)'}[status];
           return (
             <div key={step.id} style={{background:bg,border:'1px solid '+border,
               borderRadius:6,padding:'12px 14px',transition:'all 0.3s'}}>
@@ -166,8 +166,8 @@ export default function YubiKeyTest() {
                 </div>
                 <div style={{flex:1}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
-                    <span style={{fontSize:12,fontWeight:700,color:'#e0e8f0'}}>{step.label}</span>
-                    <span style={{fontSize:9,color:'#4a7a9b'}}>{step.desc}</span>
+                    <span style={{fontSize:12,fontWeight:700,color:'var(--rr-white)'}}>{step.label}</span>
+                    <span style={{fontSize:9,color:'var(--rr-mute)'}}>{step.desc}</span>
                   </div>
                   {res && (
                     <div style={{fontSize:11,color:res.pass?'#00cc66':'#ff8888',lineHeight:1.6}}>
@@ -196,7 +196,7 @@ export default function YubiKeyTest() {
             color:allPassed?'#00cc66':'#cc4444',letterSpacing:1,marginBottom:6}}>
             {allPassed?'ALL TESTS PASSED':'SOME TESTS FAILED'}
           </div>
-          <div style={{fontSize:11,color:'#9ab0c8',lineHeight:1.8}}>
+          <div style={{fontSize:11,color:'var(--rr-text-dim)',lineHeight:1.8}}>
             {allPassed
               ? 'YubiKey FIDO2 enrollment and authentication confirmed working on '+window.location.hostname+'. Ready for production MFA integration.'
               : 'Review failed steps above. Common issues: key not inserted, browser prompt dismissed, or browser does not support WebAuthn.'}
@@ -217,15 +217,15 @@ export default function YubiKeyTest() {
           </button>
         )}
         {running && (
-          <div style={{fontSize:11,color:'#4a7a9b'}}>
+          <div style={{fontSize:11,color:'var(--rr-mute)'}}>
             Test running — touch your YubiKey when prompted by the browser...
           </div>
         )}
       </div>
 
       {/* Security note */}
-      <div style={{marginTop:20,background:'#061224',border:'1px solid #1e3a5f',
-        borderRadius:4,padding:14,fontSize:10,color:'#4a7a9b',lineHeight:1.9}}>
+      <div style={{marginTop:20,background:'var(--rr-panel)',border:'1px solid #1e3a5f',
+        borderRadius:4,padding:14,fontSize:10,color:'var(--rr-mute)',lineHeight:1.9}}>
         <strong style={{color:'#6a9ab0',display:'block',marginBottom:4}}>
           WHY THE BROWSER PROMPT CANNOT BE AUTOMATED
         </strong>
