@@ -497,7 +497,7 @@ export default function CSRMFC AIAI() {
           fontSize: 9, color: "#1A3A5C", textAlign: "center",
           marginTop: 6, letterSpacing: 1,
         }}>
-          RISKRADAR AI · {cfg.label} CONTEXT · POWERED BY CLAUDE · AU-2 LOGGED
+          CSRMFC AI AI · {cfg.label} CONTEXT · POWERED BY CLAUDE · AU-2 LOGGED
         </div>
       </div>
     </div>
