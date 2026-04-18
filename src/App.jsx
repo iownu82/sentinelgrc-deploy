@@ -27,7 +27,7 @@ import ApprovedHardware from "./components/ApprovedHardware.jsx";
 import ApprovedSoftware from "./components/ApprovedSoftware.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
-import RiskRadarAI from './components/RiskRadarAI.jsx';
+import CSRMFC AIAI from './components/CSRMFC AIAI.jsx';
 import STIGEvidence from './components/STIGEvidence.jsx';
 import STIGAlerts from './components/STIGAlerts.jsx';
 
@@ -49,7 +49,7 @@ const NAV = [
   { id:"updates",   label:"Security Updates",    icon:"🔄", desc:"NIST NVD · CISA KEV · DISA STIG/IAVA · DVD ISO transfer" },
   { id:"admin",     label:"Admin Console",       icon:"🛡",  desc:"Org management · Bootstrap tokens · User oversight" },
   { id:"yubikey",   label:"YubiKey / MFA Test",   icon:"🔐", desc:"FIDO2 enrollment · WebAuthn test · Hardware MFA" },
-  { id:"ai",         label:"RiskRadar AI",           icon:"🧠", desc:"ISSM · ISSO · SysAdmin advisor" },
+  { id:"ai",         label:"CSRMFC AI",           icon:"🧠", desc:"ISSM · ISSO · SysAdmin advisor" },
   { id:"stig_evidence", label:"STIG Evidence",        icon:"📸", desc:"Submit STIG implementation proof · SysAdmin" },
   { id:"stig_alerts",   label:"STIG Review",          icon:"🔔", desc:"Review SysAdmin evidence submissions" },
   { id:"cyber_news", label:"Cyber Intelligence",     icon:"📡", desc:"CISA · SANS · Krebs · Dark Reading · Microsoft · CrowdStrike" },
@@ -100,7 +100,7 @@ function Dashboard() {
       case "updates":   return <UpdatesFeed />;
       case "admin":     return <AdminConsole />;
       case "yubikey":   return <YubiKeyTest />;
-      case "ai":        return <RiskRadarAI />;
+      case "ai":        return <CSRMFC AIAI />;
       case "stig_evidence": return <STIGEvidence member={member} />;
       case "stig_alerts":   return <STIGAlerts role={role} />;
       case "cyber_news": return <CyberNewsFeed />;
