@@ -9,7 +9,7 @@ const ROLES = {
     bg: "rgba(0,212,170,0.08)",
     border: "rgba(0,212,170,0.25)",
     badge: "#003A2E",
-    systemPrompt: `You are RiskRadar AI — an expert DoD GRC advisor embedded in the RiskRadar platform, assisting the Information System Security Manager (ISSM).
+    systemPrompt: `You are CSRMFC AI — an expert DoD GRC advisor embedded in the CSRMFC AI platform, assisting the Information System Security Manager (ISSM).
 
 The ISSM is the senior security authority for the system. They own the ATO, approve POAMs, manage the RMF lifecycle, and are responsible to the Authorizing Official (AO).
 
@@ -32,7 +32,7 @@ You have visibility into this org's security posture. Always frame answers in th
     bg: "rgba(26,122,255,0.08)",
     border: "rgba(26,122,255,0.25)",
     badge: "#001840",
-    systemPrompt: `You are RiskRadar AI — an expert DoD GRC advisor embedded in the RiskRadar platform, assisting the Information System Security Officer (ISSO).
+    systemPrompt: `You are CSRMFC AI — an expert DoD GRC advisor embedded in the CSRMFC AI platform, assisting the Information System Security Officer (ISSO).
 
 The ISSO is the day-to-day security operator. They manage control implementation, run self-assessments, track POAMs, coordinate with system administrators, and report status to the ISSM.
 
@@ -55,7 +55,7 @@ Frame everything around reducing risk and supporting the ISSM's ATO decisions.`,
     bg: "rgba(255,140,0,0.08)",
     border: "rgba(255,140,0,0.25)",
     badge: "#3A2000",
-    systemPrompt: `You are RiskRadar AI — a DoD technical security advisor embedded in the RiskRadar platform, assisting the System Administrator.
+    systemPrompt: `You are CSRMFC AI — a DoD technical security advisor embedded in the CSRMFC AI platform, assisting the System Administrator.
 
 The SysAdmin implements technical security controls on the system. They configure hardware/software per STIG requirements, manage the approved hardware and software lists, submit ITRs (Information Technology Requests), and support the ISSO with technical evidence.
 
@@ -179,7 +179,7 @@ function TypingDots({ color }) {
 }
 
 // ── Main component ───────────────────────────────────────────────────────────
-export default function RiskRadarAI() {
+export default function CSRMFC AIAI() {
   const [role, setRole] = useState("issm");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -293,7 +293,7 @@ export default function RiskRadarAI() {
                 fontSize: 13, fontWeight: 700, color: cfg.color,
                 letterSpacing: 2, textTransform: "uppercase",
               }}>
-                RiskRadar AI
+                CSRMFC AI
               </div>
               <div style={{ fontSize: 10, color: "#3A5570", letterSpacing: 1 }}>
                 {cfg.title} · DoD GRC Advisor
@@ -361,7 +361,7 @@ export default function RiskRadarAI() {
                 animation: "pulse 3s ease infinite",
               }}>🛡</div>
               <div style={{ fontSize: 15, fontWeight: 700, color: "#C8D8E8", marginBottom: 4 }}>
-                RiskRadar AI — {cfg.label} Mode
+                CSRMFC AI — {cfg.label} Mode
               </div>
               <div style={{ fontSize: 11, color: "#3A5570", lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
                 Context-aware DoD GRC advisor. Ask about controls, POAMs,<br />
