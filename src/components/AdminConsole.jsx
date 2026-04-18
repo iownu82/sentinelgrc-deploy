@@ -42,7 +42,7 @@ const DEMO_AUDIT=[
 ];
 
 function Btn({onClick,children,variant='primary',sm,disabled}){
-  const s={...mono,border:'none',cursor:disabled?'not-allowed':'pointer',fontWeight:700,
+  const s={...mono,cursor:disabled?'not-allowed':'pointer',fontWeight:700,
     letterSpacing:1,borderRadius:4,padding:sm?'5px 12px':'9px 20px',
     fontSize:sm?10:11,opacity:disabled?0.5:1,
     background:variant==='primary'?'#0055aa':variant==='success'?'#004422':
