@@ -27,7 +27,7 @@ import ApprovedHardware from "./components/ApprovedHardware.jsx";
 import ApprovedSoftware from "./components/ApprovedSoftware.jsx";
 import AdminConsole from "./components/AdminConsole.jsx";
 import UpdatesFeed from "./components/UpdatesFeed.jsx";
-import CSRMFC AIAI from './components/CSRMFC AIAI.jsx';
+import CSRMFCAIAdvisor from './components/RiskRadarAI.jsx';
 import STIGEvidence from './components/STIGEvidence.jsx';
 import STIGAlerts from './components/STIGAlerts.jsx';
 
@@ -100,7 +100,7 @@ function Dashboard() {
       case "updates":   return <UpdatesFeed />;
       case "admin":     return <AdminConsole />;
       case "yubikey":   return <YubiKeyTest />;
-      case "ai":        return <CSRMFC AIAI />;
+      case "ai":        return <CSRMFCAIAdvisor />;
       case "stig_evidence": return <STIGEvidence member={member} />;
       case "stig_alerts":   return <STIGAlerts role={role} />;
       case "cyber_news": return <CyberNewsFeed />;
