@@ -179,7 +179,7 @@ function TypingDots({ color }) {
 }
 
 // ── Main component ───────────────────────────────────────────────────────────
-export default function CSRMFC AIAI() {
+export default function CSRMFCAIAdvisor() {
   const [role, setRole] = useState("issm");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
