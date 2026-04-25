@@ -163,6 +163,11 @@ def lambda_handler(event: dict, context) -> dict:
         )
         return internal_error("Authentication flow error")
     
+    # DEBUG: log full response shape to diagnose missing Session
+    import json as _debug_json
+    _debug_safe = {k: (v if k != 'ChallengeParameters' else {pk: (pv[:30] + '...' if isinstance(pv, str) and len(pv) > 30 else pv) for pk, pv in v.items()}) for k, v in cognito_response.items() if k != 'ResponseMetadata'}
+    logger.info("DEBUG Cognito response shape: %s", _debug_json.dumps(_debug_safe, default=str))
+    
     # Cognito SDK response keys are typically PascalCase but check both
     session = cognito_response.get("Session") or cognito_response.get("session")
     challenge_parameters = cognito_response.get("ChallengeParameters") or cognito_response.get("challengeParameters") or {}
