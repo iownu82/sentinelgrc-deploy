@@ -147,3 +147,4 @@ def internal_error(message: str = "An internal error occurred") -> dict[str, Any
     generic message to the client.
     """
     return error(message, status_code=500, error_code="INTERNAL_ERROR")
+
