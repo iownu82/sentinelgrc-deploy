@@ -1,0 +1,2 @@
+# auth-setup-mfa needs python-jose for verifying ID token after Cognito issues it
+python-jose[cryptography]==3.3.0

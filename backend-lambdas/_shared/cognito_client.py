@@ -221,3 +221,119 @@ def audit_log_attempt(
 
     # Print to stdout - Lambda forwards stdout to CloudWatch automatically
     print(json.dumps(log_entry, default=str))
+
+
+# ============================================================================
+# MFA SETUP OPERATIONS (Stage 6 Part B)
+# ============================================================================
+
+def associate_software_token(session: str = None, access_token: str = None) -> dict[str, Any]:
+    """
+    Initiate TOTP MFA setup for a user.
+    
+    Returns a SecretCode that the client renders as a QR code for the user's
+    authenticator app to scan.
+    
+    Args:
+        session: opaque session token (from a MFA_SETUP challenge response).
+                 Use this when in the middle of an auth flow (first login).
+        access_token: existing access token. Use this when an already-authenticated
+                      user wants to add/change their TOTP device.
+        
+        Provide exactly ONE of session or access_token.
+    
+    Returns:
+        dict with:
+          - SecretCode: the shared secret (base32) for the authenticator
+          - Session: new session token to use in next step (verify_software_token)
+    
+    Raises:
+        CognitoError: with user-safe message
+    """
+    try:
+        kwargs = {}
+        if session:
+            kwargs["Session"] = session
+        elif access_token:
+            kwargs["AccessToken"] = access_token
+        else:
+            raise CognitoError(
+                "MFA setup requires session or access token",
+                code="MISSING_AUTH",
+            )
+        
+        return _get_client().associate_software_token(**kwargs)
+    except ClientError as e:
+        raise _translate_error(e)
+
+
+def verify_software_token(
+    user_code: str,
+    session: str = None,
+    access_token: str = None,
+    friendly_device_name: str = "BIS3 Defense TOTP",
+) -> dict[str, Any]:
+    """
+    Verify the first TOTP code from a newly-associated authenticator.
+    
+    This proves the user's authenticator is correctly configured. If valid,
+    Cognito records the TOTP as a verified MFA factor for the user.
+    
+    Args:
+        user_code: 6-digit TOTP code from the user's authenticator app
+        session: session from associate_software_token (during first login)
+        access_token: existing access token (for already-authenticated user)
+        friendly_device_name: human-readable name for this MFA factor
+    
+    Returns:
+        dict with:
+          - Status: "SUCCESS" or "ERROR"
+          - Session: new session token (when in auth flow) for use in
+                     next RespondToAuthChallenge call
+    
+    Raises:
+        CognitoError: with user-safe message
+    """
+    try:
+        kwargs = {
+            "UserCode": user_code,
+            "FriendlyDeviceName": friendly_device_name,
+        }
+        if session:
+            kwargs["Session"] = session
+        elif access_token:
+            kwargs["AccessToken"] = access_token
+        else:
+            raise CognitoError(
+                "MFA verification requires session or access token",
+                code="MISSING_AUTH",
+            )
+        
+        return _get_client().verify_software_token(**kwargs)
+    except ClientError as e:
+        raise _translate_error(e)
+
+
+def set_user_mfa_preference_with_token(access_token: str) -> None:
+    """
+    Set TOTP as the user's preferred MFA method.
+    
+    Called after successful verify_software_token to make TOTP the active MFA
+    factor going forward. Uses the user's access token (post-authentication).
+    
+    Args:
+        access_token: user's current access token
+    
+    Raises:
+        CognitoError: with user-safe message
+    """
+    try:
+        _get_client().set_user_mfa_preference(
+            SoftwareTokenMfaSettings={
+                "Enabled": True,
+                "PreferredMfa": True,
+            },
+            AccessToken=access_token,
+        )
+    except ClientError as e:
+        raise _translate_error(e)
