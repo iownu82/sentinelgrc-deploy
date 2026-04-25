@@ -49,6 +49,7 @@ locals {
     "bis3-defense-auth-passkey-register-verify",
     "bis3-defense-auth-passkey-auth-options",
     "bis3-defense-auth-passkey-auth-verify",
+    "bis3-defense-auth-verify-srp",
     "bis3-defense-admin-force-password-reset",
   ]
 
