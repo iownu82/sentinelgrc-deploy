@@ -74,10 +74,18 @@ jobs:
         run: |
           cd backend-lambdas
           for lambda_dir in */; do
-            lambda_name="bis3-defense-${lambda_dir%/}"
+            lambda_dir_clean="${lambda_dir%/}"
+            
+            # Skip _shared (utility directory, not a Lambda)
+            if [ "$lambda_dir_clean" = "_shared" ]; then
+              echo "Skipping _shared (utility directory)"
+              continue
+            fi
+            
+            lambda_name="bis3-defense-${lambda_dir_clean}"
             echo "::group::Deploying $lambda_name"
 
-            cd "$lambda_dir"
+            cd "$lambda_dir_clean"
 
             # Install dependencies if requirements.txt exists
             if [ -f requirements.txt ]; then
