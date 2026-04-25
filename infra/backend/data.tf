@@ -50,6 +50,7 @@ locals {
     "auth-passkey-register-verify",
     "auth-passkey-auth-options",
     "auth-passkey-auth-verify",
+    "auth-verify-srp",
   ]
 
   # 1 admin-* Lambda function name (uses lambda_admin role)

@@ -1,0 +1,2 @@
+# auth-verify-srp does not need python-jose (no JWT verification yet)
+# boto3 is built into Lambda runtime

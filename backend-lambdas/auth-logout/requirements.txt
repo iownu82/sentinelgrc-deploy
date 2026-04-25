@@ -1,0 +1,2 @@
+# auth-logout - no external dependencies
+# boto3 is in Lambda runtime

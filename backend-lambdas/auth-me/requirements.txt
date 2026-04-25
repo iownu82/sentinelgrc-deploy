@@ -1,0 +1,2 @@
+# auth-me requires python-jose for JWT verification
+python-jose[cryptography]==3.3.0

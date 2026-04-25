@@ -50,6 +50,7 @@ locals {
     "auth-passkey-register-verify"  = { path = "auth/passkey/register-verify",  method = "POST", lambda_type = "auth" }
     "auth-passkey-auth-options"     = { path = "auth/passkey/auth-options",     method = "POST", lambda_type = "auth" }
     "auth-passkey-auth-verify"      = { path = "auth/passkey/auth-verify",      method = "POST", lambda_type = "auth" }
+    "auth-verify-srp"               = { path = "auth/verify-srp",                method = "POST", lambda_type = "auth" }
     "admin-force-password-reset"    = { path = "admin/force-password-reset",    method = "POST", lambda_type = "admin" }
   }
 

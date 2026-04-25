@@ -1,0 +1,3 @@
+# auth-login does not need python-jose (no JWT verification in this Lambda)
+# boto3 is built into Lambda runtime - no need to vendor it
+# This Lambda has zero external dependencies beyond _shared/*.py
