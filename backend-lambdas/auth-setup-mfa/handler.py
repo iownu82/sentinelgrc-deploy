@@ -131,6 +131,8 @@ def lambda_handler(event: dict, context) -> dict:
         return bad_request("Email is required", error_code="MISSING_EMAIL")
     
     # Length sanity
+    if len(session) < 20:
+        return bad_request("Invalid session token", error_code="INVALID_SESSION")
     if len(session) > 8192:
         return bad_request("Session token too long", error_code="INVALID_SESSION")
     
