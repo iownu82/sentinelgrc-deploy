@@ -174,7 +174,9 @@ def lambda_handler(event: dict, context) -> dict:
     
     # Note: Cognito may not return a Session for SRP flows.
     # Session is included only when needed (typically for MFA challenges, not for PASSWORD_VERIFIER).
-    # An empty session is valid - client passes back what we give them.
+    # Default to empty string so JSON serializes cleanly (avoid null in response).
+    if session is None:
+        session = ""
     
     # Step 4: Audit log success
     audit_log_attempt(
