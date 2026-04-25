@@ -98,10 +98,13 @@ def lambda_handler(event: dict, context) -> dict:
     timestamp = body.get("timestamp")
     secret_block = body.get("secretBlock")
     
-    # Validate all required fields
+    # Session may be empty for SRP flows where Cognito didn't issue one - that's valid
+    if session is None or not isinstance(session, str):
+        return bad_request("Missing or invalid field: session", error_code="MISSING_FIELD")
+
+    # Validate other required fields (these CANNOT be empty)
     required_fields = {
         "email": email,
-        "session": session,
         "passwordClaimSignature": password_claim_signature,
         "timestamp": timestamp,
         "secretBlock": secret_block,

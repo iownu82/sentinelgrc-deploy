@@ -172,13 +172,9 @@ def lambda_handler(event: dict, context) -> dict:
     session = cognito_response.get("Session") or cognito_response.get("session")
     challenge_parameters = cognito_response.get("ChallengeParameters") or cognito_response.get("challengeParameters") or {}
     
-    if not session:
-        # Log the actual response keys to diagnose
-        logger.error(
-            "Cognito returned PASSWORD_VERIFIER without session. Response keys: %s",
-            list(cognito_response.keys()),
-        )
-        return internal_error("Authentication flow error")
+    # Note: Cognito may not return a Session for SRP flows.
+    # Session is included only when needed (typically for MFA challenges, not for PASSWORD_VERIFIER).
+    # An empty session is valid - client passes back what we give them.
     
     # Step 4: Audit log success
     audit_log_attempt(
