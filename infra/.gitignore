@@ -21,3 +21,6 @@ crash.*.log
 
 # Mac OS metadata
 .DS_Store
+
+# Terraform build artifacts
+.terraform-build/
