@@ -1,0 +1,23 @@
+# Local Terraform state files - NEVER commit these
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+# Terraform working directory (provider plugins, modules cache)
+.terraform/
+.terraform.lock.hcl
+
+# Sensitive variable files (may contain secrets/credentials)
+*.tfvars
+!*.tfvars.example
+
+# Plan output files
+*.tfplan
+*.plan
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Mac OS metadata
+.DS_Store
