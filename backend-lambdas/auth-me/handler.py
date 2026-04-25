@@ -73,3 +73,6 @@ def lambda_handler(event: dict, context) -> dict:
     user_info = extract_user_info(claims)
     
     return success({"user": user_info})
+
+# Alias for Lambda's configured entry point: handler.handler
+handler = lambda_handler

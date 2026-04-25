@@ -92,3 +92,6 @@ def lambda_handler(event: dict, context) -> dict:
         data={"status": "logged_out"},
         cookies=clear_session_cookies(),
     )
+
+# Alias for Lambda's configured entry point: handler.handler
+handler = lambda_handler

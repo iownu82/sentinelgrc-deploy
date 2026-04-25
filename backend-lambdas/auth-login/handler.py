@@ -191,3 +191,6 @@ def lambda_handler(event: dict, context) -> dict:
             "SRP_B": challenge_parameters.get("SRP_B"),
         },
     })
+
+# Alias for Lambda's configured entry point: handler.handler
+handler = lambda_handler

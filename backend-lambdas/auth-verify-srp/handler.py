@@ -247,3 +247,6 @@ def lambda_handler(event: dict, context) -> dict:
         extra={"actual_challenge": challenge_name},
     )
     return internal_error("Authentication flow error")
+
+# Alias for Lambda's configured entry point: handler.handler
+handler = lambda_handler

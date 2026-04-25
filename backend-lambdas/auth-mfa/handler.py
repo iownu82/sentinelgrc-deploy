@@ -251,3 +251,6 @@ def lambda_handler(event: dict, context) -> dict:
         },
         cookies=cookies,
     )
+
+# Alias for Lambda's configured entry point: handler.handler
+handler = lambda_handler
