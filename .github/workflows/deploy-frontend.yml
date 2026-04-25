@@ -1,0 +1,99 @@
+# .github/workflows/deploy-frontend.yml
+#
+# Deploys frontend assets to AWS GovCloud on push to main or v1.10-* branches.
+# Two operations: S3 sync of built React app + frontend Lambda code update.
+# Uses GitHub Actions OIDC to assume github-actions-frontend-deploy IAM role.
+
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - 'v1.10-*'
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-gov-west-1
+  AWS_ROLE_ARN: arn:aws-us-gov:iam::615978631048:role/github-actions-frontend-deploy
+  S3_BUCKET: bis3-defense-app-staging
+  LAMBDA_NAME: bis3-defense-frontend-stub
+
+jobs:
+  deploy:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-actions-frontend-${{ github.run_id }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Check for frontend directory
+        id: check_frontend
+        run: |
+          if [ -d "frontend" ] && [ -f "frontend/package.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No frontend/ directory or package.json yet - real React SPA comes in Stage 7"
+          fi
+
+      - name: Set up Node.js
+        if: steps.check_frontend.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install and build frontend
+        if: steps.check_frontend.outputs.exists == 'true'
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Sync built assets to S3
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: |
+          aws s3 sync frontend/dist/ s3://${{ env.S3_BUCKET }}/ \
+            --delete \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Deployment summary
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: |
+          echo "## Frontend Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Deployed at $(date -u) by ${{ github.actor }} from commit ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "S3 bucket: s3://${{ env.S3_BUCKET }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: No-op summary
+        if: steps.check_frontend.outputs.exists == 'false'
+        run: |
+          echo "## No Frontend Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The frontend/ directory does not exist yet. Real React SPA will be added in Stage 7." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This workflow run validated:" >> $GITHUB_STEP_SUMMARY
+          echo "- OIDC federation to GovCloud is working" >> $GITHUB_STEP_SUMMARY
+          echo "- IAM role assumption succeeded" >> $GITHUB_STEP_SUMMARY

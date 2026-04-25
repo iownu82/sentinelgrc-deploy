@@ -1,0 +1,143 @@
+# .github/workflows/deploy-backend.yml
+#
+# Deploys backend Lambda code to AWS GovCloud on push to main or v1.10-* branches.
+# Uses GitHub Actions OIDC to assume github-actions-backend-deploy IAM role.
+# No long-lived AWS credentials in GitHub Secrets.
+#
+# Federal compliance:
+#   AC-2     Account Management - workflow uses IAM role identity
+#   AC-3     Access Enforcement - role has scoped Lambda permissions only
+#   AU-2     Audit Events - all role assumptions logged to CloudTrail
+#   CM-3     Configuration Change Control - PR-required deploys
+#   IA-5     Authenticator Management - short-lived OIDC tokens
+
+name: Deploy Backend Lambdas
+
+on:
+  push:
+    branches:
+      - main
+      - 'v1.10-*'
+    paths:
+      - 'backend-lambdas/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+# Required for OIDC authentication
+permissions:
+  id-token: write    # needed to request OIDC token
+  contents: read     # needed to checkout code
+
+env:
+  AWS_REGION: us-gov-west-1
+  AWS_ROLE_ARN: arn:aws-us-gov:iam::615978631048:role/github-actions-backend-deploy
+
+jobs:
+  deploy:
+    name: Deploy Backend Lambdas
+    runs-on: ubuntu-latest
+
+    # Skip if commit message contains [skip ci]
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-actions-backend-${{ github.run_id }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check for backend-lambdas directory
+        id: check_lambdas
+        run: |
+          if [ -d "backend-lambdas" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No backend-lambdas/ directory yet - placeholders are inline in Terraform until Stage 6"
+          fi
+
+      - name: Package and deploy each Lambda
+        if: steps.check_lambdas.outputs.exists == 'true'
+        run: |
+          cd backend-lambdas
+          for lambda_dir in */; do
+            lambda_name="bis3-defense-${lambda_dir%/}"
+            echo "::group::Deploying $lambda_name"
+
+            cd "$lambda_dir"
+
+            # Install dependencies if requirements.txt exists
+            if [ -f requirements.txt ]; then
+              pip install -r requirements.txt -t .
+            fi
+
+            # Create deployment package
+            zip -r ../"$lambda_name".zip . -x "*.pyc" -x "__pycache__/*"
+            cd ..
+
+            # Update Lambda code
+            aws lambda update-function-code \
+              --function-name "$lambda_name" \
+              --zip-file "fileb://$lambda_name.zip" \
+              --publish \
+              --region ${{ env.AWS_REGION }}
+
+            # Get the new version number
+            NEW_VERSION=$(aws lambda list-versions-by-function \
+              --function-name "$lambda_name" \
+              --region ${{ env.AWS_REGION }} \
+              --query 'Versions[-1].Version' --output text)
+
+            echo "Published version $NEW_VERSION for $lambda_name"
+
+            # Update or create 'live' alias to point to the new version
+            if aws lambda get-alias --function-name "$lambda_name" --name live --region ${{ env.AWS_REGION }} 2>/dev/null; then
+              aws lambda update-alias \
+                --function-name "$lambda_name" \
+                --name live \
+                --function-version "$NEW_VERSION" \
+                --region ${{ env.AWS_REGION }}
+              echo "Updated 'live' alias to version $NEW_VERSION"
+            else
+              aws lambda create-alias \
+                --function-name "$lambda_name" \
+                --name live \
+                --function-version "$NEW_VERSION" \
+                --region ${{ env.AWS_REGION }}
+              echo "Created 'live' alias pointing to version $NEW_VERSION"
+            fi
+
+            echo "::endgroup::"
+          done
+
+      - name: Deployment summary
+        if: steps.check_lambdas.outputs.exists == 'true'
+        run: |
+          echo "## Backend Lambda Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Deployed at $(date -u) by ${{ github.actor }} from commit ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: No-op summary
+        if: steps.check_lambdas.outputs.exists == 'false'
+        run: |
+          echo "## No Backend Lambdas Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The backend-lambdas/ directory does not exist yet. Real Lambda code will be added in Stage 6." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This workflow run validated:" >> $GITHUB_STEP_SUMMARY
+          echo "- OIDC federation to GovCloud is working" >> $GITHUB_STEP_SUMMARY
+          echo "- IAM role assumption succeeded" >> $GITHUB_STEP_SUMMARY
+          echo "- AWS CLI calls authenticate correctly" >> $GITHUB_STEP_SUMMARY
