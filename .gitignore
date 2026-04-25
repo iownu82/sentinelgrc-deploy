@@ -1,2 +1,5 @@
 .vercel
 .env*.local
+
+# Local audit data (contains AWS resource IDs/ARNs)
+bis3-defense-audit/
