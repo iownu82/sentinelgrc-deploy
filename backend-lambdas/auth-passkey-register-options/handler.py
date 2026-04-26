@@ -128,10 +128,22 @@ def lambda_handler(event: dict, context) -> dict:
 
     exclude_credentials = []
     for cred in existing_credentials:
+        cred_id = cred.get("credential_id", "")
+        # Skip non-credential rows (pending challenges, etc.)
+        if not cred_id or cred_id.startswith("_challenge_"):
+            continue
+        # base64url padding can be 0, 1, 2, or 3 chars depending on string length.
+        # Always-pad-with-"==" was wrong; use proper modulo math instead.
+        padded = cred_id + "=" * (-len(cred_id) % 4)
+        try:
+            decoded = base64.urlsafe_b64decode(padded)
+        except (ValueError, Exception) as e:
+            logger.warning("Skipping credential with invalid id %s: %s", cred_id[:32], e)
+            continue
         # WebAuthn library expects PublicKeyCredentialDescriptor objects;
         # we'll pass them as dicts and the library will accept them.
         exclude_credentials.append({
-            "id": base64.urlsafe_b64decode(cred["credential_id"] + "=="),
+            "id": decoded,
             "type": "public-key",
         })
 
