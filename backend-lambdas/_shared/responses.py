@@ -28,6 +28,12 @@ _DEFAULT_SECURITY_HEADERS = {
     "Pragma": "no-cache",
     # CSP: deny everything by default. Each Lambda can override if needed.
     "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+    # CORS: required for browser-based clients. The API requires Bearer
+    # tokens for auth so wide-open Allow-Origin is acceptable security-wise.
+    # Tighten to an allowlist when prod domains are stable.
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent",
+    "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 }
 
 

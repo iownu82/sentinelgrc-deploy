@@ -152,6 +152,9 @@ resource "aws_api_gateway_deployment" "backend" {
       [for k, v in aws_api_gateway_resource.endpoint : v.id],
       [for k, v in aws_api_gateway_method.endpoint : v.id],
       [for k, v in aws_api_gateway_integration.endpoint : v.id],
+      [for k, v in aws_api_gateway_method.options : v.id],
+      [for k, v in aws_api_gateway_integration.options : v.id],
+      [for k, v in aws_api_gateway_integration_response.options : v.id],
     ]))
   }
 
@@ -218,4 +221,77 @@ resource "aws_api_gateway_base_path_mapping" "api_staging" {
   api_id      = aws_api_gateway_rest_api.backend.id
   stage_name  = aws_api_gateway_stage.staging.stage_name
   domain_name = aws_api_gateway_domain_name.api_staging.domain_name
+}
+
+# ============================================================================
+# CORS PREFLIGHT (OPTIONS) — one per endpoint
+# ============================================================================
+# Browsers send OPTIONS before any cross-origin request with custom headers
+# (like Authorization). Without these, the browser blocks the actual request.
+#
+# Mock integration: returns CORS headers without invoking any Lambda.
+# Allow-Origin is set to "*" since the API requires Bearer tokens for auth
+# anyway — same security posture as before, just CORS-compliant now.
+
+resource "aws_api_gateway_method" "options" {
+  for_each = local.endpoint_routes
+
+  rest_api_id   = aws_api_gateway_rest_api.backend.id
+  resource_id   = aws_api_gateway_resource.endpoint[each.key].id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options" {
+  for_each = local.endpoint_routes
+
+  rest_api_id = aws_api_gateway_rest_api.backend.id
+  resource_id = aws_api_gateway_resource.endpoint[each.key].id
+  http_method = aws_api_gateway_method.options[each.key].http_method
+
+  type = "MOCK"
+
+  request_templates = {
+    "application/json" = jsonencode({ statusCode = 200 })
+  }
+}
+
+resource "aws_api_gateway_method_response" "options" {
+  for_each = local.endpoint_routes
+
+  rest_api_id = aws_api_gateway_rest_api.backend.id
+  resource_id = aws_api_gateway_resource.endpoint[each.key].id
+  http_method = aws_api_gateway_method.options[each.key].http_method
+  status_code = "200"
+
+  response_models = {
+    "application/json" = "Empty"
+  }
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+    "method.response.header.Access-Control-Max-Age"       = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "options" {
+  for_each = local.endpoint_routes
+
+  rest_api_id = aws_api_gateway_rest_api.backend.id
+  resource_id = aws_api_gateway_resource.endpoint[each.key].id
+  http_method = aws_api_gateway_method.options[each.key].http_method
+  status_code = aws_api_gateway_method_response.options[each.key].status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+    "method.response.header.Access-Control-Max-Age"       = "'600'"
+  }
+
+  depends_on = [
+    aws_api_gateway_integration.options,
+  ]
 }
