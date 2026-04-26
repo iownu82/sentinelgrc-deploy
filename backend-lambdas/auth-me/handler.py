@@ -55,15 +55,29 @@ def lambda_handler(event: dict, context) -> dict:
     Response (not authenticated):
         401 Unauthorized
     """
-    # Step 1: Prefer ID token (carries email + custom attributes), fall back to access token
+    # Step 1: Look for Bearer token in Authorization header first (browser SPA flow).
+    # Fall back to cookies (legacy/server-side flow that issues httpOnly cookies).
+    headers = event.get("headers") or {}
+    # API Gateway lowercases header names but normalize defensively
+    auth_header = (
+        headers.get("Authorization")
+        or headers.get("authorization")
+        or ""
+    )
+
+    bearer_token = None
+    if auth_header.lower().startswith("bearer "):
+        bearer_token = auth_header[7:].strip() or None
+
     cookies = parse_cookies(event)
-    id_token = cookies.get(ID_TOKEN_COOKIE)
+    id_token = bearer_token or cookies.get(ID_TOKEN_COOKIE)
     access_token = cookies.get(ACCESS_TOKEN_COOKIE)
-    
+
     if not id_token and not access_token:
         return unauthorized("Not authenticated")
-    
-    # Step 2: Verify whichever token we have
+
+    # Step 2: Verify whichever token we have. Prefer ID token (Bearer or cookie)
+    # since it carries email + custom attributes; fall back to access token cookie.
     try:
         if id_token:
             claims = verify_id_token(id_token)
