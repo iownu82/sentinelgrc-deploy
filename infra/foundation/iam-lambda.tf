@@ -108,6 +108,8 @@ data "aws_iam_policy_document" "lambda_cognito_user" {
       "cognito-idp:GetUserPoolMfaConfig",
       "cognito-idp:DescribeUserPoolClient",
       "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminInitiateAuth",
+      "cognito-idp:AdminRespondToAuthChallenge",
     ]
     resources = [local.cognito_user_pool_arn]
   }

@@ -96,9 +96,53 @@ resource "aws_cognito_user_pool" "main" {
   }
 
   # Lambda triggers for CUSTOM_AUTH (passkey) flow
-  # NOTE: This is empty initially to match imported state.
-  # We'll add it in a separate apply after import succeeds.
-  lambda_config {}
+  lambda_config {
+    define_auth_challenge          = local.cognito_trigger_define_arn
+    create_auth_challenge          = local.cognito_trigger_create_arn
+    verify_auth_challenge_response = local.cognito_trigger_verify_arn
+  }
+}
+
+# ============================================================================
+# Cognito CUSTOM_AUTH trigger ARNs
+# ============================================================================
+# These are computed locals so we don't have a cross-module dependency cycle.
+# The trigger Lambda functions live in the backend module; we reference their
+# ARNs by deterministic naming convention.
+locals {
+  cognito_trigger_define_arn = "arn:aws-us-gov:lambda:us-gov-west-1:${data.aws_caller_identity.current.account_id}:function:bis3-defense-auth-define-challenge"
+  cognito_trigger_create_arn = "arn:aws-us-gov:lambda:us-gov-west-1:${data.aws_caller_identity.current.account_id}:function:bis3-defense-auth-create-challenge"
+  cognito_trigger_verify_arn = "arn:aws-us-gov:lambda:us-gov-west-1:${data.aws_caller_identity.current.account_id}:function:bis3-defense-auth-verify-challenge"
+}
+
+# ============================================================================
+# Lambda permissions - allow Cognito to invoke the 3 trigger Lambdas
+# ============================================================================
+# Cognito's service principal needs explicit permission to invoke each trigger.
+# Without these, Cognito calls fail silently with InvalidLambdaResponseException.
+
+resource "aws_lambda_permission" "cognito_invoke_define" {
+  statement_id  = "AllowCognitoInvokeDefineChallenge"
+  action        = "lambda:InvokeFunction"
+  function_name = "bis3-defense-auth-define-challenge"
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.main.arn
+}
+
+resource "aws_lambda_permission" "cognito_invoke_create" {
+  statement_id  = "AllowCognitoInvokeCreateChallenge"
+  action        = "lambda:InvokeFunction"
+  function_name = "bis3-defense-auth-create-challenge"
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.main.arn
+}
+
+resource "aws_lambda_permission" "cognito_invoke_verify" {
+  statement_id  = "AllowCognitoInvokeVerifyChallenge"
+  action        = "lambda:InvokeFunction"
+  function_name = "bis3-defense-auth-verify-challenge"
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.main.arn
 }
 
 # Output for use by other modules and Lambda env vars
@@ -110,4 +154,49 @@ output "cognito_user_pool_id" {
 output "cognito_user_pool_arn" {
   value       = aws_cognito_user_pool.main.arn
   description = "Cognito User Pool ARN"
+}
+
+# ============================================================================
+# Cognito User Pool Client (csrmfc-web)
+# ============================================================================
+# Imported from existing client anrf7jlfgfevp7c6esu705p7k.
+# Resource block matches the live config exactly.
+
+resource "aws_cognito_user_pool_client" "web" {
+  name         = "csrmfc-web"
+  user_pool_id = aws_cognito_user_pool.main.id
+
+  # Allowed auth flows
+  # CUSTOM_AUTH added in Stage 6C-2 for passkey-to-session flow
+  explicit_auth_flows = [
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_PASSWORD_AUTH",
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_CUSTOM_AUTH",
+  ]
+
+  # Token validity
+  access_token_validity  = 1
+  id_token_validity      = 1
+  refresh_token_validity = 30
+
+  token_validity_units {
+    access_token  = "hours"
+    id_token      = "hours"
+    refresh_token = "days"
+  }
+
+  # Auth session duration (for SRP / MFA / CUSTOM_AUTH challenge chain)
+  auth_session_validity = 3
+
+  # Enable refresh token revocation (required for our auth-logout Lambda)
+  enable_token_revocation = true
+
+  # Don't differentiate user-not-found from invalid-credentials (IA-6)
+  prevent_user_existence_errors = "ENABLED"
+}
+
+output "cognito_user_pool_client_id" {
+  value       = aws_cognito_user_pool_client.web.id
+  description = "Cognito User Pool Client ID for the web SPA"
 }

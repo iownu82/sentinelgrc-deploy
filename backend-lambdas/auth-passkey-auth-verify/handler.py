@@ -286,22 +286,120 @@ def lambda_handler(event: dict, context) -> dict:
     # Cognito CUSTOM_AUTH wiring to be in place. For now, we return a "verified"
     # status and the next deployment iteration will add the Cognito triggers.
 
+    # Step 8: Drive Cognito CUSTOM_AUTH to get real session tokens
+    #
+    # We have already verified the assertion locally (defense in depth). Now we
+    # ask Cognito to ALSO verify it via the CUSTOM_AUTH triggers we configured
+    # so it issues real AuthenticationResult tokens that match its session/JWT
+    # security boundary.
+    #
+    # Step 8a: Look up user's email (Cognito CUSTOM_AUTH expects USERNAME)
+    try:
+        cognito_admin_resp = cognito.admin_get_user(
+            UserPoolId=COGNITO_USER_POOL_ID,
+            Username=user_sub,
+        )
+        user_email = None
+        for attr in cognito_admin_resp.get("UserAttributes", []):
+            if attr["Name"] == "email":
+                user_email = attr["Value"]
+                break
+        if not user_email:
+            logger.error("admin_get_user returned no email for verified user")
+            return internal_error("User lookup failed")
+    except ClientError:
+        logger.exception("Failed to look up user email")
+        return internal_error("User lookup failed")
+
+    # Step 8b: Initiate CUSTOM_AUTH flow
+    # This triggers define-challenge -> create-challenge -> we get a session
+    try:
+        init_resp = cognito.admin_initiate_auth(
+            UserPoolId=COGNITO_USER_POOL_ID,
+            ClientId=COGNITO_CLIENT_ID,
+            AuthFlow="CUSTOM_AUTH",
+            AuthParameters={
+                "USERNAME": user_email,
+            },
+        )
+    except ClientError as e:
+        logger.exception("admin_initiate_auth failed")
+        return internal_error("Authentication initiation failed")
+
+    challenge_name = init_resp.get("ChallengeName")
+    cognito_session = init_resp.get("Session")
+
+    if challenge_name != "CUSTOM_CHALLENGE" or not cognito_session:
+        logger.error(
+            "Unexpected initiate_auth response: challenge=%s session=%s",
+            challenge_name, bool(cognito_session)
+        )
+        return internal_error("Unexpected auth flow state")
+
+    # Step 8c: Respond to the CUSTOM_CHALLENGE with the assertion
+    # This triggers verify-challenge -> define-challenge says issueTokens=true
+    # -> Cognito returns AuthenticationResult
+    try:
+        respond_resp = cognito.admin_respond_to_auth_challenge(
+            UserPoolId=COGNITO_USER_POOL_ID,
+            ClientId=COGNITO_CLIENT_ID,
+            ChallengeName="CUSTOM_CHALLENGE",
+            Session=cognito_session,
+            ChallengeResponses={
+                "USERNAME": user_email,
+                "ANSWER": json.dumps(credential_dict),
+            },
+        )
+    except ClientError as e:
+        logger.exception("admin_respond_to_auth_challenge failed")
+        return internal_error("Authentication challenge response failed")
+
+    auth_result = respond_resp.get("AuthenticationResult")
+    if not auth_result:
+        logger.error("CUSTOM_AUTH did not issue tokens: %s", respond_resp.get("ChallengeName"))
+        return unauthorized("Authentication failed")
+
+    access_token = auth_result.get("AccessToken")
+    id_token = auth_result.get("IdToken")
+    refresh_token = auth_result.get("RefreshToken")
+
+    if not all([access_token, id_token, refresh_token]):
+        logger.error("Incomplete tokens returned from CUSTOM_AUTH")
+        return internal_error("Token issuance failed")
+
+    # Step 8d: Verify the ID token to extract user info for response body
+    try:
+        id_claims = verify_id_token(id_token)
+        user_info = extract_user_info(id_claims)
+    except JWTVerificationError as e:
+        logger.error("Failed to verify ID token after CUSTOM_AUTH: %s", e)
+        return internal_error("Token verification failed")
+
+    # Step 8e: Generate CSRF + build cookies
+    csrf_token = secrets.token_urlsafe(32)
+    cookies = build_session_cookies(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        csrf_token=csrf_token,
+        id_token=id_token,
+    )
+
+    # Step 9: Audit log success
     logger.info(json.dumps({
-        "audit_event": "passkey_auth_verified",
+        "audit_event": "passkey_auth_success",
         "user_sub": user_sub,
         "credential_id": cred_id_str[:20] + "...",
         "friendly_name": cred_item.get("friendly_name", "unknown"),
         "request_id": request_id,
     }))
 
-    # MVP response: return verification status without session tokens
-    # Stage 6C-2 will wire this into Cognito CUSTOM_AUTH for real session issuance
-    return success({
-        "status": "verified",
-        "message": "Passkey verified. Cognito CUSTOM_AUTH wiring pending - session tokens not yet issued via this flow.",
-        "user_sub": user_sub,
-        "credential_friendly_name": cred_item.get("friendly_name", "unknown"),
-    })
+    return success(
+        data={
+            "status": "authenticated",
+            "user": user_info,
+        },
+        cookies=cookies,
+    )
 
 
 # Alias for Lambda's configured entry point: handler.handler

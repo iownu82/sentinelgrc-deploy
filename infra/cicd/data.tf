@@ -34,7 +34,7 @@ locals {
   # Tightened in Stage 5 to specific branches if desired
   github_subject_pattern = "repo:${local.github_org}/${local.github_repo}:*"
 
-  # 14 backend Lambda function names (must match backend/data.tf)
+  # 17 backend Lambda function names (must match backend/data.tf)
   backend_lambda_names = [
     "bis3-defense-auth-login",
     "bis3-defense-auth-mfa",
@@ -50,6 +50,10 @@ locals {
     "bis3-defense-auth-passkey-auth-options",
     "bis3-defense-auth-passkey-auth-verify",
     "bis3-defense-auth-verify-srp",
+    # Cognito CUSTOM_AUTH triggers (Stage 6C-2)
+    "bis3-defense-auth-define-challenge",
+    "bis3-defense-auth-create-challenge",
+    "bis3-defense-auth-verify-challenge",
     "bis3-defense-admin-force-password-reset",
   ]
 
