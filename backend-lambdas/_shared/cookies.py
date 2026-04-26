@@ -11,7 +11,7 @@ Federal compliance:
     AC-3   Access Enforcement - httpOnly prevents JS access (XSS hardening)
 """
 
-from typing import Optional
+from typing import Optional, Tuple
 
 
 # Cookie domain - locked to API subdomain only per federal best practice.
@@ -194,3 +194,37 @@ def parse_cookies(event: dict) -> dict[str, str]:
                 cookies[name.strip()] = value.strip()
 
     return cookies
+
+
+def extract_auth_token(event: dict) -> Tuple[Optional[str], Optional[str]]:
+    """
+    Extract auth tokens from a Lambda event, supporting both:
+      1. Authorization: Bearer <token> header (browser SPA / API client flow)
+      2. httpOnly cookies bis3_id / bis3_access (cookie-issuing SRP+MFA flow)
+
+    Bearer token (assumed to be an ID token from amazon-cognito-identity-js)
+    takes precedence over cookies.
+
+    Returns:
+        (id_token, access_token) - either may be None.
+
+    Federal compliance:
+        AC-3, IA-2 - supports multiple authenticated client patterns
+    """
+    headers = event.get("headers") or {}
+    auth_header = (
+        headers.get("Authorization")
+        or headers.get("authorization")
+        or ""
+    )
+
+    bearer_token = None
+    if auth_header.lower().startswith("bearer "):
+        bearer_token = auth_header[7:].strip() or None
+
+    cookies = parse_cookies(event)
+    id_token = bearer_token or cookies.get(ID_TOKEN_COOKIE)
+    access_token = cookies.get(ACCESS_TOKEN_COOKIE)
+
+    return id_token, access_token
+

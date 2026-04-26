@@ -20,7 +20,7 @@ import sys
 
 sys.path.insert(0, "/var/task")
 
-from cookies import parse_cookies, ID_TOKEN_COOKIE, ACCESS_TOKEN_COOKIE
+from cookies import extract_auth_token
 from jwt_verifier import (
     verify_id_token,
     verify_access_token,
@@ -55,23 +55,8 @@ def lambda_handler(event: dict, context) -> dict:
     Response (not authenticated):
         401 Unauthorized
     """
-    # Step 1: Look for Bearer token in Authorization header first (browser SPA flow).
-    # Fall back to cookies (legacy/server-side flow that issues httpOnly cookies).
-    headers = event.get("headers") or {}
-    # API Gateway lowercases header names but normalize defensively
-    auth_header = (
-        headers.get("Authorization")
-        or headers.get("authorization")
-        or ""
-    )
-
-    bearer_token = None
-    if auth_header.lower().startswith("bearer "):
-        bearer_token = auth_header[7:].strip() or None
-
-    cookies = parse_cookies(event)
-    id_token = bearer_token or cookies.get(ID_TOKEN_COOKIE)
-    access_token = cookies.get(ACCESS_TOKEN_COOKIE)
+    # Step 1: Extract auth token from Authorization header (Bearer) or cookie.
+    id_token, access_token = extract_auth_token(event)
 
     if not id_token and not access_token:
         return unauthorized("Not authenticated")

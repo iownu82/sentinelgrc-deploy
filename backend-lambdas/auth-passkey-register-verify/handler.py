@@ -34,7 +34,7 @@ import time
 sys.path.insert(0, "/var/task")
 sys.path.insert(0, "/opt/python")  # Lambda layer path
 
-from cookies import parse_cookies, ID_TOKEN_COOKIE, ACCESS_TOKEN_COOKIE
+from cookies import extract_auth_token
 from jwt_verifier import verify_id_token, verify_access_token, JWTVerificationError
 from responses import success, bad_request, unauthorized, internal_error
 
@@ -96,9 +96,7 @@ def lambda_handler(event: dict, context) -> dict:
     request_id = context.aws_request_id if context else "no-context"
 
     # Step 1: User must be authenticated
-    cookies = parse_cookies(event)
-    id_token = cookies.get(ID_TOKEN_COOKIE)
-    access_token = cookies.get(ACCESS_TOKEN_COOKIE)
+    id_token, access_token = extract_auth_token(event)
 
     if not id_token and not access_token:
         return unauthorized("Authentication required")
