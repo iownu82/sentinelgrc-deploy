@@ -20,8 +20,9 @@ import sys
 
 sys.path.insert(0, "/var/task")
 
-from cookies import parse_cookies, ACCESS_TOKEN_COOKIE
+from cookies import parse_cookies, ID_TOKEN_COOKIE, ACCESS_TOKEN_COOKIE
 from jwt_verifier import (
+    verify_id_token,
     verify_access_token,
     extract_user_info,
     JWTVerificationError,
@@ -54,18 +55,22 @@ def lambda_handler(event: dict, context) -> dict:
     Response (not authenticated):
         401 Unauthorized
     """
-    # Step 1: Extract access token from cookies
+    # Step 1: Prefer ID token (carries email + custom attributes), fall back to access token
     cookies = parse_cookies(event)
+    id_token = cookies.get(ID_TOKEN_COOKIE)
     access_token = cookies.get(ACCESS_TOKEN_COOKIE)
     
-    if not access_token:
+    if not id_token and not access_token:
         return unauthorized("Not authenticated")
     
-    # Step 2: Verify JWT signature + expiration + claims
+    # Step 2: Verify whichever token we have
     try:
-        claims = verify_access_token(access_token)
+        if id_token:
+            claims = verify_id_token(id_token)
+        else:
+            # Fallback for sessions issued before ID cookie was added
+            claims = verify_access_token(access_token)
     except JWTVerificationError as e:
-        # Log specific verification failure for security monitoring
         logger.info("JWT verification failed: %s", str(e))
         return unauthorized("Session expired or invalid")
     

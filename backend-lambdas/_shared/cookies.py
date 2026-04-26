@@ -20,6 +20,7 @@ COOKIE_DOMAIN = "api.staging.app.bis3ai.com"
 
 # Cookie names
 ACCESS_TOKEN_COOKIE = "bis3_access"
+ID_TOKEN_COOKIE = "bis3_id"
 REFRESH_TOKEN_COOKIE = "bis3_refresh"
 CSRF_COOKIE = "bis3_csrf"
 
@@ -77,6 +78,15 @@ def build_access_token_cookie(token: str) -> str:
     )
 
 
+def build_id_token_cookie(token: str) -> str:
+    """Build Set-Cookie for the ID token (httpOnly, 1h). Used for user info claims."""
+    return build_cookie(
+        ID_TOKEN_COOKIE,
+        token,
+        max_age=ACCESS_TOKEN_MAX_AGE,
+    )
+
+
 def build_refresh_token_cookie(token: str) -> str:
     """Build Set-Cookie for the refresh token (httpOnly, 30d)."""
     return build_cookie(
@@ -107,17 +117,22 @@ def build_session_cookies(
     access_token: str,
     refresh_token: str,
     csrf_token: str,
+    id_token: str = None,
 ) -> list[str]:
     """
-    Build all 3 session cookies as a list (for multiValueHeaders).
+    Build all session cookies as a list (for multiValueHeaders).
 
     Returns list of Set-Cookie values to be returned in API Gateway response.
+    Includes ID token cookie when provided (carries email + custom attributes).
     """
-    return [
+    cookies = [
         build_access_token_cookie(access_token),
         build_refresh_token_cookie(refresh_token),
         build_csrf_cookie(csrf_token),
     ]
+    if id_token:
+        cookies.append(build_id_token_cookie(id_token))
+    return cookies
 
 
 def clear_session_cookies() -> list[str]:
@@ -130,6 +145,7 @@ def clear_session_cookies() -> list[str]:
     """
     return [
         build_cookie(ACCESS_TOKEN_COOKIE, "", max_age=0),
+        build_cookie(ID_TOKEN_COOKIE, "", max_age=0),
         build_cookie(REFRESH_TOKEN_COOKIE, "", max_age=0),
         build_cookie(CSRF_COOKIE, "", max_age=0, http_only=False),
     ]

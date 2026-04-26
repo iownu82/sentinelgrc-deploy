@@ -37,7 +37,7 @@ const API_BASE = 'https://api.staging.app.bis3ai.com';
 const USER_POOL_ID = 'us-gov-west-1_0VaQnbcFH';
 const CLIENT_ID = 'anrf7jlfgfevp7c6esu705p7k';
 const TEST_EMAIL = 'test@bis3defense.com';
-const TEST_PASSWORD = 'BIS3-Test-Password-2026!';
+const TEST_PASSWORD = 'BIS3-Test-Password-2026-Apr26!';
 
 // Lambda calls go through our API; SRP math is done locally
 const userPool = new CognitoUserPool({
@@ -189,8 +189,12 @@ async function main() {
   }
 
   const { secretCode, qrCodeUri } = associateResp.data;
-  console.log(`  TOTP secret: ${secretCode.substring(0, 8)}...`);
+  console.log(`  TOTP secret: ${secretCode.substring(0, 8)}... (full secret saved to .totp-secret)`);
   console.log(`  QR URI:      ${qrCodeUri.substring(0, 80)}...`);
+
+  // Save secret for future test runs (steady-state SOFTWARE_TOKEN_MFA path)
+  const fs = require('fs');
+  fs.writeFileSync('.totp-secret', secretCode, { mode: 0o600 });
 
   // Step 5: Generate first TOTP code from secret
   console.log('\n[Step 5] Generate first TOTP code from secret');
@@ -229,6 +233,39 @@ async function main() {
   console.log(`User: ${finalResp.data.user.email}`);
   console.log(`Role: ${finalResp.data.user.role}`);
   console.log(`Tenant: ${finalResp.data.user.tenant_id}`);
+
+  // Step 7: Validate session cookies work via GET /auth/me
+  console.log('\n[Step 7] Validate session by calling /auth/me with cookies');
+  // Reconstruct a Cookie header from the Set-Cookie values
+  const cookieHeader = setCookieHeaders
+    .map(c => c.split(';')[0])  // take just "name=value" part
+    .join('; ');
+
+  console.log(`  → GET /auth/me`);
+  console.log(`  Cookie: ${cookieHeader.substring(0, 80)}...`);
+
+  const meResp = await fetch(`${API_BASE}/auth/me`, {
+    method: 'GET',
+    headers: { 'Cookie': cookieHeader },
+  });
+  const meText = await meResp.text();
+  let meData;
+  try { meData = JSON.parse(meText); } catch { meData = { raw: meText }; }
+  console.log(`  ← ${meResp.status} ${JSON.stringify(meData).substring(0, 200)}`);
+
+  if (meResp.status === 200 && meData.user) {
+    console.log('\n  ✅ /auth/me returned user info from access token cookie');
+    console.log(`     user_id: ${meData.user.user_id}`);
+    console.log(`     email:   ${meData.user.email}`);
+    console.log(`     role:    ${meData.user.role}`);
+
+    console.log('\n═══════════════════════════════════════════════════════════');
+    console.log('🏆 FULL AUTH PIPELINE VERIFIED END-TO-END');
+    console.log('   SRP login → MFA setup → cookie issuance → JWT verification');
+    console.log('═══════════════════════════════════════════════════════════');
+  } else {
+    console.error('\n  ❌ /auth/me failed - cookie/JWT verification path broken');
+  }
 }
 
 main().catch(err => {

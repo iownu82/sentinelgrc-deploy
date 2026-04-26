@@ -4,3 +4,4 @@
 # Local audit data (contains AWS resource IDs/ARNs)
 bis3-defense-audit/
 tests/srp-login-test/node_modules/
+tests/srp-login-test/.totp-secret

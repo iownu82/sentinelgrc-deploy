@@ -309,6 +309,7 @@ def lambda_handler(event: dict, context) -> dict:
         access_token=access_token,
         refresh_token=refresh_token,
         csrf_token=csrf_token,
+        id_token=id_token,
     )
     
     # Step 2e: Audit log success
