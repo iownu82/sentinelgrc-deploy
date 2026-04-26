@@ -161,7 +161,7 @@ def lambda_handler(event: dict, context) -> dict:
         )
         if e.code == "RATE_LIMITED":
             return too_many_requests(str(e))
-        if e.code in ("INVALID_CODE", "EXPIRED_CODE"):
+        if e.code in ("INVALID_CODE", "EXPIRED_CODE", "INVALID_MFA", "EXPIRED_MFA"):
             # Don't reveal which - generic to prevent timing oracle
             return bad_request(
                 "Invalid or expired verification code",
