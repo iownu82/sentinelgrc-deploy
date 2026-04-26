@@ -128,12 +128,16 @@ def respond_to_auth_challenge(
         CognitoError: with user-safe message
     """
     try:
-        return _get_client().respond_to_auth_challenge(
-            ClientId=USER_POOL_CLIENT_ID,
-            ChallengeName=challenge_name,
-            Session=session,
-            ChallengeResponses=challenge_responses,
-        )
+        # Build kwargs - omit Session entirely when empty
+        # (boto3 enforces min length 20; some SRP flows return no session)
+        kwargs = {
+            "ClientId": USER_POOL_CLIENT_ID,
+            "ChallengeName": challenge_name,
+            "ChallengeResponses": challenge_responses,
+        }
+        if session:
+            kwargs["Session"] = session
+        return _get_client().respond_to_auth_challenge(**kwargs)
     except ClientError as e:
         raise _translate_error(e)
 
