@@ -45,6 +45,7 @@ from webauthn.helpers.structs import (
     AuthenticatorAttachment,
     ResidentKeyRequirement,
     PublicKeyCredentialDescriptor,
+    AuthenticatorTransport,
 )
 
 
@@ -142,12 +143,19 @@ def lambda_handler(event: dict, context) -> dict:
             logger.warning("Skipping credential with invalid id %s: %s", cred_id[:32], e)
             continue
         # py_webauthn's options_to_json() needs real PublicKeyCredentialDescriptor
-        # objects (it calls .id on each); plain dicts crash with AttributeError.
-        transports_list = cred.get("transports") or []
+        # objects with AuthenticatorTransport enum values, not plain strings.
+        raw_transports = cred.get("transports") or []
+        transports_enum = []
+        for t in raw_transports:
+            try:
+                transports_enum.append(AuthenticatorTransport(t))
+            except ValueError:
+                # Unknown transport string in DynamoDB - skip rather than crash
+                logger.warning("Unknown transport %r on credential, skipping", t)
         exclude_credentials.append(
             PublicKeyCredentialDescriptor(
                 id=decoded,
-                transports=transports_list if transports_list else None,
+                transports=transports_enum if transports_enum else None,
             )
         )
 
