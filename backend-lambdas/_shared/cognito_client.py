@@ -186,6 +186,63 @@ def global_sign_out(access_token: str) -> None:
 # AUDIT LOGGING HELPER
 # ============================================================================
 
+def forgot_password(username: str) -> dict[str, Any]:
+    """
+    Initiate the forgot-password flow. Cognito sends a verification code to
+    the user's email via SES (which we configured on the User Pool).
+
+    Args:
+        username: email address (Cognito treats email as username alias)
+
+    Returns:
+        Cognito ForgotPassword response containing CodeDeliveryDetails.
+
+    Raises:
+        CognitoError: with user-safe message. Note: callers should NOT
+        differentiate "user not found" from success - return generic 200
+        either way to prevent user enumeration (federal IA-6 requirement).
+    """
+    try:
+        return _get_client().forgot_password(
+            ClientId=USER_POOL_CLIENT_ID,
+            Username=username,
+        )
+    except ClientError as e:
+        raise _translate_error(e)
+
+
+def confirm_forgot_password(
+    username: str,
+    confirmation_code: str,
+    new_password: str,
+) -> dict[str, Any]:
+    """
+    Complete the forgot-password flow by verifying the code and setting
+    the new password.
+
+    Args:
+        username: email address
+        confirmation_code: 6-digit code Cognito emailed to the user
+        new_password: new password (must satisfy User Pool password policy)
+
+    Returns:
+        Cognito ConfirmForgotPassword response (empty dict on success).
+
+    Raises:
+        CognitoError: with user-safe message for invalid code, expired code,
+        weak password, etc.
+    """
+    try:
+        return _get_client().confirm_forgot_password(
+            ClientId=USER_POOL_CLIENT_ID,
+            Username=username,
+            ConfirmationCode=confirmation_code,
+            Password=new_password,
+        )
+    except ClientError as e:
+        raise _translate_error(e)
+
+
 def audit_log_attempt(
     *,
     event_type: str,

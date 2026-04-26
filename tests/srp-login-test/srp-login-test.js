@@ -37,7 +37,7 @@ const API_BASE = 'https://api.staging.app.bis3ai.com';
 const USER_POOL_ID = 'us-gov-west-1_0VaQnbcFH';
 const CLIENT_ID = 'anrf7jlfgfevp7c6esu705p7k';
 const TEST_EMAIL = 'test@bis3defense.com';
-const TEST_PASSWORD = 'BIS3-Test-Password-2026-Apr26!';
+const TEST_PASSWORD = 'BIS3-Test-Password-2026-Apr26-v3!';
 
 // Lambda calls go through our API; SRP math is done locally
 const userPool = new CognitoUserPool({
