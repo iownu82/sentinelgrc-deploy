@@ -1,0 +1,3 @@
+# webauthn and cryptography come from the bis3-defense-webauthn Lambda Layer
+# Only python-jose is needed in the function package itself (for JWT verification)
+python-jose[cryptography]==3.3.0

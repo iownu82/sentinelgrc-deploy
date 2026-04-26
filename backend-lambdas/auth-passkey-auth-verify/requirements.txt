@@ -1,0 +1,2 @@
+# webauthn comes from the bis3-defense-webauthn Lambda Layer
+python-jose[cryptography]==3.3.0

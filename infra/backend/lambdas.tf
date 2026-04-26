@@ -80,6 +80,9 @@ resource "aws_lambda_function" "auth" {
   memory_size = 256
   timeout     = 10
 
+  # Attach webauthn layer ONLY to passkey Lambdas (others do not need py_webauthn)
+  layers = can(regex("passkey", each.key)) ? [aws_lambda_layer_version.webauthn.arn] : []
+
   # VPC config - Lambda runs in private subnets
   vpc_config {
     subnet_ids         = aws_subnet.private[*].id

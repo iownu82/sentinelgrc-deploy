@@ -5,3 +5,5 @@
 bis3-defense-audit/
 tests/srp-login-test/node_modules/
 tests/srp-login-test/.totp-secret
+lambda-layers/*/python/
+infra/backend/.terraform-build/

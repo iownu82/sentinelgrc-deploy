@@ -107,9 +107,39 @@ data "aws_iam_policy_document" "lambda_cognito_user" {
       "cognito-idp:ConfirmForgotPassword",
       "cognito-idp:GetUserPoolMfaConfig",
       "cognito-idp:DescribeUserPoolClient",
+      "cognito-idp:AdminGetUser",
     ]
     resources = [local.cognito_user_pool_arn]
   }
+}
+
+# ============================================================================
+# PASSKEY DYNAMODB ACCESS
+# ============================================================================
+# Allows passkey Lambdas to read/write WebAuthn credentials in the
+# bis3-defense-passkey-credentials table.
+data "aws_iam_policy_document" "lambda_passkey_dynamodb" {
+  statement {
+    sid    = "AllowPasskeyTableRW"
+    effect = "Allow"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:Query",
+    ]
+    resources = [
+      "arn:aws-us-gov:dynamodb:us-gov-west-1:${data.aws_caller_identity.current.account_id}:table/bis3-defense-passkey-credentials",
+      "arn:aws-us-gov:dynamodb:us-gov-west-1:${data.aws_caller_identity.current.account_id}:table/bis3-defense-passkey-credentials/index/*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_auth_passkey_dynamodb" {
+  name   = "passkey-dynamodb-rw"
+  role   = aws_iam_role.lambda_auth.id
+  policy = data.aws_iam_policy_document.lambda_passkey_dynamodb.json
 }
 
 resource "aws_iam_role_policy" "lambda_auth_cognito" {
