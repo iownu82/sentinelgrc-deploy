@@ -35,7 +35,7 @@ data "aws_iam_role" "lambda_admin" {
 # Each Lambda log group is KMS-encrypted with 365-day retention.
 # We look these up to confirm they exist before deploying Lambdas.
 locals {
-  # 13 auth-* Lambda function names (will reference foundation's log groups)
+  # 16 auth-* Lambda (13 HTTP + 3 Cognito triggers) function names (will reference foundation's log groups)
   auth_lambda_names = [
     "auth-login",
     "auth-mfa",
@@ -51,6 +51,10 @@ locals {
     "auth-passkey-auth-options",
     "auth-passkey-auth-verify",
     "auth-verify-srp",
+    # Cognito CUSTOM_AUTH triggers (Stage 6C-2 - passkey-to-session flow)
+    "auth-define-challenge",
+    "auth-create-challenge",
+    "auth-verify-challenge",
   ]
 
   # 1 admin-* Lambda function name (uses lambda_admin role)
