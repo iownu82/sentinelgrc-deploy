@@ -29,9 +29,15 @@ export function PasskeyRegisterPage() {
     setStatus('running');
     try {
       const optionsJSON = await api.passkeyRegisterOptions();
-      const attResp = await startRegistration({ optionsJSON });
-      const verification = await api.passkeyRegisterVerify(attResp);
-      if (verification.verified) {
+      const { challengeId, expiresIn: _expiresIn, ...webauthnOptions } = optionsJSON;
+      const attResp = await startRegistration({ optionsJSON: webauthnOptions });
+      const verification = await api.passkeyRegisterVerify(challengeId, attResp);
+      // Lambda returns { status: "registered", credential_id: "..." } on success.
+      // Treat anything other than HTTP error + a registered status as success.
+      if (verification && (verification as { status?: string }).status === 'registered') {
+        setStatus('success');
+      } else if ((verification as { verified?: boolean }).verified) {
+        // Forward-compat: support a future { verified: true } shape too.
         setStatus('success');
       } else {
         setStatus('error');

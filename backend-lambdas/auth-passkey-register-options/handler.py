@@ -44,6 +44,7 @@ from webauthn.helpers.structs import (
     UserVerificationRequirement,
     AuthenticatorAttachment,
     ResidentKeyRequirement,
+    PublicKeyCredentialDescriptor,
 )
 
 
@@ -140,12 +141,15 @@ def lambda_handler(event: dict, context) -> dict:
         except (ValueError, Exception) as e:
             logger.warning("Skipping credential with invalid id %s: %s", cred_id[:32], e)
             continue
-        # WebAuthn library expects PublicKeyCredentialDescriptor objects;
-        # we'll pass them as dicts and the library will accept them.
-        exclude_credentials.append({
-            "id": decoded,
-            "type": "public-key",
-        })
+        # py_webauthn's options_to_json() needs real PublicKeyCredentialDescriptor
+        # objects (it calls .id on each); plain dicts crash with AttributeError.
+        transports_list = cred.get("transports") or []
+        exclude_credentials.append(
+            PublicKeyCredentialDescriptor(
+                id=decoded,
+                transports=transports_list if transports_list else None,
+            )
+        )
 
     # Step 3: Generate the registration challenge using py_webauthn
     try:

@@ -78,20 +78,31 @@ export const api = {
   me: () => apiFetch<MeResponse>('/auth/me'),
 
   passkeyRegisterOptions: () =>
-    apiFetch<PublicKeyCredentialCreationOptionsJSON>(
-      '/auth/passkey/register/options',
+    apiFetch<PublicKeyCredentialCreationOptionsJSON & { challengeId: string; expiresIn: number }>(
+      '/auth/passkey/register-options',
       { method: 'POST', body: '{}' },
     ),
 
-  passkeyRegisterVerify: (response: RegistrationResponseJSON) =>
-    apiFetch<{ verified: boolean; credentialId?: string }>(
-      '/auth/passkey/register/verify',
-      { method: 'POST', body: JSON.stringify(response) },
+  passkeyRegisterVerify: (
+    challengeId: string,
+    response: RegistrationResponseJSON,
+    friendlyName?: string,
+  ) =>
+    apiFetch<{ status?: string; verified?: boolean; credential_id?: string }>(
+      '/auth/passkey/register-verify',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          challengeId,
+          credential: response,
+          friendlyName: friendlyName ?? 'Passkey',
+        }),
+      },
     ),
 
   passkeyLoginOptions: (email?: string) =>
     apiFetch<PublicKeyCredentialRequestOptionsJSON>(
-      '/auth/passkey/login/options',
+      '/auth/passkey/auth-options',
       {
         method: 'POST',
         body: JSON.stringify(email ? { email } : {}),
@@ -101,7 +112,7 @@ export const api = {
 
   passkeyLoginVerify: (response: AuthenticationResponseJSON) =>
     apiFetch<PasskeyTokenResponse>(
-      '/auth/passkey/login/verify',
+      '/auth/passkey/auth-verify',
       { method: 'POST', body: JSON.stringify(response) },
       { auth: false },
     ),
