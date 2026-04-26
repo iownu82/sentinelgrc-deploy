@@ -197,11 +197,14 @@ def lambda_handler(event: dict, context) -> dict:
         "request_id": request_id,
     }))
 
-    return success({
-        "options": json.loads(options_to_json(options)),
+    # Flatten WebAuthn options to top level for @simplewebauthn/browser compatibility.
+    options_dict = json.loads(options_to_json(options))
+    response_body = {
+        **options_dict,
         "challengeId": challenge_id,
         "expiresIn": CHALLENGE_TTL_SECONDS,
-    })
+    }
+    return success(response_body)
 
 
 # Alias for Lambda's configured entry point: handler.handler
