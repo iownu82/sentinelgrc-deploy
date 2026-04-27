@@ -37,14 +37,12 @@ export function PasskeyLoginPage() {
     setSubmitting(true);
     try {
       // Discoverable-credential flow: email is optional.
-      const optionsJSON = await api.passkeyLoginOptions(
-        email.trim() || undefined,
-      );
+      const optionsJSON = await api.passkeyLoginOptions(email.trim());
+      const { challengeId, expiresIn: _expiresIn, ...webauthnOptions } = optionsJSON;
       const authResp = await startAuthentication({
-        optionsJSON,
-        useBrowserAutofill: !email,
+        optionsJSON: webauthnOptions,
       });
-      const tokens = await api.passkeyLoginVerify(authResp);
+      const tokens = await api.passkeyLoginVerify(challengeId, authResp);
 
       const claimedEmail =
         tokens.email ??
@@ -98,16 +96,17 @@ export function PasskeyLoginPage() {
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label htmlFor="email" className={labelClass}>
-            Email <span className="normal-case tracking-normal text-neutral-400">(optional)</span>
+            Email
           </label>
           <input
             id="email"
             type="email"
+            required
             autoComplete="username webauthn"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={inputClass}
-            placeholder="Leave blank for autofill"
+            placeholder="you@example.com"
           />
         </div>
         <button

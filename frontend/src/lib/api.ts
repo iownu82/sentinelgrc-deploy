@@ -101,7 +101,7 @@ export const api = {
     ),
 
   passkeyLoginOptions: (email?: string) =>
-    apiFetch<PublicKeyCredentialRequestOptionsJSON>(
+    apiFetch<PublicKeyCredentialRequestOptionsJSON & { challengeId: string; expiresIn: number }>(
       '/auth/passkey/auth-options',
       {
         method: 'POST',
@@ -110,10 +110,16 @@ export const api = {
       { auth: false },
     ),
 
-  passkeyLoginVerify: (response: AuthenticationResponseJSON) =>
+  passkeyLoginVerify: (
+    challengeId: string,
+    response: AuthenticationResponseJSON,
+  ) =>
     apiFetch<PasskeyTokenResponse>(
       '/auth/passkey/auth-verify',
-      { method: 'POST', body: JSON.stringify(response) },
+      {
+        method: 'POST',
+        body: JSON.stringify({ challengeId, credential: response }),
+      },
       { auth: false },
     ),
 };
