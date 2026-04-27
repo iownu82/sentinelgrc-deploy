@@ -41,6 +41,7 @@ from webauthn import generate_authentication_options, options_to_json
 from webauthn.helpers.structs import (
     UserVerificationRequirement,
     PublicKeyCredentialDescriptor,
+    AuthenticatorTransport,
 )
 
 
@@ -138,11 +139,17 @@ def lambda_handler(event: dict, context) -> dict:
                 padded = cred_id_str + "=" * (-len(cred_id_str) % 4)
                 try:
                     cred_id_bytes = base64.urlsafe_b64decode(padded)
-                    transports = item.get("transports", [])
+                    raw_transports = item.get("transports") or []
+                    transports_enum = []
+                    for t in raw_transports:
+                        try:
+                            transports_enum.append(AuthenticatorTransport(t))
+                        except ValueError:
+                            logger.warning("Unknown transport %r on credential, skipping", t)
                     allow_credentials_descriptors.append(
                         PublicKeyCredentialDescriptor(
                             id=cred_id_bytes,
-                            transports=transports if transports else None,
+                            transports=transports_enum if transports_enum else None,
                         )
                     )
                 except Exception:
