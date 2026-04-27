@@ -80,8 +80,9 @@ resource "aws_lambda_function" "auth" {
   memory_size = 256
   timeout     = 10
 
-  # Attach webauthn layer ONLY to passkey Lambdas (others do not need py_webauthn)
-  layers = can(regex("passkey", each.key)) ? [aws_lambda_layer_version.webauthn.arn] : []
+  # Attach webauthn layer to passkey Lambdas + Cognito CUSTOM_AUTH triggers
+  # (auth-create-challenge and auth-verify-challenge both import webauthn)
+  layers = can(regex("passkey|create-challenge|verify-challenge", each.key)) ? [aws_lambda_layer_version.webauthn.arn] : []
 
   # VPC config - Lambda runs in private subnets
   vpc_config {
