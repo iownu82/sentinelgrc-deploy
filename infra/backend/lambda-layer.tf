@@ -33,3 +33,40 @@ output "webauthn_layer_arn" {
   value       = aws_lambda_layer_version.webauthn.arn
   description = "ARN of the webauthn Lambda layer (versioned)"
 }
+
+
+# ============================================================================
+# Lambda Layer - shared helpers for auth Lambdas
+# ============================================================================
+#
+# Provides cookies.py, responses.py, jwt_verifier.py, cognito_client.py
+# to all auth Lambdas. Source of truth is backend-lambdas/_shared/.
+#
+# To rebuild: cd lambda-layers/shared && ./build.sh
+# (This copies _shared/*.py into the layer's python/ subdirectory.)
+
+data "archive_file" "shared_layer" {
+  type        = "zip"
+  source_dir  = "${path.root}/../../lambda-layers/shared"
+  output_path = "${path.module}/.terraform-build/shared-layer.zip"
+
+  excludes = [
+    "build.sh",
+    ".DS_Store",
+  ]
+}
+
+resource "aws_lambda_layer_version" "shared" {
+  filename         = data.archive_file.shared_layer.output_path
+  layer_name       = "bis3-defense-shared"
+  description      = "Shared helper modules: cookies, responses, jwt_verifier, cognito_client"
+  source_code_hash = data.archive_file.shared_layer.output_base64sha256
+
+  compatible_runtimes      = ["python3.12"]
+  compatible_architectures = ["x86_64"]
+}
+
+output "shared_layer_arn" {
+  value       = aws_lambda_layer_version.shared.arn
+  description = "ARN of the shared helpers Lambda layer (versioned)"
+}
