@@ -248,25 +248,13 @@ def lambda_handler(event: dict, context) -> dict:
         logger.exception("Unexpected error during assertion verification")
         return internal_error("Verification failed")
 
-    # Step 6: Update sign_count + last_used_at (anti-clone protection)
-    iso_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    try:
-        table.update_item(
-            Key={"user_sub": user_sub, "credential_id": cred_id_str},
-            UpdateExpression="SET sign_count = :sc, last_used_at = :ts",
-            ExpressionAttributeValues={
-                ":sc": verification.new_sign_count,
-                ":ts": iso_now,
-            },
-        )
-    except ClientError:
-        logger.exception("Failed to update sign_count - non-fatal but logged")
+    # Step 6: sign_count is owned by auth-verify-challenge (Cognito trigger).
+    # Updating here would race with that and make the trigger reject the
+    # assertion as a replay (counter must be strictly greater than stored).
 
-    # Step 7: Clean up the challenge (single-use)
-    try:
-        table.delete_item(Key={"user_sub": user_sub, "credential_id": challenge_key})
-    except ClientError:
-        pass
+    # Step 7: Challenge is consumed AFTER Cognito CUSTOM_AUTH completes.
+    # auth-create-challenge needs to read the challenge row when the trigger
+    # fires, so we cannot delete it here. See post-Cognito cleanup below.
 
     # Step 8: Issue Cognito session tokens via admin-initiate-auth
     # This is the "trusted authenticator" pattern - we've already verified the
@@ -321,6 +309,9 @@ def lambda_handler(event: dict, context) -> dict:
             AuthParameters={
                 "USERNAME": user_email,
             },
+            ClientMetadata={
+                "challenge_id": challenge_id,
+            },
         )
     except ClientError as e:
         logger.exception("admin_initiate_auth failed")
@@ -358,6 +349,12 @@ def lambda_handler(event: dict, context) -> dict:
     if not auth_result:
         logger.error("CUSTOM_AUTH did not issue tokens: %s", respond_resp.get("ChallengeName"))
         return unauthorized("Authentication failed")
+
+    # Now that Cognito has accepted the assertion, clean up the challenge row
+    try:
+        table.delete_item(Key={"user_sub": user_sub, "credential_id": challenge_key})
+    except ClientError:
+        pass
 
     access_token = auth_result.get("AccessToken")
     id_token = auth_result.get("IdToken")

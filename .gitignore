@@ -7,3 +7,16 @@ tests/srp-login-test/node_modules/
 tests/srp-login-test/.totp-secret
 lambda-layers/*/python/
 infra/backend/.terraform-build/
+
+# Python bytecode and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Backup files from edits
+*.bak
+*.bak2
+
+# Lambda build artifacts
+backend-lambdas/*/function.zip
+backend-lambdas/*/package/

@@ -1,73 +1,60 @@
 """
 BIS3 Defense - auth-create-challenge Cognito trigger
 
-Cognito calls this trigger after DefineAuthChallenge says CUSTOM_CHALLENGE.
-We generate a WebAuthn authentication challenge here.
+Cognito calls this after DefineAuthChallenge says CUSTOM_CHALLENGE.
 
-The challenge is split into:
-  - publicChallengeParameters: sent to the client (the WebAuthn options)
-  - privateChallengeParameters: kept server-side, available to VerifyAuthChallengeResponse
+We do NOT generate a fresh challenge here. The browser already started its
+WebAuthn ceremony against the challenge issued by /auth/passkey/auth-options.
+The browser signed THAT challenge - we must use the same one for verification
+or the assertion check will fail (clientDataJSON.challenge != expected).
 
-Cognito event shape (input):
-{
-  "request": {
-    "userAttributes": {"sub": "...", "email": "..."},
-    "challengeName": "CUSTOM_CHALLENGE",
-    "session": [...]
-  },
-  "response": {
-    "publicChallengeParameters": {...},
-    "privateChallengeParameters": {...},
-    "challengeMetadata": "..."
-  }
-}
+This trigger looks up the original challenge by challenge_id (passed via
+ClientMetadata on admin_initiate_auth) and stashes it in
+privateChallengeParameters for VerifyAuthChallengeResponse to compare against.
 
 Federal compliance:
     AC-3, AU-2, AU-3, IA-2, IA-2(11), IA-5, SC-13, SC-23
 """
-
-import base64
 import json
 import logging
 import os
 import sys
 
 sys.path.insert(0, "/var/task")
-sys.path.insert(0, "/opt/python")  # Lambda layer
+sys.path.insert(0, "/opt/python")
 
 import boto3
 from botocore.exceptions import ClientError
-from webauthn import generate_authentication_options, options_to_json
-from webauthn.helpers.structs import (
-    UserVerificationRequirement,
-    PublicKeyCredentialDescriptor,
-)
-
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
-RP_ID = os.environ.get("WEBAUTHN_RP_ID", "staging.app.bis3ai.com")
+RP_ID = os.environ["WEBAUTHN_RP_ID"]
 PASSKEY_TABLE = os.environ.get("PASSKEY_TABLE", "bis3-defense-passkey-credentials")
 
 dynamodb = boto3.resource("dynamodb")
 
 
-def lambda_handler(event: dict, context) -> dict:
-    """
-    Cognito CreateAuthChallenge trigger.
+def _error(event, response, reason, request_id, user_sub=None):
+    logger.warning(json.dumps({
+        "audit_event": "create_auth_challenge_failed",
+        "reason": reason,
+        "user_sub": user_sub,
+        "request_id": request_id,
+    }))
+    response["publicChallengeParameters"] = {"error": reason}
+    response["privateChallengeParameters"] = {"error": reason}
+    response["challengeMetadata"] = "ERROR"
+    return event
 
-    Generates a WebAuthn authentication challenge and stashes it in the
-    Cognito session for VerifyAuthChallengeResponse to validate against.
-    """
+
+def lambda_handler(event: dict, context) -> dict:
     request_id = context.aws_request_id if context else "no-context"
     request = event.get("request", {})
     response = event.setdefault("response", {})
 
     user_attributes = request.get("userAttributes", {})
     user_sub = user_attributes.get("sub")
-    user_email = user_attributes.get("email", "unknown")
 
     logger.info(json.dumps({
         "audit_event": "create_auth_challenge",
@@ -76,88 +63,61 @@ def lambda_handler(event: dict, context) -> dict:
     }))
 
     if not user_sub:
-        # Should not happen if user is in Cognito, but defensive
-        logger.error("CreateAuthChallenge called without user sub")
-        # Return empty challenge - VerifyAuthChallengeResponse will fail
-        response["publicChallengeParameters"] = {"error": "no_user"}
-        response["privateChallengeParameters"] = {"error": "no_user"}
-        response["challengeMetadata"] = "ERROR"
-        return event
+        return _error(event, response, "no_user", request_id)
 
-    # Look up the user's registered credentials
-    allow_credentials = []
+    # Find the most recent un-expired authentication challenge for this user.
+    # auth-passkey-auth-options writes rows under (user_sub, _challenge_<id>)
+    # with purpose="authentication" and an expires_at field. We pick the
+    # newest one to defend against the user having stale challenge rows.
+    import time as _time
+    now_ts = int(_time.time())
     try:
         table = dynamodb.Table(PASSKEY_TABLE)
-        resp = table.query(
-            KeyConditionExpression="user_sub = :sub",
-            ExpressionAttributeValues={":sub": user_sub},
+        chal_resp = table.query(
+            KeyConditionExpression="user_sub = :sub AND begins_with(credential_id, :prefix)",
+            ExpressionAttributeValues={
+                ":sub": user_sub,
+                ":prefix": "_challenge_",
+            },
         )
-        for item in resp.get("Items", []):
-            cred_id_str = item.get("credential_id", "")
-            # Skip challenge entries
-            if cred_id_str.startswith("_challenge_"):
-                continue
-            try:
-                padded = cred_id_str + "=" * (-len(cred_id_str) % 4)
-                cred_id_bytes = base64.urlsafe_b64decode(padded)
-                transports = item.get("transports", [])
-                allow_credentials.append(
-                    PublicKeyCredentialDescriptor(
-                        id=cred_id_bytes,
-                        transports=transports if transports else None,
-                    )
-                )
-            except Exception:
-                logger.warning("Skipping malformed credential id")
-                continue
+        all_chal_items = chal_resp.get("Items", [])
     except ClientError:
-        logger.exception("Failed to query credentials")
-        # Continue with empty allowCredentials - WebAuthn will fail naturally
+        logger.exception("Failed to query challenges")
+        return _error(event, response, "challenge_lookup_failed", request_id, user_sub)
 
-    # Generate the WebAuthn challenge
-    try:
-        options = generate_authentication_options(
-            rp_id=RP_ID,
-            timeout=60000,
-            allow_credentials=allow_credentials if allow_credentials else None,
-            user_verification=UserVerificationRequirement.PREFERRED,
-        )
-    except Exception:
-        logger.exception("Failed to generate WebAuthn options")
-        response["publicChallengeParameters"] = {"error": "generate_failed"}
-        response["privateChallengeParameters"] = {"error": "generate_failed"}
-        response["challengeMetadata"] = "ERROR"
-        return event
+    # Filter to authentication-purpose challenges that have not expired
+    valid = [
+        it for it in all_chal_items
+        if it.get("purpose") == "authentication"
+        and int(it.get("expires_at", 0)) > now_ts
+    ]
+    if not valid:
+        return _error(event, response, "no_active_challenge", request_id, user_sub)
 
-    # Encode challenge for transport
-    challenge_b64 = base64.urlsafe_b64encode(options.challenge).decode("utf-8").rstrip("=")
-    options_json = json.loads(options_to_json(options))
+    # Pick the one with the largest expires_at (most recently issued)
+    chal_item = max(valid, key=lambda it: int(it.get("expires_at", 0)))
 
-    # Cognito limits publicChallengeParameters values to strings
-    # We pass the challenge options as a JSON-encoded string
+    challenge_b64 = chal_item.get("challenge")
+    if not challenge_b64:
+        return _error(event, response, "challenge_value_missing", request_id, user_sub)
+
     response["publicChallengeParameters"] = {
-        "webauthn_options": json.dumps(options_json),
         "rp_id": RP_ID,
     }
-
-    # Private parameters are also strings - we keep the challenge for verification
     response["privateChallengeParameters"] = {
         "challenge": challenge_b64,
         "user_sub": user_sub,
         "rp_id": RP_ID,
     }
-
     response["challengeMetadata"] = "PASSKEY"
 
     logger.info(json.dumps({
         "audit_event": "create_auth_challenge_complete",
         "user_sub": user_sub,
-        "credentials_count": len(allow_credentials),
         "request_id": request_id,
     }))
 
     return event
 
 
-# Alias for Lambda's configured entry point: handler.handler
 handler = lambda_handler
