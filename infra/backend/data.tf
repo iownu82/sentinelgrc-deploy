@@ -64,6 +64,7 @@ locals {
 
   # Cognito User Pool ARN (from existing Cognito configured in earlier session)
   cognito_user_pool_id  = "us-gov-west-1_0VaQnbcFH"
+  cognito_client_id     = "anrf7jlfgfevp7c6esu705p7k"
   cognito_user_pool_arn = "arn:aws-us-gov:cognito-idp:us-gov-west-1:${data.aws_caller_identity.current.account_id}:userpool/us-gov-west-1_0VaQnbcFH"
 
   # VPC CIDR design - 10.50.0.0/16 with three /24 private subnets across 3 AZs

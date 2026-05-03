@@ -93,9 +93,14 @@ resource "aws_lambda_function" "auth" {
   # Environment - identifies the endpoint
   environment {
     variables = {
-      ENDPOINT_NAME       = each.key
-      LOG_LEVEL           = "INFO"
-      COGNITO_USER_POOL_ID = local.cognito_user_pool_id
+      ENDPOINT_NAME            = each.key
+      LOG_LEVEL                = "INFO"
+      COGNITO_USER_POOL_ID     = local.cognito_user_pool_id
+      COGNITO_CLIENT_ID        = local.cognito_client_id
+      PASSKEY_TABLE            = aws_dynamodb_table.passkey_credentials.name
+      WEBAUTHN_RP_ID           = "localhost"
+      WEBAUTHN_RP_NAME         = "BIS3 Defense Dev"
+      WEBAUTHN_EXPECTED_ORIGIN = "http://localhost:5173"
     }
   }
 
@@ -140,9 +145,14 @@ resource "aws_lambda_function" "admin" {
 
   environment {
     variables = {
-      ENDPOINT_NAME       = each.key
-      LOG_LEVEL           = "INFO"
-      COGNITO_USER_POOL_ID = local.cognito_user_pool_id
+      ENDPOINT_NAME            = each.key
+      LOG_LEVEL                = "INFO"
+      COGNITO_USER_POOL_ID     = local.cognito_user_pool_id
+      COGNITO_CLIENT_ID        = local.cognito_client_id
+      PASSKEY_TABLE            = aws_dynamodb_table.passkey_credentials.name
+      WEBAUTHN_RP_ID           = "localhost"
+      WEBAUTHN_RP_NAME         = "BIS3 Defense Dev"
+      WEBAUTHN_EXPECTED_ORIGIN = "http://localhost:5173"
     }
   }
 
